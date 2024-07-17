@@ -1,0 +1,219 @@
+import {defineType, defineField} from 'sanity'
+
+// Tipo de Objeto para Acessórios
+export const accessoryType = defineType({
+  name: 'accessory',
+  title: 'Acessório',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'name',
+      title: 'Nome',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'description',
+      title: 'Descrição',
+      type: 'string',
+    }),
+  ],
+})
+
+// Tipo de Documento para Carros
+export const carType = defineType({
+  name: 'car',
+  title: 'Carro',
+  type: 'document',
+  fields: [
+    defineField({
+      name: 'brandCar',
+      title: 'Marca',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Chevrolet', value: 'chevrolet'},
+          {title: 'Fiat', value: 'fiat'},
+          {title: 'Ford', value: 'ford'},
+          {title: 'Hyundai', value: 'hyundai'},
+          {title: 'Jaguar', value: 'jaguar'},
+          {title: 'Kia', value: 'kia'},
+          {title: 'Nissan', value: 'nissan'},
+          {title: 'Renault', value: 'renault'},
+          {title: 'Volkswagen', value: 'volkswagen'},
+          {title: 'Toyota', value: 'Toyota'},
+          {title: 'Peugeot', value: 'peugeot'},
+          {title: 'Citroen', value: 'citroen'},
+          {title: 'Mercedes-Benz', value: 'mercedes-benz'},
+          {title: 'Volkswagen', value: 'volkswagen'},
+          {title: 'Renault', value: 'renault'},
+        ],
+      },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'modelCar',
+      title: 'Modelo',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'images',
+      title: 'Imagens',
+      type: 'array',
+      of: [{type: 'image'}],
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'location',
+      title: 'Localização',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+      options: {
+        list: [
+          {title: 'São Paulo', value: 'São paulo'},
+          {title: 'São Bernardo do Campo', value: 'São bernardo do campo'},
+          {title: 'São Caetano', value: 'São caetano'},
+          {title: 'Santo Andre', value: 'Santo andre'},
+          {title: 'Ribeirão Pires', value: 'Ribeirão pires'},
+          {title: 'Mauá', value: 'Mauá'},
+        ],
+      },
+    }),
+    defineField({
+      name: 'yearFabrication',
+      title: 'Ano de Fabricação',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'fuel',
+      title: 'Combustível',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+      options: {
+        list: [
+          {title: 'Flex', value: 'flex'},
+          {title: 'Gasolina', value: 'gasolina'},
+          {title: 'Etanol', value: 'etanol'},
+          {title: 'GPL', value: 'gpl'},
+          {title: 'Diesel', value: 'diesel'},
+        ],
+      },
+    }),
+    defineField({
+      name: 'km',
+      title: 'Quilometragem',
+      type: 'string',
+    }),
+    defineField({
+      name: 'exchange',
+      title: 'Câmbio',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Automático', value: 'automático'},
+          {title: 'Manual', value: 'manual'},
+        ],
+      },
+    }),
+    defineField({
+      name: 'color',
+      title: 'Cor',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+      options: {
+        list: [
+          {title: 'Preto', value: 'preto'},
+          {title: 'Branco', value: 'branco'},
+          {title: 'Cinza', value: 'cinza'},
+          {title: 'Vermelho', value: 'vermelho'},
+          {title: 'Azul', value: 'azul'},
+          {title: 'Verde', value: 'verde'},
+          {title: 'Amarelo', value: 'amarelo'},
+          {title: 'Marrom', value: 'marrom'},
+        ],
+      },
+    }),
+    defineField({
+      name: 'description',
+      title: 'Descrição',
+      type: 'text',
+    }),
+    defineField({
+      name: 'accessories',
+      title: 'Acessórios',
+      type: 'array',
+      of: [{type: 'accessory'}],
+    }),
+    defineField({
+      name: 'price',
+      title: 'Preço',
+      type: 'string',
+    }),
+    defineField({
+      name: 'bodyType',
+      title: 'Tipo de Carroceria',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Hatch', value: 'hatch'},
+          {title: 'Sedan', value: 'sedan'},
+          {title: 'SUV', value: 'suv'},
+          {title: 'Pickup', value: 'pickup'},
+          {title: 'Caminhão', value: 'caminhão'},
+        ],
+      },
+    }),
+    defineField({
+      name: 'motors',
+      title: 'Motor',
+      type: 'string',
+      options: {
+        list: [
+          {title: '1.0', value: '1.0'},
+          {title: '1.6', value: '1.6'},
+          {title: '2.0', value: '2.0'},
+          {title: '2.5', value: '2.5'},
+          {title: '3.0', value: '3.0'},
+        ],
+      },
+    }),
+    defineField({
+      name: 'condition',
+      title: 'Condição do Carro',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Novo', value: 'novo'},
+          {title: 'Usado', value: 'usado'},
+          {title: 'Seminovo', value: 'seminovo'},
+        ],
+      },
+    }),
+    defineField({
+      name: 'announce',
+      title: 'Anunciante',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Venda', value: 'venda'},
+          {title: 'Aluguel', value: 'aluguel'},
+          {title: 'Troca', value: 'troca'},
+          {title: 'Financiamento', value: 'financiamento'},
+          {title: 'Particular', value: 'particular'},
+        ],
+      },
+    }),
+    defineField({
+      name: 'doors',
+      title: 'Portas',
+      type: 'string',
+    }),
+    defineField({
+      name: 'plate',
+      title: 'Placa',
+      type: 'string',
+    }),
+  ],
+})

@@ -1,0 +1,18 @@
+export const brandCars = [
+  { id: 1, title: "Honda", value: "Honda" },
+  { id: 2, title: "Toyota", value: "Toyota" },
+  { id: 3, title: "Ford", value: "Ford" },
+  { id: 4, title: "Nissan", value: "Nissan" },
+  { id: 5, title: "Chevrolet", value: "Chevrolet" },
+  { id: 6, title: "Volkswagen", value: "Volkswagen" },
+  { id: 7, title: "Hyundai", value: "Hyundai" },
+  { id: 8, title: "Kia", value: "Kia" },
+  { id: 9, title: "Fiat", value: "Fiat" },
+  { id: 10, title: "Mercedes-Benz", value: "Mercedes-Benz" },
+  { id: 11, title: "Jaguar", value: "Jaguar" },
+  { id: 12, title: "BMW", value: "BMW" },
+  { id: 13, title: "Audi", value: "Audi" },
+  { id: 14, title: "Renault", value: "Renault" },
+  { id: 15, title: "Peugeot", value: "Peugeot" },
+  { id: 16, title: "Citroen", value: "Citroen" },
+];
