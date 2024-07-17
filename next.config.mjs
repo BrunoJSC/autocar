@@ -12,6 +12,15 @@ const nextConfig = {
   experimental: {
     taint: true,
   },
+  reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: "/studio/:path*",
+        destination: "/studio/index.html",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
