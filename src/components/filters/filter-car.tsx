@@ -63,8 +63,8 @@ export const FilterCar: React.FC<FilterProps> = ({
   };
 
   return (
-    <div>
-      <div className="md:hidden">
+    <div className="space-y-4 md:space-y-0">
+      <div className="md:hidden h-auto">
         <Drawer>
           <DrawerTrigger asChild>
             <Button variant="outline">
@@ -138,7 +138,7 @@ export const FilterCar: React.FC<FilterProps> = ({
         </Drawer>
       </div>
 
-      <div className="hidden md:block">
+      <div className="hidden md:block space-y-4 md:space-y-0">
         <Card className="max-w-xl">
           <CardHeader>
             <CardTitle>Carros</CardTitle>

@@ -4,19 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { MenuIcon } from "lucide-react";
 import { headerLinks } from "@/constants/headerLink";
 import { MaxWrapper } from "./max-wrapper";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { Separator } from "./ui/separator";
 
 export function Header() {
   const pathname = usePathname();
@@ -50,6 +44,7 @@ export function Header() {
             </Link>
           ))}
 
+          <Separator orientation="vertical" className="h-7 w-px" />
           <Button className="text-sm font-bold" asChild>
             <Link href="/anunciar">Anunciar</Link>
           </Button>
@@ -78,7 +73,11 @@ export function Header() {
                 </Link>
               ))}
 
-              <Button className="text-sm font-bold w-full">Anunciar</Button>
+              <Separator />
+
+              <Button className="text-sm font-bold" asChild>
+                <Link href="/anunciar">Anunciar</Link>
+              </Button>
             </div>
           </SheetContent>
         </Sheet>

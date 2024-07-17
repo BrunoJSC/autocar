@@ -34,12 +34,14 @@ export default function Page() {
 
   return (
     <MaxWrapper>
-      <section className="flex gap-4 mt-5 p-4 min-h-screen">
-        <FilterMotorbike
-          filters={filters}
-          setFilters={setFilters}
-          onSearch={handleSearch}
-        />
+      <section className="flex flex-col md:flex-row gap-4 mt-5 p-4 min-h-screen">
+        <div>
+          <FilterMotorbike
+            filters={filters}
+            setFilters={setFilters}
+            onSearch={handleSearch}
+          />
+        </div>
 
         <div className="flex-1">
           <ListMotorbike motorbikes={motorbike as Motorbike[]} />
