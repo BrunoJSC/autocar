@@ -10,7 +10,7 @@ interface CarListProps {
 
 export const ListCar: React.FC<CarListProps> = ({ cars }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2  gap-8 bg-red-400">
+    <div className="grid grid-cols-1 md:grid-cols-2  gap-8">
       {cars.map((car) => (
         <Link href={`/carros/${car._id}`} key={car._id}>
           <Card className="w-full ">
