@@ -106,8 +106,7 @@ export const motorbikeType = defineType({
     defineField({
       name: 'accessories',
       title: 'Acessórios',
-      type: 'array',
-      of: [{type: 'accessory'}],
+      type: 'string',
     }),
     defineField({
       name: 'images',

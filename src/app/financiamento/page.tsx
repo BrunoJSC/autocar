@@ -64,7 +64,7 @@ const Page: FC = () => (
       </div>
       <div className="w-full max-w-5xl flex flex-col md:flex-row rounded-lg my-6 mx-auto p-4 gap-4 bg-card-foreground shadow-lg items-center">
         <div className="flex-1 space-y-2">
-          <h2 className="text-2xl font-bold text-primary">
+          <h2 className="text-2xl font-bold text-muted">
             Peça seu financiamento
           </h2>
           <Button variant="default" className="w-full">

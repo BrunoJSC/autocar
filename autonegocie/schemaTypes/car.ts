@@ -1,26 +1,6 @@
 import {defineType, defineField} from 'sanity'
 
 // Tipo de Objeto para Acessórios
-export const accessoryType = defineType({
-  name: 'accessory',
-  title: 'Acessório',
-  type: 'object',
-  fields: [
-    defineField({
-      name: 'name',
-      title: 'Nome',
-      type: 'string',
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: 'description',
-      title: 'Descrição',
-      type: 'string',
-    }),
-  ],
-})
-
-// Tipo de Documento para Carros
 export const carType = defineType({
   name: 'car',
   title: 'Carro',
@@ -144,7 +124,16 @@ export const carType = defineType({
       name: 'accessories',
       title: 'Acessórios',
       type: 'array',
-      of: [{type: 'accessory'}],
+      of: [{type: 'string'}],
+      options: {
+        list: [
+          {title: 'Ar-condicionado', value: 'ar-condicionado'},
+          {title: 'Climatizador', value: 'climatizador'},
+          {title: 'Direção Hidrão', value: 'direção hidrão'},
+          {title: 'Direção Eletrica', value: 'direção eletrica'},
+          {title: 'Travas Eletricas', value: 'travas eletricas'},
+        ],
+      },
     }),
     defineField({
       name: 'price',

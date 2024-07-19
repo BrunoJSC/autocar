@@ -15,35 +15,38 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { faqs } from "@/constants/faqs";
+import { Separator } from "@/components/ui/separator";
 
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <div className="bg-porsche-banner h-screen w-full bg-no-repeat bg-cover bg-center">
-        <div className="flex flex-col items-center justify-center h-full w-full p-8">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-white">
-              Encontramos o seu carro ideal!
-            </h1>
-            <p className="text-white text-lg mt-4">
-              Venha ser mais um cliente e faça parte da nossa história
-            </p>
-          </div>
+      <MaxWrapper>
+        <div className="bg-porsche-banner h-screen w-full bg-no-repeat bg-cover bg-center">
+          <div className="flex flex-col items-center justify-center h-full w-full p-8">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold text-white">
+                Encontramos o seu carro ideal!
+              </h1>
+              <p className="text-white text-lg mt-4">
+                Venha ser mais um cliente e faça parte da nossa história
+              </p>
+            </div>
 
-          <div className="flex space-x-4 mt-8">
-            <Button size="lg" asChild>
-              <Link href="/carros">Catálogo</Link>
-            </Button>
+            <div className="flex space-x-4 mt-8">
+              <Button size="lg" asChild>
+                <Link href="/carros">Catálogo</Link>
+              </Button>
 
-            <Button variant="secondary" size="lg" asChild>
-              <Link href="/aninciar">Anuncie</Link>
-            </Button>
+              <Button variant="secondary" size="lg" asChild>
+                <Link href="/aninciar">Anuncie</Link>
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      </MaxWrapper>
 
-      <MaxWrapper>
-        <section className="p-8">
+      <MaxWrapper className="py-8 p-8">
+        <section>
           <div className="flex flex-col space-y-4 items-center">
             <h1 className="text-3xl font-bold">
               A melhor plataforma de negociação de veículos
@@ -69,6 +72,8 @@ export default function Home() {
             ))}
           </div>
         </section>
+
+        <Separator className="my-24" orientation="horizontal" />
 
         <section className="p-8">
           <div className="flex flex-col space-y-4 items-center">

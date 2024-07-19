@@ -19,6 +19,7 @@ import {
 import Image from "next/image";
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -117,7 +118,6 @@ export default function Page() {
         </Carousel>
 
         <Card className="mt-5 max-w-4xl mx-auto p-2 grid md:grid-cols-2 gap-8">
-          {/* Seção de Informações do Carro */}
           <div>
             <CardHeader>
               <CardTitle>
@@ -134,9 +134,38 @@ export default function Page() {
             <CardDescription className="text-gray-500 mt-2 text-sm leading-normal">
               {car.description}
             </CardDescription>
+
+            <CardContent>
+              <div className="mt-4 grid gap-5 grid-cols-2 md:grid-cols-3 items-center">
+                <div>
+                  <p className="text-gray-500">Ano</p>
+                  <p>{car.yearFabrication}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500">Combustível</p>
+                  <p>{car.fuel}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500">Km</p>
+                  <p>{Intl.NumberFormat("pt-BR").format(car.km)}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500">Cambio</p>
+                  <p>{car.exchange}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500">Portas</p>
+                  <p>{car.doors}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500">Cor</p>
+                  <p>{car.color}</p>
+                </div>
+              </div>
+              <div className="mt-4 grid gap-5 grid-cols-2 md:grid-cols-3 items-center"></div>
+            </CardContent>
           </div>
 
-          {/* Seção de Formulário de Contato */}
           <Card className="p-4 max-w-sm bg-black ml-4">
             <CardHeader>
               <CardTitle className="text-primary">

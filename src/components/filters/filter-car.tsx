@@ -21,6 +21,8 @@ import { Button } from "@/components/ui/button";
 import { SortAsc } from "lucide-react";
 import { locations } from "@/constants/location";
 import { brandCars } from "@/constants/brand-cars";
+import { fuel } from "@/constants/fuel";
+import { exchange } from "@/constants/exchange";
 
 interface FilterProps {
   filters: any;
@@ -54,6 +56,13 @@ export const FilterCar: React.FC<FilterProps> = ({
     }));
   };
 
+  const handleFuelChange = (value: string) => {
+    setFilters((prevFilters: any) => ({
+      ...prevFilters,
+      fuel: value,
+    }));
+  };
+
   const handleClearFilters = () => {
     setFilters({
       brandCar: "",
@@ -83,7 +92,7 @@ export const FilterCar: React.FC<FilterProps> = ({
                   <Label>Marca</Label>
                   <Select
                     value={filters.brandCar}
-                    onValueChange={handleBrandChange}
+                    onValueChange={handleFuelChange}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione uma marca" />
@@ -120,6 +129,44 @@ export const FilterCar: React.FC<FilterProps> = ({
                       {locations.map((location) => (
                         <SelectItem key={location.id} value={location.value}>
                           {location.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Tipo de combustível</Label>
+                  <Select
+                    value={filters.fuel}
+                    onValueChange={handleBrandChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o combustível" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {fuel.map((fuel) => (
+                        <SelectItem key={fuel.id} value={fuel.value}>
+                          {fuel.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Tipo de câmbio</Label>
+                  <Select
+                    value={filters.exchange}
+                    onValueChange={handleBrandChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o combustível" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {exchange.map((exchange) => (
+                        <SelectItem key={exchange.id} value={exchange.value}>
+                          {exchange.title}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -186,6 +233,41 @@ export const FilterCar: React.FC<FilterProps> = ({
                   {locations.map((location) => (
                     <SelectItem key={location.id} value={location.value}>
                       {location.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Tipo de combustível</Label>
+              <Select value={filters.fuel} onValueChange={handleBrandChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o combustível" />
+                </SelectTrigger>
+                <SelectContent>
+                  {fuel.map((fuel) => (
+                    <SelectItem key={fuel.id} value={fuel.value}>
+                      {fuel.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Tipo de câmbio</Label>
+              <Select
+                value={filters.exchange}
+                onValueChange={handleBrandChange}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o combustível" />
+                </SelectTrigger>
+                <SelectContent>
+                  {exchange.map((exchange) => (
+                    <SelectItem key={exchange.id} value={exchange.value}>
+                      {exchange.title}
                     </SelectItem>
                   ))}
                 </SelectContent>

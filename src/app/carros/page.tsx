@@ -5,7 +5,6 @@ import { FilterCar } from "@/components/filters/filter-car";
 import { MaxWrapper } from "@/components/max-wrapper";
 import { ListCar } from "@/components/list-car";
 import { fetchFilterCars } from "@/fetch/car-filter";
-
 export default function Page() {
   const [filters, setFilters] = useState({
     brandCar: "",

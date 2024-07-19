@@ -1,4 +1,5 @@
-import {accessoryType, carType} from './car'
+import {blockContent, blogType} from './blog'
+import {carType} from './car'
 import {motorbikeType} from './motorbike'
 
-export const schemaTypes = [carType, motorbikeType, accessoryType]
+export const schemaTypes = [carType, motorbikeType, blogType, blockContent]
