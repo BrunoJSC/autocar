@@ -7,7 +7,7 @@ import { z } from "zod";
 import { MaxWrapper } from "@/components/max-wrapper";
 import { Skeleton } from "@/components/ui/skeleton";
 import { client, urlForImage } from "@/lib/sanity";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   Carousel,
@@ -166,7 +166,7 @@ export default function Page() {
             </CardContent>
           </div>
 
-          <Card className="p-4 max-w-sm bg-black ml-4">
+          <Card className="p-4 max-w-sm bg-black ml-4 h-[700px]">
             <CardHeader>
               <CardTitle className="text-primary">
                 Entre em contato com nossa equipe!

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import {
   Select,
   SelectValue,
@@ -23,56 +23,86 @@ import { locations } from "@/constants/location";
 import { brandCars } from "@/constants/brand-cars";
 import { fuel } from "@/constants/fuel";
 import { exchange } from "@/constants/exchange";
+import { maxPrice, minPrice } from "@/constants/prices";
+import FilterSelect from "./FilterSelect";
+import { colors } from "@/constants/colors";
+import { doorsQty } from "@/constants/doors-qty";
+import { announceType } from "@/constants/announce-type";
+
+type Filters = {
+  brandCar: string;
+  modelCar: string;
+  location: string;
+  fuel: string;
+  exchange: string;
+  doors: number;
+  color: string;
+  minPrice?: number;
+  maxPrice?: number;
+  announce: string;
+};
 
 interface FilterProps {
-  filters: any;
-  setFilters: (filters: any) => void;
+  filters: Filters;
+  setFilters: Dispatch<SetStateAction<Filters>>;
   onSearch: () => void;
+  clearSearch: () => void;
 }
 
 export const FilterCar: React.FC<FilterProps> = ({
   filters,
   setFilters,
   onSearch,
+  clearSearch,
 }) => {
   const handleBrandChange = (value: string) => {
-    setFilters((prevFilters: any) => ({
-      ...prevFilters,
-      brandCar: value,
-    }));
+    setFilters({ ...filters, brandCar: value });
   };
 
   const handleModelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilters((prevFilters: any) => ({
-      ...prevFilters,
-      modelCar: e.target.value || "",
-    }));
+    setFilters({ ...filters, modelCar: e.target.value || "" });
   };
 
   const handleLocationChange = (value: string) => {
-    setFilters((prevFilters: any) => ({
-      ...prevFilters,
-      location: value,
-    }));
+    setFilters({ ...filters, location: value });
   };
 
   const handleFuelChange = (value: string) => {
-    setFilters((prevFilters: any) => ({
-      ...prevFilters,
-      fuel: value,
-    }));
+    setFilters({ ...filters, fuel: value });
   };
 
-  const handleClearFilters = () => {
+  const handleExchangeChange = (value: string) => {
+    setFilters({ ...filters, exchange: value });
+  };
+
+  const handleMinPriceChange = (value: string) => {
     setFilters({
-      brandCar: "",
-      modelCar: "",
-      location: "",
+      ...filters,
+      minPrice: value ? Number(value) : undefined,
     });
   };
 
+  const handleMaxPriceChange = (value: string) => {
+    setFilters({
+      ...filters,
+      maxPrice: value ? Number(value) : undefined,
+    });
+  };
+
+  const handleColorChange = (value: string) => {
+    setFilters({ ...filters, color: value });
+  };
+
+  const handleDoorsChange = (value: string) => {
+    setFilters({ ...filters, doors: Number(value) });
+  };
+
+  const handleAnnounceChange = (value: string) => {
+    setFilters({ ...filters, announce: value });
+  };
+
   return (
-    <div className="space-y-4 md:space-y-0">
+    <div className="space-y-4 md:space-y-0 sticky">
       <div className="md:hidden h-auto">
         <Drawer>
           <DrawerTrigger asChild>
@@ -81,106 +111,155 @@ export const FilterCar: React.FC<FilterProps> = ({
             </Button>
           </DrawerTrigger>
           <DrawerOverlay />
-          <DrawerContent>
-            <Card>
-              <CardHeader>
-                <CardTitle>Carros</CardTitle>
-              </CardHeader>
+          <DrawerContent className="overflow-scroll fixed inset-0 h-auto">
+            <CardHeader>
+              <CardTitle>Carros</CardTitle>
+            </CardHeader>
 
-              <CardContent className="space-y-4">
-                <div>
-                  <Label>Marca</Label>
+            <CardContent className="space-y-4">
+              <div>
+                <FilterSelect
+                  label="Marca"
+                  value={filters.brandCar || ""}
+                  onValueChange={handleBrandChange}
+                  options={brandCars}
+                  key={brandCars[0]?.id}
+                  placeholder="Selecione uma marca"
+                  id={brandCars[0]?.id}
+                />
+              </div>
+
+              <div>
+                <Label>Modelo</Label>
+                <Input
+                  placeholder="Digite o modelo"
+                  value={filters.modelCar}
+                  onChange={handleModelChange}
+                />
+              </div>
+
+              <div>
+                <FilterSelect
+                  label="Localidade"
+                  value={filters.location || ""}
+                  onValueChange={handleLocationChange}
+                  options={locations}
+                  key={locations[0]?.id}
+                  placeholder="Selecione a localidade"
+                  id={locations[0]?.id}
+                />
+              </div>
+
+              <div>
+                <FilterSelect
+                  label="Tipo de Combustível"
+                  value={filters.fuel || ""}
+                  onValueChange={handleFuelChange}
+                  options={fuel}
+                  key={fuel[0]?.id}
+                  placeholder="Selecione o combustível"
+                  id={fuel[0]?.id}
+                />
+              </div>
+
+              <div>
+                <FilterSelect
+                  label="Tipo de câmbio"
+                  value={filters.exchange || ""}
+                  onValueChange={handleExchangeChange}
+                  options={exchange}
+                  key={exchange[0]?.id}
+                  placeholder="Selecione o tipo de troca"
+                  id={exchange[0]?.id}
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="w-full">
+                  <Label>Preço minimo</Label>
                   <Select
-                    value={filters.brandCar}
-                    onValueChange={handleFuelChange}
+                    value={Number(filters.minPrice).toString()}
+                    onValueChange={handleMinPriceChange}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecione uma marca" />
+                      <SelectValue placeholder="Selecione o preço inicial" />
                     </SelectTrigger>
                     <SelectContent>
-                      {brandCars.map((brand) => (
-                        <SelectItem key={brand.id} value={brand.value}>
-                          {brand.title}
+                      {minPrice.map((minPrice) => (
+                        <SelectItem
+                          key={minPrice.id}
+                          value={Number(minPrice.value).toString()}
+                        >
+                          {minPrice.title}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
-
-                <div>
-                  <Label>Modelo</Label>
-                  <Input
-                    placeholder="Digite o modelo"
-                    value={filters.modelCar}
-                    onChange={handleModelChange}
-                  />
-                </div>
-
-                <div>
-                  <Label>Localização</Label>
+                <div className="w-full">
+                  <Label>Preço maximo</Label>
                   <Select
-                    value={filters.location}
-                    onValueChange={handleLocationChange}
+                    value={Number(filters.maxPrice).toString()}
+                    onValueChange={handleMaxPriceChange}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecione uma localização" />
+                      <SelectValue placeholder="Selecione o preço maximo" />
                     </SelectTrigger>
                     <SelectContent>
-                      {locations.map((location) => (
-                        <SelectItem key={location.id} value={location.value}>
-                          {location.title}
+                      {maxPrice.map((maxPrice) => (
+                        <SelectItem
+                          key={maxPrice.id}
+                          value={Number(maxPrice.value).toString()}
+                        >
+                          {maxPrice.title}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
 
-                <div>
-                  <Label>Tipo de combustível</Label>
-                  <Select
-                    value={filters.fuel}
-                    onValueChange={handleBrandChange}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione o combustível" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {fuel.map((fuel) => (
-                        <SelectItem key={fuel.id} value={fuel.value}>
-                          {fuel.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div>
+                <FilterSelect
+                  label="Cor do carro"
+                  value={filters.color || ""}
+                  onValueChange={handleColorChange}
+                  options={colors}
+                  key={exchange[0]?.id}
+                  placeholder="Selecione o tipo de troca"
+                  id={colors[0]?.id}
+                />
+              </div>
 
-                <div>
-                  <Label>Tipo de câmbio</Label>
-                  <Select
-                    value={filters.exchange}
-                    onValueChange={handleBrandChange}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione o combustível" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {exchange.map((exchange) => (
-                        <SelectItem key={exchange.id} value={exchange.value}>
-                          {exchange.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div>
+                <Label>Portas</Label>
+                <Select
+                  value={Number(filters.doors).toString()}
+                  onValueChange={handleDoorsChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o preço maximo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {doorsQty.map((door) => (
+                      <SelectItem
+                        key={door.id}
+                        value={Number(door.value).toString()}
+                      >
+                        {door.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-                <div className="flex flex-col justify-end gap-2 mt-4 p-4">
-                  <Button onClick={onSearch}>Buscar</Button>
-                  <Button variant="outline" onClick={handleClearFilters}>
-                    Limpar Filtros
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+              <div className="flex flex-col justify-end gap-2 mt-4 p-4">
+                <Button onClick={onSearch}>Buscar</Button>
+                <Button variant="outline" onClick={clearSearch}>
+                  Limpar Filtros
+                </Button>
+              </div>
+            </CardContent>
           </DrawerContent>
         </Drawer>
       </div>
@@ -193,22 +272,15 @@ export const FilterCar: React.FC<FilterProps> = ({
 
           <CardContent className="space-y-4">
             <div>
-              <Label>Marca</Label>
-              <Select
-                value={filters.brandCar}
+              <FilterSelect
+                label="Marca"
+                value={filters.brandCar || ""}
                 onValueChange={handleBrandChange}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione uma marca" />
-                </SelectTrigger>
-                <SelectContent>
-                  {brandCars.map((brand) => (
-                    <SelectItem key={brand.id} value={brand.value}>
-                      {brand.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                options={brandCars}
+                key={brandCars[0]?.id}
+                placeholder="Selecione uma marca"
+                id={brandCars[0]?.id}
+              />
             </div>
 
             <div>
@@ -221,63 +293,136 @@ export const FilterCar: React.FC<FilterProps> = ({
             </div>
 
             <div>
-              <Label>Localização</Label>
-              <Select
-                value={filters.location}
+              <FilterSelect
+                label="Localidade"
+                value={filters.location || ""}
                 onValueChange={handleLocationChange}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione uma localização" />
-                </SelectTrigger>
-                <SelectContent>
-                  {locations.map((location) => (
-                    <SelectItem key={location.id} value={location.value}>
-                      {location.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                options={locations}
+                key={locations[0]?.id}
+                placeholder="Selecione a localidade"
+                id={locations[0]?.id}
+              />
             </div>
 
             <div>
-              <Label>Tipo de combustível</Label>
-              <Select value={filters.fuel} onValueChange={handleBrandChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione o combustível" />
-                </SelectTrigger>
-                <SelectContent>
-                  {fuel.map((fuel) => (
-                    <SelectItem key={fuel.id} value={fuel.value}>
-                      {fuel.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <FilterSelect
+                label="Combustível"
+                value={filters.fuel || ""}
+                onValueChange={handleFuelChange}
+                options={fuel}
+                key={fuel[0]?.id}
+                placeholder="Selecione o combustível"
+                id={fuel[0]?.id}
+              />
             </div>
 
             <div>
-              <Label>Tipo de câmbio</Label>
-              <Select
+              <FilterSelect
+                label="Tipo de Cambio"
                 value={filters.exchange}
-                onValueChange={handleBrandChange}
+                onValueChange={handleExchangeChange}
+                options={exchange}
+                key={exchange[0]?.id}
+                placeholder="Selecione o cambio"
+                id={exchange[0]?.id}
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <div className="w-full">
+                <Label>Preço minimo</Label>
+                <Select
+                  value={Number(filters.minPrice).toString()}
+                  onValueChange={handleMinPriceChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o preço inicial" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {minPrice.map((minPrice) => (
+                      <SelectItem
+                        key={minPrice.id}
+                        value={Number(minPrice.value).toString()}
+                      >
+                        {minPrice.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="w-full">
+                <Label>Preço maximo</Label>
+                <Select
+                  value={Number(filters.maxPrice).toString()}
+                  onValueChange={handleMaxPriceChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o preço maximo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {maxPrice.map((maxPrice) => (
+                      <SelectItem
+                        key={maxPrice.id}
+                        value={Number(maxPrice.value).toString()}
+                      >
+                        {maxPrice.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div>
+              <FilterSelect
+                label="Cor do carro"
+                value={filters.color || ""}
+                onValueChange={handleColorChange}
+                options={colors}
+                key={exchange[0]?.id}
+                placeholder="Selecione o tipo de troca"
+                id={colors[0]?.id}
+              />
+            </div>
+
+            <div>
+              <Label>Portas</Label>
+              <Select
+                value={Number(filters.doors).toString()}
+                onValueChange={handleDoorsChange}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione o combustível" />
+                  <SelectValue placeholder="Selecione o preço maximo" />
                 </SelectTrigger>
                 <SelectContent>
-                  {exchange.map((exchange) => (
-                    <SelectItem key={exchange.id} value={exchange.value}>
-                      {exchange.title}
+                  {doorsQty.map((door) => (
+                    <SelectItem
+                      key={door.id}
+                      value={Number(door.value).toString()}
+                    >
+                      {door.title}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            <div>
+              <FilterSelect
+                label="Anunciante"
+                value={filters.announce || ""}
+                onValueChange={handleAnnounceChange}
+                options={announceType}
+                key={announceType[0]?.id}
+                placeholder="Selecione o anunciante"
+                id={announceType[0]?.id}
+              />
             </div>
           </CardContent>
 
           <div className="flex flex-col justify-end gap-2 mt-4 p-4">
             <Button onClick={onSearch}>Buscar</Button>
-            <Button variant="outline" onClick={handleClearFilters}>
+            <Button variant="outline" onClick={clearSearch}>
               Limpar Filtros
             </Button>
           </div>

@@ -138,7 +138,7 @@ export const carType = defineType({
     defineField({
       name: 'price',
       title: 'Preço',
-      type: 'string',
+      type: 'number',
     }),
     defineField({
       name: 'bodyType',
@@ -191,13 +191,22 @@ export const carType = defineType({
           {title: 'Troca', value: 'troca'},
           {title: 'Financiamento', value: 'financiamento'},
           {title: 'Particular', value: 'particular'},
+          {title: 'Loja', value: 'loja'},
         ],
       },
     }),
     defineField({
       name: 'doors',
       title: 'Portas',
-      type: 'string',
+      type: 'number',
+      options: {
+        list: [
+          {title: '2', value: 2},
+          {title: '3', value: 3},
+          {title: '4', value: 4},
+          {title: '5', value: 5},
+        ],
+      },
     }),
     defineField({
       name: 'plate',

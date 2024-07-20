@@ -1,7 +1,7 @@
 "use client";
 
 import { MaxWrapper } from "@/components/max-wrapper";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchBlogData } from "@/fetch/fetch-blog";
 import { Blog } from "@/interface/blog";
 import Image from "next/image";
