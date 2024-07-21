@@ -77,7 +77,7 @@ export default function Page() {
         </div>
         <div className="flex-1">
           {loading ? (
-            <div className="flex justify-center items-center h-full">
+            <div className="flex flex-col justify-center items-center h-full">
               <Skeleton className="w-32 h-12" />
               <Skeleton className="w-16 h-16" />
             </div>

@@ -19,7 +19,13 @@ export const metadata: Metadata = {
       rel: "apple-touch-icon",
       url: "/icons/logo.svg",
       sizes: "180x180",
+      type: "image/svg+xml",
+      media:
+        "(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)",
+      fetchPriority: "high",
+      color: "#000000",
     },
+    origin: "https://autonegocie.com.br",
   },
   other: {
     "facebook-domain-verification": "eca4hpikk17nstym5cd7hep5q0weew",

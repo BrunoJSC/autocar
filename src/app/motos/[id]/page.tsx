@@ -120,7 +120,6 @@ export default function Page() {
         </Carousel>
 
         <Card className="mt-5 max-w-4xl mx-auto p-2 grid md:grid-cols-2 gap-8">
-          {/* Seção de Informações do Carro */}
           <div>
             <CardHeader>
               <CardTitle>

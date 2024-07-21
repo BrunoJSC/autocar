@@ -9,6 +9,9 @@ interface FilterParams {
   announce?: string;
   minPrice?: number;
   maxPrice?: number;
+  bodyType?: string;
+  km?: number;
+  accessories?: string[];
 }
 
 export const fetchFilterCars = async ({
@@ -20,6 +23,9 @@ export const fetchFilterCars = async ({
   minPrice,
   maxPrice,
   announce,
+  bodyType,
+  km,
+  accessories,
 }: FilterParams) => {
   let query = `*[_type == "car"`;
   const params: any = {};
@@ -64,6 +70,21 @@ export const fetchFilterCars = async ({
     params.maxPrice = maxPrice;
   }
 
+  if (bodyType) {
+    query += ` && bodyType == $bodyType`;
+    params.bodyType = bodyType;
+  }
+
+  if (km) {
+    query += ` && km == $km`;
+    params.km = km;
+  }
+
+  if (accessories) {
+    query += ` && accessories match $accessories`;
+    params.accessories = accessories;
+  }
+
   if (minPrice !== undefined && maxPrice !== undefined) {
     query += `] | order(price asc) {
       _id,
@@ -74,7 +95,8 @@ export const fetchFilterCars = async ({
       "imageUrl": images[0].asset->url,
       color,
       price,
-      km
+      km,
+      bodyType
     }`;
   } else {
     query += `] {
@@ -86,7 +108,9 @@ export const fetchFilterCars = async ({
       "imageUrl": images[0].asset->url,
       price,
       color,
-      km
+      km,
+      bodyType,
+      accessories
     }`;
   }
 

@@ -84,7 +84,7 @@ export const carType = defineType({
     defineField({
       name: 'km',
       title: 'Quilometragem',
-      type: 'string',
+      type: 'number',
     }),
     defineField({
       name: 'exchange',
@@ -94,6 +94,11 @@ export const carType = defineType({
         list: [
           {title: 'Automático', value: 'automático'},
           {title: 'Manual', value: 'manual'},
+          {title: 'Semi Automático', value: 'semi-automático'},
+          {title: 'Automático Sequencial', value: 'automático-sequencial'},
+          {title: 'Automatizado', value: 'automatizado'},
+          {title: 'Automatizado CDT', value: 'automatizado-cdt'},
+          {title: 'CVT', value: 'cvt'},
         ],
       },
     }),
@@ -212,6 +217,19 @@ export const carType = defineType({
       name: 'plate',
       title: 'Placa',
       type: 'string',
+    }),
+
+    defineField({
+      name: 'store',
+      title: 'Loja',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Mavicar', value: 'mavicar'},
+          {title: 'GP Car', value: 'gp-car'},
+          {title: 'Rhemar', value: 'rhemar'},
+        ],
+      },
     }),
   ],
 })

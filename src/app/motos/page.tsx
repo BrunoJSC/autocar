@@ -1,50 +1,91 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MaxWrapper } from "@/components/max-wrapper";
+import { Skeleton } from "@/components/ui/skeleton";
 import { fetchFilterMotorbike } from "@/fetch/motorbike-filter";
+import FilterBike from "@/components/filters/filter-motorbike";
 import { ListMotorbike } from "@/components/list-bikes";
-import { FilterMotorbike } from "@/components/filters/filter-motorbike";
+
+type Filters = {
+  motorbikeBrand: string;
+  motorbikeModel: string;
+  location: string;
+  fuel: string;
+  exchange: string;
+  color: string;
+  minPrice?: number;
+  maxPrice?: number;
+  km?: number;
+};
+
+const initialFilters: Filters = {
+  motorbikeBrand: "",
+  motorbikeModel: "",
+  location: "",
+  fuel: "",
+  exchange: "",
+  minPrice: undefined,
+  maxPrice: undefined,
+  color: "",
+  km: undefined,
+};
 
 export default function Page() {
-  const [filters, setFilters] = useState({
-    brandCar: "",
-    modelCar: "",
-    location: "",
-  });
+  const [filters, setFilters] = useState<Filters>(initialFilters);
+  const [motorbikes, setMotorbikes] = useState<Motorbike[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const [motorbike, setMotorbike] = useState<Motorbike[]>([]);
-
-  const handleSearch = async () => {
-    const data = await fetchFilterMotorbike(filters);
-    setMotorbike(data);
+  const fetchData = async (filters: Filters) => {
+    setLoading(true);
+    try {
+      const data = await fetchFilterMotorbike(filters);
+      setMotorbikes(data);
+    } catch (error) {
+      console.error("Erro ao buscar carros:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const fetchData = useMemo(
-    () => async () => {
-      const data: Motorbike[] = await fetchFilterMotorbike({});
-      setMotorbike(data);
-    },
-    []
-  );
+  const handleSearch = () => {
+    fetchData(filters);
+  };
+
+  const handleClearFilters = () => {
+    const clearedFilters = { ...initialFilters };
+    setFilters(clearedFilters);
+    fetchData(clearedFilters);
+  };
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    fetchData(initialFilters);
+  }, []);
 
   return (
     <MaxWrapper>
       <section className="flex flex-col md:flex-row gap-4 mt-5 p-4 min-h-screen">
         <div>
-          <FilterMotorbike
+          <FilterBike
             filters={filters}
             setFilters={setFilters}
             onSearch={handleSearch}
+            clearSearch={handleClearFilters}
           />
         </div>
-
         <div className="flex-1">
-          <ListMotorbike motorbikes={motorbike as Motorbike[]} />
+          {loading ? (
+            <div className="flex flex-col justify-center items-center h-full">
+              <Skeleton className="w-32 h-12" />
+              <Skeleton className="w-16 h-16" />
+            </div>
+          ) : motorbikes.length === 0 ? (
+            <div className="flex justify-center items-center h-full">
+              <p className="text-gray-500">Nenhuma moto encontrada.</p>
+            </div>
+          ) : (
+            <ListMotorbike motorbikes={motorbikes as Motorbike[]} />
+          )}
         </div>
       </section>
     </MaxWrapper>

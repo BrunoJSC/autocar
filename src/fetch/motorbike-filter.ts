@@ -4,24 +4,30 @@ interface FilterParams {
   motorbikeBrand?: string;
   motorbikeModel?: string;
   location?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  km?: number;
 }
 
 export const fetchFilterMotorbike = async ({
   motorbikeBrand,
   motorbikeModel,
   location,
+  minPrice,
+  maxPrice,
+  km,
 }: FilterParams) => {
   let query = `*[_type == "motorbike"`;
   const params: any = {};
 
   if (motorbikeBrand) {
-    query += ` && brandCar == $brandCar`;
-    params.brandCar = motorbikeBrand;
+    query += ` && motorbikeBrand == $motorbikeBrand`;
+    params.motorbikeBrand = motorbikeBrand;
   }
 
   if (motorbikeModel) {
-    query += ` && modelCar match $modelCar`;
-    params.modelCar = `${motorbikeModel}*`;
+    query += ` && motorbikeModel match $motorbikeModel`;
+    params.motorbikeModel = `${motorbikeModel}*`;
   }
 
   if (location) {
@@ -29,16 +35,45 @@ export const fetchFilterMotorbike = async ({
     params.location = `${location}*`;
   }
 
-  query += `] {
-    _id,
-    motorbikeBrand,
-    motorbikeModel,
-    location,
-    "imageUrl": images[0].asset->url,
-    price,
-    km
-  }`;
+  if (minPrice !== undefined) {
+    query += ` && price >= $minPrice`;
+    params.minPrice = minPrice;
+  }
 
-  const cars = await client.fetch(query, params);
-  return cars;
+  if (maxPrice !== undefined) {
+    query += ` && price <= $maxPrice`;
+    params.maxPrice = maxPrice;
+  }
+
+  if (km !== undefined) {
+    query += ` && km == $km`;
+    params.km = km;
+  }
+
+  query += `]`;
+
+  if (minPrice !== undefined || maxPrice !== undefined) {
+    query += ` | order(price asc) {
+      _id,
+      motorbikeBrand,
+      motorbikeModel,
+      location,
+      "imageUrl": images[0].asset->url,
+      price,
+      km
+    }`;
+  } else {
+    query += ` {
+      _id,
+      motorbikeBrand,
+      motorbikeModel,
+      location,
+      "imageUrl": images[0].asset->url,
+      price,
+      km
+    }`;
+  }
+
+  const motorbikes = await client.fetch(query, params);
+  return motorbikes;
 };

@@ -10,26 +10,24 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 
-interface FilterSelectProps {
+interface FilterPriceSelectProps {
   label: string;
-  value: string;
+  value?: number;
   onValueChange: (value: string) => void;
   options: { id: string | number; value: string | number; title: string }[];
   placeholder: string;
-  id?: string | number;
 }
 
-const FilterSelect: React.FC<FilterSelectProps> = ({
+const FilterPriceSelect: React.FC<FilterPriceSelectProps> = ({
   label,
   value,
   onValueChange,
   options,
   placeholder,
-  id,
 }) => (
-  <div>
-    <Label htmlFor={id?.toString()}>{label}</Label>
-    <Select value={value} onValueChange={onValueChange}>
+  <div className="w-full">
+    <Label>{label}</Label>
+    <Select value={value ? value.toString() : ""} onValueChange={onValueChange}>
       <SelectTrigger>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
@@ -47,4 +45,4 @@ const FilterSelect: React.FC<FilterSelectProps> = ({
   </div>
 );
 
-export default FilterSelect;
+export default FilterPriceSelect;

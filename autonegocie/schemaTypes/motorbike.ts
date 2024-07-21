@@ -10,6 +10,19 @@ export const motorbikeType = defineType({
       title: 'Marca',
       type: 'string',
       validation: (Rule) => Rule.required(),
+      options: {
+        list: [
+          {title: 'Honda', value: 'honda'},
+          {title: 'Yamaha', value: 'yamaha'},
+          {title: 'Kawasaki', value: 'kawasaki'},
+          {title: 'Suzuki', value: 'suzuki'},
+          {title: 'BMW', value: 'bmw'},
+          {title: 'Ducati', value: 'ducati'},
+          {title: 'KTM', value: 'ktm'},
+          {title: 'Harley-Davidson', value: 'harley-davidson'},
+          {title: 'Triumph', value: 'triumph'},
+        ],
+      },
     }),
     defineField({
       name: 'motorbikeModel',
@@ -41,7 +54,7 @@ export const motorbikeType = defineType({
     defineField({
       name: 'km',
       title: 'Quilometragem',
-      type: 'string',
+      type: 'number',
     }),
     defineField({
       name: 'fuel',
@@ -103,11 +116,7 @@ export const motorbikeType = defineType({
       title: 'Descrição',
       type: 'text',
     }),
-    defineField({
-      name: 'accessories',
-      title: 'Acessórios',
-      type: 'string',
-    }),
+
     defineField({
       name: 'images',
       title: 'Imagens',
@@ -131,7 +140,7 @@ export const motorbikeType = defineType({
     defineField({
       name: 'price',
       title: 'Preço',
-      type: 'string',
+      type: 'number',
     }),
     defineField({
       name: 'condition',

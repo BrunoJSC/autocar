@@ -162,7 +162,17 @@ export default function Page() {
                   <p>{car.color}</p>
                 </div>
               </div>
-              <div className="mt-4 grid gap-5 grid-cols-2 md:grid-cols-3 items-center"></div>
+
+              <div className="mt-4">
+                <p className="text-gray-500">Acessórios</p>
+                <div className="mt-4 grid gap-5 grid-cols-2 md:grid-cols-2 items-center">
+                  {car.accessories.map((accessory) => (
+                    <div key={accessory}>
+                      <p className="text-black">{accessory}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </CardContent>
           </div>
 
