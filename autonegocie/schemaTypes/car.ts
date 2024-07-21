@@ -63,7 +63,7 @@ export const carType = defineType({
     defineField({
       name: 'yearFabrication',
       title: 'Ano de Fabricação',
-      type: 'string',
+      type: 'number',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -132,11 +132,13 @@ export const carType = defineType({
       of: [{type: 'string'}],
       options: {
         list: [
-          {title: 'Ar-condicionado', value: 'ar-condicionado'},
-          {title: 'Climatizador', value: 'climatizador'},
-          {title: 'Direção Hidrão', value: 'direção hidrão'},
-          {title: 'Direção Eletrica', value: 'direção eletrica'},
-          {title: 'Travas Eletricas', value: 'travas eletricas'},
+          {title: 'Ar Condicionado', value: 'ar-condicionado'},
+          {title: 'Trava Eletrica', value: 'trava eletrica'},
+          {title: 'Teto Solar', value: 'teto solar'},
+          {title: 'Multimidia', value: 'multimidia'},
+          {title: 'Direção Hidraulica', value: 'direção hidraulica'},
+          {title: 'Som', value: 'som'},
+          {id: 7, title: 'Blindado', value: 'blindado'},
         ],
       },
     }),
@@ -162,14 +164,19 @@ export const carType = defineType({
     defineField({
       name: 'motors',
       title: 'Motor',
-      type: 'string',
+      type: 'number',
       options: {
         list: [
-          {title: '1.0', value: '1.0'},
-          {title: '1.6', value: '1.6'},
-          {title: '2.0', value: '2.0'},
-          {title: '2.5', value: '2.5'},
-          {title: '3.0', value: '3.0'},
+          {title: '1.0', value: 1.0},
+          {title: '1.3', value: 1.3},
+          {title: '1.4', value: 1.4},
+          {title: '1.5', value: 1.5},
+          {title: '1.6', value: 1.6},
+          {title: '1.8', value: 1.8},
+          {title: '2.0', value: 2.0},
+          {title: '2.2', value: 2.2},
+          {title: '2.4', value: 2.4},
+          {title: '3.0', value: 3.0},
         ],
       },
     }),
