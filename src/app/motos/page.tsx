@@ -17,6 +17,8 @@ type Filters = {
   minPrice?: number;
   maxPrice?: number;
   km?: number;
+  cilynders?: number;
+  announce?: string;
 };
 
 const initialFilters: Filters = {
@@ -29,6 +31,7 @@ const initialFilters: Filters = {
   maxPrice: undefined,
   color: "",
   km: undefined,
+  announce: "",
 };
 
 export default function Page() {

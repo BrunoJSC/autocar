@@ -7,6 +7,11 @@ interface FilterParams {
   minPrice?: number;
   maxPrice?: number;
   km?: number;
+  cylinders?: number;
+  announce?: string;
+  accessories?: string[];
+  startYear?: number;
+  endYear?: number;
 }
 
 export const fetchFilterMotorbike = async ({
@@ -16,6 +21,11 @@ export const fetchFilterMotorbike = async ({
   minPrice,
   maxPrice,
   km,
+  cylinders,
+  announce,
+  accessories,
+  startYear,
+  endYear,
 }: FilterParams) => {
   let query = `*[_type == "motorbike"`;
   const params: any = {};
@@ -40,14 +50,35 @@ export const fetchFilterMotorbike = async ({
     params.minPrice = minPrice;
   }
 
+  if (announce) {
+    query += ` && announce == $announce`;
+    params.announce = announce;
+  }
+
   if (maxPrice !== undefined) {
     query += ` && price <= $maxPrice`;
     params.maxPrice = maxPrice;
   }
 
+  if (startYear !== undefined && endYear !== undefined) {
+    query += ` && yearFabrication >= $startYear && yearFabrication <= $endYear`;
+    params.startYear = startYear;
+    params.endYear = endYear;
+  }
+
+  if (cylinders !== undefined) {
+    query += ` && cylinders == $cylinders`;
+    params.cylinders = cylinders;
+  }
+
   if (km !== undefined) {
     query += ` && km == $km`;
     params.km = km;
+  }
+
+  if (accessories) {
+    query += ` && accessories match $accessories`;
+    params.accessories = accessories;
   }
 
   query += `]`;
@@ -60,7 +91,8 @@ export const fetchFilterMotorbike = async ({
       location,
       "imageUrl": images[0].asset->url,
       price,
-      km
+      km,
+      cylinders
     }`;
   } else {
     query += ` {
@@ -70,7 +102,8 @@ export const fetchFilterMotorbike = async ({
       location,
       "imageUrl": images[0].asset->url,
       price,
-      km
+      km,
+      cylinders
     }`;
   }
 

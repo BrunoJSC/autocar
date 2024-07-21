@@ -7,3 +7,10 @@ export const accessoriesType = [
   { id: 6, title: "Som", value: "som" },
   { id: 7, title: "Blindado", value: "blindado" },
 ];
+
+export const accessoriesMotorbikesType = [
+  { id: 1, title: "Freio a Disco Dianteiro", value: "freio a disco" },
+  { id: 2, title: "Sistema de Partida Elétrica", value: "partida eletro" },
+  { id: 3, title: "Freio a Disco Traseiro", value: "freio a disco traseiro" },
+  { id: 4, title: "Rodas de Liga Leve", value: "ligas leves" },
+];

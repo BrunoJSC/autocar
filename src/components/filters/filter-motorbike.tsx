@@ -22,6 +22,7 @@ import { maxPrice, minPrice } from "@/constants/prices";
 import { colors } from "@/constants/colors";
 import { bodyTypes } from "@/constants/body-type";
 import { kms } from "@/constants/kms";
+import YearFilter from "@/constants/year-filter";
 
 import FilterSelect from "./FilterSelect";
 import FilterPriceSelect from "./filter-price-select";
@@ -33,6 +34,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { cylindersType } from "@/constants/cylinders";
+import { announceType } from "@/constants/announce-type";
+import AccessoriesFilter from "./accessories-filter";
+import { accessoriesMotorbikesType } from "@/constants/accessories";
 
 type Filters = {
   motorbikeBrand: string;
@@ -44,6 +49,11 @@ type Filters = {
   minPrice?: number;
   maxPrice?: number;
   km?: number;
+  cylinders?: number;
+  announce?: string;
+  accessories?: string[];
+  startYear?: number;
+  endYear?: number;
 };
 
 interface FilterProps {
@@ -97,8 +107,28 @@ export const FilterBike: React.FC<FilterProps> = ({
     setFilters({ ...filters, km: value ? Number(value) : undefined });
   };
 
+  const handleAnnounceChange = (value: string) => {
+    setFilters({ ...filters, announce: value });
+  };
+
+  const handleAccessoriesChange = (selected: string[]) => {
+    setFilters({ ...filters, accessories: selected });
+  };
+
   const handleColorChange = (value: string) => {
     setFilters({ ...filters, color: value });
+  };
+
+  const handleStartYearChange = (year: number) => {
+    setFilters({ ...filters, startYear: year });
+  };
+
+  const handleEndYearChange = (year: number) => {
+    setFilters({ ...filters, endYear: year });
+  };
+
+  const handleCylindersChange = (value: string) => {
+    setFilters({ ...filters, cylinders: value ? Number(value) : undefined });
   };
 
   return (
@@ -231,6 +261,41 @@ export const FilterBike: React.FC<FilterProps> = ({
                   </Select>
                 </div>
 
+                <div>
+                  <Label>Cilindradas</Label>
+                  <Select
+                    value={Number(filters.cylinders).toString()}
+                    onValueChange={handleCylindersChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a quilometragem" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {cylindersType.map((cylinder) => (
+                        <SelectItem
+                          key={cylinder.id.toString()}
+                          value={cylinder.value.toString()}
+                        >
+                          {cylinder.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <YearFilter
+                  startYear={filters.startYear || 1990}
+                  endYear={filters.endYear || new Date().getFullYear()}
+                  onStartYearChange={handleStartYearChange}
+                  onEndYearChange={handleEndYearChange}
+                />
+
+                <AccessoriesFilter
+                  accessories={accessoriesMotorbikesType}
+                  selectedAccessories={filters.accessories || []}
+                  onChange={handleAccessoriesChange}
+                />
+
                 <FilterButtons onSearch={onSearch} clearSearch={clearSearch} />
               </CardContent>
             </ScrollArea>
@@ -356,6 +421,54 @@ export const FilterBike: React.FC<FilterProps> = ({
                 </SelectContent>
               </Select>
             </div>
+
+            <div>
+              <Label>Cilindradas</Label>
+              <Select
+                value={Number(filters.cylinders).toString()}
+                onValueChange={handleCylindersChange}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione a quilometragem" />
+                </SelectTrigger>
+                <SelectContent>
+                  {cylindersType.map((cylinder) => (
+                    <SelectItem
+                      key={cylinder.id.toString()}
+                      value={cylinder.value.toString()}
+                    >
+                      {cylinder.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <FilterSelect
+              label="Anunciante"
+              value={filters.announce || ""}
+              onValueChange={handleAnnounceChange}
+              options={announceType.map((announce) => ({
+                ...announce,
+                id: announce.id.toString(),
+                value: announce.value.toString(),
+              }))}
+              placeholder="Selecione o anunciante"
+              id={announceType[0]?.id.toString()}
+            />
+
+            <YearFilter
+              startYear={filters.startYear || 1990}
+              endYear={filters.endYear || new Date().getFullYear()}
+              onStartYearChange={handleStartYearChange}
+              onEndYearChange={handleEndYearChange}
+            />
+
+            <AccessoriesFilter
+              accessories={accessoriesMotorbikesType}
+              selectedAccessories={filters.accessories || []}
+              onChange={handleAccessoriesChange}
+            />
 
             <FilterButtons onSearch={onSearch} clearSearch={clearSearch} />
           </CardContent>
