@@ -12,6 +12,9 @@ interface FilterParams {
   bodyType?: string;
   km?: number;
   accessories?: string[];
+  startYear?: number;
+  endYear?: number;
+  motors?: number;
 }
 
 export const fetchFilterCars = async ({
@@ -26,6 +29,9 @@ export const fetchFilterCars = async ({
   bodyType,
   km,
   accessories,
+  startYear,
+  endYear,
+  motors,
 }: FilterParams) => {
   let query = `*[_type == "car"`;
   const params: any = {};
@@ -70,6 +76,17 @@ export const fetchFilterCars = async ({
     params.maxPrice = maxPrice;
   }
 
+  if (startYear !== undefined && endYear !== undefined) {
+    query += ` && yearFabrication >= $startYear && yearFabrication <= $endYear`;
+    params.startYear = startYear;
+    params.endYear = endYear;
+  }
+
+  if (motors) {
+    query += ` && motors == $motors`;
+    params.motors = motors;
+  }
+
   if (bodyType) {
     query += ` && bodyType == $bodyType`;
     params.bodyType = bodyType;
@@ -96,7 +113,9 @@ export const fetchFilterCars = async ({
       color,
       price,
       km,
-      bodyType
+      bodyType,
+      accessories,
+      yearFabrication
     }`;
   } else {
     query += `] {
@@ -110,7 +129,8 @@ export const fetchFilterCars = async ({
       color,
       km,
       bodyType,
-      accessories
+      accessories,
+      yearFabrication
     }`;
   }
 

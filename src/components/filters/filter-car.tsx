@@ -35,6 +35,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import AccessoriesFilter from "./accessories-filter";
+import { accessoriesType } from "@/constants/accessories";
+import YearFilter from "@/constants/year-filter";
+import { motorsType } from "@/constants/motors";
 
 type Filters = {
   brandCar: string;
@@ -49,6 +53,10 @@ type Filters = {
   announce: string;
   km?: number;
   bodyType?: string;
+  accessories?: string[];
+  startYear?: number;
+  endYear?: number;
+  motors?: number;
 };
 
 interface FilterProps {
@@ -114,8 +122,24 @@ export const FilterCar: React.FC<FilterProps> = ({
     setFilters({ ...filters, doors: Number(value) });
   };
 
+  const handleMotorsChange = (value: string) => {
+    setFilters({ ...filters, motors: Number(value) });
+  };
+
   const handleAnnounceChange = (value: string) => {
     setFilters({ ...filters, announce: value });
+  };
+
+  const handleAccessoriesChange = (selected: string[]) => {
+    setFilters({ ...filters, accessories: selected });
+  };
+
+  const handleStartYearChange = (year: number) => {
+    setFilters({ ...filters, startYear: year });
+  };
+
+  const handleEndYearChange = (year: number) => {
+    setFilters({ ...filters, endYear: year });
   };
 
   return (
@@ -292,6 +316,12 @@ export const FilterCar: React.FC<FilterProps> = ({
                   placeholder="Selecione uma marca"
                   id={bodyTypes[0]?.id.toString()}
                 />
+
+                <AccessoriesFilter
+                  accessories={accessoriesType}
+                  selectedAccessories={filters.accessories || []}
+                  onChange={handleAccessoriesChange}
+                />
                 <FilterButtons onSearch={onSearch} clearSearch={clearSearch} />
               </CardContent>
             </ScrollArea>
@@ -417,6 +447,29 @@ export const FilterCar: React.FC<FilterProps> = ({
                 </SelectContent>
               </Select>
             </div>
+
+            <div>
+              <Label>Motor</Label>
+              <Select
+                value={Number(filters.motors).toString()}
+                onValueChange={handleMotorsChange}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o tipo de motor" />
+                </SelectTrigger>
+                <SelectContent>
+                  {motorsType.map((motor) => (
+                    <SelectItem
+                      key={motor.id.toString()}
+                      value={motor.value.toString()}
+                    >
+                      {motor.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             <FilterSelect
               label="Anunciante"
               value={filters.announce || ""}
@@ -462,6 +515,20 @@ export const FilterCar: React.FC<FilterProps> = ({
               placeholder="Selecione uma marca"
               id={bodyTypes[0]?.id.toString()}
             />
+
+            <YearFilter
+              startYear={filters.startYear || 1990}
+              endYear={filters.endYear || new Date().getFullYear()}
+              onStartYearChange={handleStartYearChange}
+              onEndYearChange={handleEndYearChange}
+            />
+
+            <AccessoriesFilter
+              accessories={accessoriesType}
+              selectedAccessories={filters.accessories || []}
+              onChange={handleAccessoriesChange}
+            />
+
             <FilterButtons onSearch={onSearch} clearSearch={clearSearch} />
           </CardContent>
         </Card>
