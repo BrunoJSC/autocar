@@ -271,6 +271,29 @@ export const FilterCar: React.FC<FilterProps> = ({
                     </SelectContent>
                   </Select>
                 </div>
+
+                <div>
+                  <Label>Motor</Label>
+                  <Select
+                    value={Number(filters.motors).toString()}
+                    onValueChange={handleMotorsChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o tipo de motor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {motorsType.map((motor) => (
+                        <SelectItem
+                          key={motor.id.toString()}
+                          value={motor.value.toString()}
+                        >
+                          {motor.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <FilterSelect
                   label="Anunciante"
                   value={filters.announce || ""}
@@ -315,6 +338,13 @@ export const FilterCar: React.FC<FilterProps> = ({
                   }))}
                   placeholder="Selecione uma marca"
                   id={bodyTypes[0]?.id.toString()}
+                />
+
+                <YearFilter
+                  startYear={filters.startYear || 1990}
+                  endYear={filters.endYear || new Date().getFullYear()}
+                  onStartYearChange={handleStartYearChange}
+                  onEndYearChange={handleEndYearChange}
                 />
 
                 <AccessoriesFilter
