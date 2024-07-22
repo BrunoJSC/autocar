@@ -18,7 +18,7 @@ export const footerSections = [
   {
     title: "Dúvidas",
     links: [
-      { text: "Regras Gerais", url: "" },
+      { text: "Regras Gerais", url: "/regras" },
       { text: "Política de Privacidade", url: "/privacidade" },
       { text: "Sugestão de Melhorias", url: "" },
     ],

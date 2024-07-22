@@ -35,6 +35,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { MessageCircle } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -43,7 +46,7 @@ const formSchema = z.object({
   cpf: z.string().min(11, {
     message: "O cpf deve ter pelo menos 11 caracteres",
   }),
-  email: z.string().email({ message: "O email deve ser válido" }),
+  email: z.string().email({ message: "O email deve ser válido" }),
   phone: z.string().min(9, {
     message: "O telefone deve ter pelo menos 9 caracteres",
   }),
@@ -63,14 +66,11 @@ export default function Page() {
       message: "",
     },
   });
-  const [car, setCar] = useState<Car | null>(null);
-  const { id } = useParams();
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  }
+  const { id } = useParams();
+  const [car, setCar] = useState<Car | null>(null);
+  const [message, setMessage] = useState("");
+  const PHONE_NUMBER = "5511940723891";
 
   useEffect(() => {
     if (id) {
@@ -84,6 +84,26 @@ export default function Page() {
       fetchCar();
     }
   }, [id]);
+
+  useEffect(() => {
+    if (car) {
+      const initialMessage = `Tenho interesse neste veículo ${car.brandCar} - ${car.modelCar}`;
+      setMessage(initialMessage);
+      form.setValue("message", initialMessage);
+    }
+  }, [car, form]);
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    console.log(values);
+  }
+
+  function messageWhatsapp() {
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
+    window.open(whatsappUrl, "_blank");
+  }
 
   if (!car)
     return (
@@ -176,7 +196,7 @@ export default function Page() {
             </CardContent>
           </div>
 
-          <Card className="p-4 max-w-sm bg-black ml-4 h-[700px]">
+          <Card className="p-4 max-w-sm bg-black ml-4 md:h-[780px] h-auto">
             <CardHeader>
               <CardTitle className="text-primary">
                 Entre em contato com nossa equipe!
@@ -260,10 +280,19 @@ export default function Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary-foreground">
-                        Descrição
+                        Mensagem
                       </FormLabel>
                       <FormControl>
-                        <Textarea {...field} />
+                        <Textarea
+                          id="message"
+                          rows={4}
+                          placeholder="Escreva uma mensagem..."
+                          value={message}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            setMessage(e.target.value);
+                          }}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -273,6 +302,14 @@ export default function Page() {
                   Enviar
                 </Button>
               </form>
+
+              <Button
+                variant="secondary"
+                className="w-full mt-2"
+                onClick={messageWhatsapp}
+              >
+                Whatsapp
+              </Button>
             </Form>
           </Card>
         </Card>

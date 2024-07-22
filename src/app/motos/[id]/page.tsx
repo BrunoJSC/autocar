@@ -62,13 +62,22 @@ export default function Page() {
       message: "",
     },
   });
-  const [motorbike, setMotorbike] = useState<Motorbike | null>(null);
+
   const { id } = useParams();
+  const [motorbike, setMotorbike] = useState<Motorbike | null>(null);
+  const [message, setMessage] = useState("");
+  const PHONE_NUMBER = "5511940723891";
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
+  }
+
+  function messageWhatsapp() {
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
+    window.open(whatsappUrl, "_blank");
   }
 
   useEffect(() => {
@@ -86,6 +95,14 @@ export default function Page() {
       fetchCar();
     }
   }, [id]);
+
+  useEffect(() => {
+    if (motorbike) {
+      const initialMessage = `Tenho interesse neste veículo ${motorbike.motorbikeBrand} - ${motorbike.motorbikeModel}`;
+      setMessage(initialMessage);
+      form.setValue("message", initialMessage);
+    }
+  }, [motorbike, form]);
 
   if (!motorbike)
     return (
@@ -223,10 +240,19 @@ export default function Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary-foreground">
-                        Descrição
+                        Mensagem
                       </FormLabel>
                       <FormControl>
-                        <Textarea {...field} />
+                        <Textarea
+                          id="message"
+                          rows={4}
+                          placeholder="Escreva uma mensagem..."
+                          value={message}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            setMessage(e.target.value);
+                          }}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -236,6 +262,14 @@ export default function Page() {
                   Enviar
                 </Button>
               </form>
+
+              <Button
+                variant="secondary"
+                className="w-full mt-2"
+                onClick={messageWhatsapp}
+              >
+                Whatsapp
+              </Button>
             </Form>
           </Card>
         </Card>
