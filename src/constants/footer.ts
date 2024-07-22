@@ -1,29 +1,26 @@
 export const footerSections = [
   {
-    title: "Sobre Nós",
+    title: "Fale Conosco",
     links: [
-      { text: "Nossa História", url: "/nossa-historia" },
-      { text: "Missão e Valores", url: "/missao-valores" },
-      { text: "Equipe", url: "/equipe" },
-      { text: "Parceiros", url: "/parceiros" },
+      { text: "(11) 3456-3427", url: "" },
+      { text: "(11) 94072-3891", url: "" },
+      { text: "contato@autonegocie.com.br", url: "" },
     ],
   },
   {
-    title: "Serviços",
+    title: "Institucional",
     links: [
-      { text: "Avaliação de Veículos", url: "/avaliacao" },
-      { text: "Compra de Carros", url: "/compra" },
-      { text: "Venda de Carros", url: "/venda" },
-      { text: "Financiamento", url: "/financiamento" },
+      { text: "Financiamento", url: "" },
+      { text: "Anunciar meu veículo", url: "" },
+      { text: "", url: "" },
     ],
   },
   {
-    title: "Suporte",
+    title: "Dúvidas",
     links: [
-      { text: "FAQ", url: "/faq" },
-      { text: "Contato", url: "/contato" },
+      { text: "Regras Gerais", url: "" },
       { text: "Política de Privacidade", url: "/privacidade" },
-      { text: "Termos de Uso", url: "/termos" },
+      { text: "Sugestão de Melhorias", url: "" },
     ],
   },
   {

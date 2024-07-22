@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { announce } from "@/constants/announce";
+import Link from "next/link";
 
 export default function Page() {
   return (
@@ -38,7 +39,9 @@ export default function Page() {
             ))}
           </CardContent>
 
-          <Button className="w-full">Anuncie</Button>
+          <Button className="w-full" asChild>
+            <Link href="/anunciar/formularios">Anuncie</Link>
+          </Button>
         </Card>
       </section>
     </MaxWrapper>
