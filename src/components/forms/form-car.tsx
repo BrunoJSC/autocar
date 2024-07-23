@@ -100,8 +100,8 @@ export function FormCar() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await client.create({
-        _type: "formCar", // Tipo de documento no Sanity
+      const response = await client.create({
+        _type: "carForm", // Tipo de documento no Sanity
         ...values,
       });
 
@@ -110,6 +110,8 @@ export function FormCar() {
         title: "Sucesso",
         variant: "default",
       });
+
+      console.log(response);
 
       form.reset(); // Resetar o formulário após envio
     } catch (error) {
