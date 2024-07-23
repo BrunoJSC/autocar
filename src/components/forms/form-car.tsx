@@ -1,38 +1,128 @@
 "use client";
 
 import { z } from "zod";
-
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { useToast } from "@/components/ui/use-toast";
 import FormFieldComponent from "@/components/forms/form-field-component";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { locations } from "@/constants/location";
+import { brandCars } from "@/constants/brand-cars";
+import { bodyTypes } from "@/constants/body-type";
+import { conditions } from "@/constants/conditions";
+import { mechanics } from "@/constants/mechanic";
+import { colors } from "@/constants/colors";
+import { exchange } from "@/constants/exchange";
+import { bodyworks } from "@/constants/bodywork";
+import { Checkbox } from "../ui/checkbox";
+import { accessoriesType } from "@/constants/accessories";
+import { Textarea } from "../ui/textarea";
+import { Input } from "../ui/input";
+import { client } from "@/lib/sanity"; // Importa o cliente do Sanity
 
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "O nome deve ter pelo menos 2 caracteres",
   }),
-  email: z.string().email({ message: "O email deve ser válido" }),
+  email: z.string(),
   phone: z
     .string()
     .min(10, { message: "O telefone deve ter pelo menos 10 digitos" }),
+  location: z.string(),
+  brandCar: z.string(),
+  modelCar: z.string(),
+  bodyType: z.string(),
+  auction: z.string().optional(),
+  condition: z.string(),
+  mechanic: z.string().optional(),
+  plate: z.string().optional(),
+  yearFabrication: z.string().optional(),
+  yearModification: z.string().optional(),
+  color: z.string().optional(),
+  exchange: z.string().optional(),
+  doors: z.string().optional(),
+  km: z.string().optional(),
+  motors: z.string().optional(),
+  bodywork: z.string().optional(),
+  document: z.string().optional(),
+  price: z.string().optional(),
+  accessories: z.array(z.string()).optional(),
+  description: z.string().optional(),
+  images: z.any().optional(),
 });
 
 export function FormCar() {
+  const { toast } = useToast();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       email: "",
       phone: "",
+      location: "",
+      brandCar: "",
+      modelCar: "",
+      bodyType: "",
+      auction: "",
+      condition: "",
+      mechanic: "",
+      plate: "",
+      yearFabrication: "",
+      yearModification: "",
+      color: "",
+      exchange: "",
+      doors: "",
+      km: "",
+      motors: "",
+      bodywork: "",
+      document: "",
+      price: "",
+      accessories: [],
+      description: "",
+      images: [],
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      await client.create({
+        _type: "formCar", // Tipo de documento no Sanity
+        ...values,
+      });
+
+      toast({
+        description: "Formulário enviado com sucesso!",
+        title: "Sucesso",
+        variant: "default",
+      });
+
+      form.reset(); // Resetar o formulário após envio
+    } catch (error) {
+      console.error("Erro ao enviar formulário: ", error);
+
+      toast({
+        description: "Erro ao enviar formulário.",
+        title: "Erro",
+        variant: "destructive",
+      });
+    }
   }
+
   return (
     <Form {...form}>
       <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
@@ -55,6 +145,361 @@ export function FormCar() {
           name="phone"
           label="Celular"
           placeholder="Digite o numero do celular"
+        />
+
+        <FormField
+          control={form.control}
+          name="location"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Localidade</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {locations.map((location) => (
+                      <SelectItem key={location.id} value={location.value}>
+                        {location.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="brandCar"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Marca</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {brandCars.map((brand) => (
+                      <SelectItem key={brand.id} value={brand.value}>
+                        {brand.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormFieldComponent
+          control={form.control}
+          name="modelCar"
+          label="Modelo"
+          placeholder="Digite o modelo"
+        />
+
+        <FormField
+          control={form.control}
+          name="bodyType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tipo de carroceria</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {bodyTypes.map((body) => (
+                      <SelectItem key={body.id} value={body.value}>
+                        {body.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="auction"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Leilão</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="sim">Sim</SelectItem>
+                    <SelectItem value="nao">Não</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="condition"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Condição do carro</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {conditions.map((condition) => (
+                      <SelectItem key={condition.id} value={condition.value}>
+                        {condition.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="mechanic"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Mecânico</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {mechanics.map((condition) => (
+                      <SelectItem key={condition.id} value={condition.value}>
+                        {condition.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormFieldComponent
+          control={form.control}
+          name="plate"
+          label="Placa"
+          placeholder="Digite a placa"
+        />
+
+        <FormFieldComponent
+          control={form.control}
+          name="yearFabrication"
+          label="Ano de fabricação"
+          placeholder="Digite o ano de fabricação"
+        />
+
+        <FormFieldComponent
+          control={form.control}
+          name="yearModification"
+          label="Ano de modificação"
+          placeholder="Digite o ano de modificação"
+        />
+
+        <FormField
+          control={form.control}
+          name="color"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Cor do carro</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {colors.map((color) => (
+                      <SelectItem key={color.id} value={color.value}>
+                        {color.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="exchange"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Câmbio</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {exchange.map((exchange) => (
+                      <SelectItem key={exchange.id} value={exchange.value}>
+                        {exchange.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormFieldComponent
+          control={form.control}
+          name="doors"
+          label="Quantidade de portas"
+          placeholder="Digite a quantidade de portas"
+        />
+
+        <FormFieldComponent
+          control={form.control}
+          name="km"
+          label="Quilometragem"
+          placeholder="Digite a quilometragem"
+        />
+
+        <FormFieldComponent
+          control={form.control}
+          name="motors"
+          label="Motor"
+          placeholder="Digite o motor"
+        />
+
+        <FormField
+          control={form.control}
+          name="bodywork"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Lataria</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {bodyworks.map((bodywork) => (
+                      <SelectItem key={bodywork.id} value={bodywork.value}>
+                        {bodywork.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormFieldComponent
+          control={form.control}
+          name="document"
+          label="Documentos"
+          placeholder="Digite se tem multas ou restrições"
+        />
+
+        <FormFieldComponent
+          control={form.control}
+          name="price"
+          label="Preço"
+          placeholder="Digite o preço"
+        />
+
+        <FormField
+          control={form.control}
+          name="accessories"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Acessórios</FormLabel>
+              <FormControl>
+                <div className="space-y-2">
+                  {accessoriesType.map((accessory) => (
+                    <div
+                      key={accessory.id}
+                      className="flex items-center space-x-3"
+                    >
+                      <Checkbox
+                        value={accessory.value}
+                        checked={field?.value?.includes(accessory.value)}
+                        onCheckedChange={(checked) => {
+                          const newValue = checked
+                            ? [...(field?.value as string[]), accessory.value]
+                            : field?.value?.filter(
+                                (value) => value !== accessory?.value
+                              );
+                          field.onChange(newValue);
+                        }}
+                      />
+                      <FormLabel className="font-normal">
+                        {accessory.title}
+                      </FormLabel>
+                    </div>
+                  ))}
+                </div>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Descrição</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Escreva uma descrição"
+                  rows={4}
+                  className="resize-none"
+                  cols={40}
+                  {...field}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="images"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Foto</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => {
+                    const files = e.target.files;
+                    if (files) {
+                      const fileArray = Array.from(files);
+                      field.onChange(fileArray);
+                    }
+                  }}
+                />
+              </FormControl>
+            </FormItem>
+          )}
         />
 
         <Button type="submit">Cadastrar</Button>
