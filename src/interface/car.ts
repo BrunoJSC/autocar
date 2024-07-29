@@ -1,5 +1,6 @@
 interface Car {
   _id: string;
+  yearModification: number;
   brandCar: string;
   modelCar: string;
   images: { url: string }[];

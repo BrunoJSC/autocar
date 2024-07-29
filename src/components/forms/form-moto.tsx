@@ -29,47 +29,47 @@ import { colors } from "@/constants/colors";
 import { exchange } from "@/constants/exchange";
 import { bodyworks } from "@/constants/bodywork";
 import { Checkbox } from "@/components/ui/checkbox";
-import { accessoriesType } from "@/constants/accessories";
+import { accessoriesMotorbikesType } from "@/constants/accessories";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { fuel } from "@/constants/fuel";
 import { addDoc, collection } from "firebase/firestore";
 import { db, storage } from "@/utils/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { brandBikes } from "@/constants/brand-bikes";
 
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "O nome deve ter pelo menos 2 caracteres",
-  }),
+  name: z
+    .string()
+    .min(2, { message: "O nome deve ter pelo menos 2 caracteres" }),
   email: z.string().email({ message: "Digite um email válido" }),
   phone: z
     .string()
-    .min(10, { message: "O telefone deve ter pelo menos 10 digitos" }),
+    .min(10, { message: "O telefone deve ter pelo menos 10 dígitos" }),
   location: z.string(),
-  brandCar: z.string(),
-  modelCar: z.string(),
-  bodyType: z.string(),
-  auction: z.string().optional(),
-  condition: z.string(),
+  motorbikeBrand: z.string(),
+  motorbikeModel: z.string(),
   mechanic: z.string().optional(),
   plate: z.string().optional(),
+  auction: z.string().optional(),
   yearFabrication: z.string().optional(),
   yearModification: z.string().optional(),
   color: z.string().optional(),
   exchange: z.string().optional(),
-  doors: z.string().optional(),
   km: z.string().optional(),
-  motors: z.string().optional(),
-  bodywork: z.string().optional(),
   fuel: z.string().optional(),
-  document: z.string().optional(),
+  cylinders: z.string().optional(),
+  condition: z.string(),
+  fairing: z.string().optional(),
+  fip: z.string().optional(),
   price: z.string().optional(),
-  accessories: z.array(z.string()).optional(),
   description: z.string().optional(),
+  document: z.string().optional(),
+  accessories: z.array(z.string()).optional(),
   images: z.array(z.instanceof(File)),
 });
 
-export function FormCar() {
+export function FormMotorbike() {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -79,27 +79,26 @@ export function FormCar() {
       email: "",
       phone: "",
       location: "",
-      brandCar: "",
-      modelCar: "",
-      bodyType: "",
-      auction: "",
-      condition: "",
+      motorbikeBrand: "",
+      motorbikeModel: "",
       mechanic: "",
       plate: "",
+      auction: "",
       yearFabrication: "",
       yearModification: "",
       color: "",
       exchange: "",
-      doors: "",
       km: "",
-      motors: "",
-      bodywork: "",
-      document: "",
-      price: "",
-      accessories: [],
-      description: "",
-      images: [],
       fuel: "",
+      cylinders: "",
+      condition: "",
+      fairing: "",
+      fip: undefined,
+      price: undefined,
+      description: "",
+      document: "",
+      accessories: [],
+      images: [],
     },
   });
 
@@ -113,25 +112,25 @@ export function FormCar() {
         })
       );
 
-      const carData = {
+      const motorbikeData = {
         ...values,
         images: imageUrls,
         createdAt: new Date(),
       };
 
-      const docRef = await addDoc(collection(db, "cars"), carData);
+      const docRef = await addDoc(collection(db, "motorbikes"), motorbikeData);
 
       toast({
         title: "Sucesso!",
-        description: `Carro cadastrado com ID: ${docRef.id}`,
+        description: `Motocicleta cadastrada com ID: ${docRef.id}`,
       });
 
       form.reset();
     } catch (error) {
-      console.error("Erro ao cadastrar carro:", error);
+      console.error("Erro ao cadastrar motocicleta:", error);
       toast({
         title: "Erro",
-        description: "Ocorreu um erro ao cadastrar o carro.",
+        description: "Ocorreu um erro ao cadastrar a motocicleta.",
         variant: "destructive",
       });
     }
@@ -158,7 +157,7 @@ export function FormCar() {
           control={form.control}
           name="phone"
           label="Celular"
-          placeholder="Digite o numero do celular"
+          placeholder="Digite o número do celular"
         />
 
         <FormField
@@ -187,7 +186,7 @@ export function FormCar() {
 
         <FormField
           control={form.control}
-          name="brandCar"
+          name="motorbikeBrand"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Marca</FormLabel>
@@ -197,7 +196,7 @@ export function FormCar() {
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
                   <SelectContent>
-                    {brandCars.map((brand) => (
+                    {brandBikes.map((brand) => (
                       <SelectItem key={brand.id} value={brand.value}>
                         {brand.title}
                       </SelectItem>
@@ -211,33 +210,9 @@ export function FormCar() {
 
         <FormFieldComponent
           control={form.control}
-          name="modelCar"
+          name="motorbikeModel"
           label="Modelo"
           placeholder="Digite o modelo"
-        />
-
-        <FormField
-          control={form.control}
-          name="bodyType"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tipo de carroceria</FormLabel>
-              <FormControl>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {bodyTypes.map((body) => (
-                      <SelectItem key={body.id} value={body.value}>
-                        {body.title}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-            </FormItem>
-          )}
         />
 
         <FormField
@@ -290,7 +265,7 @@ export function FormCar() {
           name="condition"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Condição do carro</FormLabel>
+              <FormLabel>Condição da motocicleta</FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger>
@@ -321,9 +296,9 @@ export function FormCar() {
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
                   <SelectContent>
-                    {mechanics.map((condition) => (
-                      <SelectItem key={condition.id} value={condition.value}>
-                        {condition.title}
+                    {mechanics.map((mechanic) => (
+                      <SelectItem key={mechanic.id} value={mechanic.value}>
+                        {mechanic.title}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -359,7 +334,7 @@ export function FormCar() {
           name="color"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Cor do carro</FormLabel>
+              <FormLabel>Cor da motocicleta</FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger>
@@ -383,7 +358,7 @@ export function FormCar() {
           name="exchange"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Câmbio</FormLabel>
+              <FormLabel>Tipo de câmbio</FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger>
@@ -404,13 +379,6 @@ export function FormCar() {
 
         <FormFieldComponent
           control={form.control}
-          name="doors"
-          label="Quantidade de portas"
-          placeholder="Digite a quantidade de portas"
-        />
-
-        <FormFieldComponent
-          control={form.control}
           name="km"
           label="Quilometragem"
           placeholder="Digite a quilometragem"
@@ -418,40 +386,23 @@ export function FormCar() {
 
         <FormFieldComponent
           control={form.control}
-          name="motors"
-          label="Motor"
-          placeholder="Digite o motor"
-        />
-
-        <FormField
-          control={form.control}
-          name="bodywork"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Lataria</FormLabel>
-              <FormControl>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {bodyworks.map((bodywork) => (
-                      <SelectItem key={bodywork.id} value={bodywork.value}>
-                        {bodywork.title}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-            </FormItem>
-          )}
+          name="cylinders"
+          label="Cilindrada"
+          placeholder="Digite a cilindrada"
         />
 
         <FormFieldComponent
           control={form.control}
-          name="document"
-          label="Documentos"
-          placeholder="Digite se tem multas ou restrições"
+          name="fairing"
+          label="Carenagem"
+          placeholder="Digite a carenagem"
+        />
+
+        <FormFieldComponent
+          control={form.control}
+          name="fip"
+          label="FIP"
+          placeholder="Digite o valor do FIP"
         />
 
         <FormFieldComponent
@@ -459,6 +410,32 @@ export function FormCar() {
           name="price"
           label="Preço"
           placeholder="Digite o preço"
+        />
+
+        <FormFieldComponent
+          control={form.control}
+          name="document"
+          label="Documentos"
+          placeholder="Digite informações sobre documentos"
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Descrição</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Escreva uma descrição"
+                  rows={4}
+                  className="resize-none"
+                  cols={40}
+                  {...field}
+                />
+              </FormControl>
+            </FormItem>
+          )}
         />
 
         <FormField
@@ -469,7 +446,7 @@ export function FormCar() {
               <FormLabel>Acessórios</FormLabel>
               <FormControl>
                 <div className="space-y-2">
-                  {accessoriesType.map((accessory) => (
+                  {accessoriesMotorbikesType.map((accessory) => (
                     <div
                       key={accessory.id}
                       className="flex items-center space-x-3"
@@ -499,40 +476,16 @@ export function FormCar() {
 
         <FormField
           control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Descrição</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Escreva uma descrição"
-                  rows={4}
-                  className="resize-none"
-                  cols={40}
-                  {...field}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
           name="images"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Foto</FormLabel>
+              <FormLabel>Imagens</FormLabel>
               <FormControl>
                 <Input
                   type="file"
-                  accept="image/*"
                   multiple
                   onChange={(e) => {
-                    const files = e.target.files;
-                    if (files) {
-                      const fileArray = Array.from(files);
-                      field.onChange(fileArray);
-                    }
+                    field.onChange(Array.from(e.target.files || []));
                   }}
                 />
               </FormControl>
@@ -540,7 +493,7 @@ export function FormCar() {
           )}
         />
 
-        <Button type="submit">Cadastrar</Button>
+        <Button type="submit">Enviar</Button>
       </form>
     </Form>
   );

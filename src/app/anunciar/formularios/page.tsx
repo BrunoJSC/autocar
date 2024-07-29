@@ -1,13 +1,12 @@
 "use client";
 
 import { FormCar } from "@/components/forms/form-car";
+import { FormMotorbike } from "@/components/forms/form-moto";
 import { MaxWrapper } from "@/components/max-wrapper";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -21,7 +20,10 @@ export default function Page() {
         <h1 className="text-3xl font-bold">Formulário de anúncio</h1>
 
         <div>
-          <Tabs defaultValue="vehicle" className="w-[800px]">
+          <Tabs
+            defaultValue="vehicle"
+            className="md:w-[800px] w-full max-w-7xl"
+          >
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="vehicle">Carro</TabsTrigger>
               <TabsTrigger value="password">Moto</TabsTrigger>
@@ -47,8 +49,9 @@ export default function Page() {
                     Preencha os dados da sua moto.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-2"></CardContent>
-                <CardFooter></CardFooter>
+                <CardContent className="space-y-2">
+                  <FormMotorbike />
+                </CardContent>
               </Card>
             </TabsContent>
           </Tabs>
