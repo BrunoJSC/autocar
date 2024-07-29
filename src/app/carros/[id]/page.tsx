@@ -35,9 +35,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { MessageCircle } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+  SelectItem,
+} from "@/components/ui/select";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -51,7 +56,7 @@ const formSchema = z.object({
     message: "O telefone deve ter pelo menos 9 caracteres",
   }),
   message: z.string().min(10, {
-    message: "O nome deve ter pelo menos 10 caracteres",
+    message: "A mensagem deve ter pelo menos 10 caracteres",
   }),
 });
 
@@ -70,7 +75,11 @@ export default function Page() {
   const { id } = useParams();
   const [car, setCar] = useState<Car | null>(null);
   const [message, setMessage] = useState("");
+  const [downPayment, setDownPayment] = useState<string>("0");
+  const [installments, setInstallments] = useState<number>(12);
+  const [monthlyPayment, setMonthlyPayment] = useState<number>(0);
   const PHONE_NUMBER = "5511940723891";
+  const INTEREST_RATE = 0.02; // 2% de juros mensais
 
   useEffect(() => {
     if (id) {
@@ -93,14 +102,44 @@ export default function Page() {
     }
   }, [car, form]);
 
+  useEffect(() => {
+    if (car) {
+      const downPaymentNumber =
+        parseFloat(downPayment.replace(/[^\d.-]/g, "")) || 0;
+      const financedAmount = car.price - downPaymentNumber;
+      const monthlyRate = INTEREST_RATE;
+      const n = installments;
+
+      const payment =
+        (financedAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -n));
+
+      setMonthlyPayment(payment);
+    }
+  }, [car, downPayment, installments]);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
   }
 
   function messageWhatsapp() {
     const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
+    window.open(whatsappUrl, "_blank");
+  }
+
+  function sendSimulator() {
+    const downPaymentNumber =
+      parseFloat(downPayment.replace(/[^\d.-]/g, "")) || 0;
+    const financedAmount = car ? car.price - downPaymentNumber : 0;
+    const encodedMessage = encodeURIComponent(
+      `Simulação de Financiamento:
+
+      Veículo: ${car?.brandCar} - ${car?.modelCar}
+      Valor da Entrada: R$ ${downPayment}
+      Valor Financiado: R$ ${financedAmount.toFixed(2)}
+      Número de Parcelas: ${installments}
+      Valor da Parcela: R$ ${monthlyPayment.toFixed(2)}`
+    );
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
     window.open(whatsappUrl, "_blank");
   }
@@ -308,10 +347,67 @@ export default function Page() {
                 className="w-full mt-2"
                 onClick={messageWhatsapp}
               >
-                Whatsapp
+                Enviar via WhatsApp
               </Button>
             </Form>
           </Card>
+        </Card>
+
+        <Card className="mt-5 max-w-4xl mx-auto p-2 grid md:grid-cols-2 gap-8">
+          <CardHeader>
+            <CardTitle>Simule seu financiamento agora</CardTitle>
+            <CardDescription>
+              Faça um teste e veja condições de financiamento
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent>
+            <div className="space-y-2">
+              <div>
+                <Label>Valor de entrada</Label>
+                <Input
+                  type="text"
+                  placeholder="R$ 0,00"
+                  value={downPayment}
+                  onChange={(e) => setDownPayment(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>Valor da parcela</Label>
+                <Input
+                  type="text"
+                  placeholder="R$ 0,00"
+                  value={monthlyPayment.toFixed(2)}
+                  readOnly
+                />
+              </div>
+
+              <div>
+                <Label>Número de parcelamento</Label>
+                <Select
+                  onValueChange={(value) => setInstallments(Number(value))}
+                  defaultValue="12"
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="12">12X</SelectItem>
+                    <SelectItem value="24">24X</SelectItem>
+                    <SelectItem value="36">36X</SelectItem>
+                    <SelectItem value="48">48X</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button
+                variant="secondary"
+                className="w-full mt-2"
+                onClick={sendSimulator}
+              >
+                Enviar Simulação via WhatsApp
+              </Button>
+            </div>
+          </CardContent>
         </Card>
       </section>
     </MaxWrapper>
