@@ -1,11 +1,8 @@
+"use client";
+
 import { MaxWrapper } from "@/components/max-wrapper";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
 import { services } from "@/constants/services";
 import Link from "next/link";
 import {
@@ -16,32 +13,91 @@ import {
 } from "@/components/ui/accordion";
 import { faqs } from "@/constants/faqs";
 import { Separator } from "@/components/ui/separator";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useState, useEffect, useRef } from "react";
+import { client } from "@/lib/sanity";
+import Autoplay from "embla-carousel-autoplay";
+
+export interface Announcement {
+  title: string;
+  imageUrl: string;
+  link: string;
+  brand: string;
+  model: string;
+  price: number;
+}
 
 export default function Home() {
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+
+  useEffect(() => {
+    client
+      .fetch<Announcement[]>(
+        `*[_type == "announcement"]{title, "imageUrl": image.asset->url, link, brand, model, price}`
+      )
+      .then((data: any) => setAnnouncements(data))
+      .catch(console.error);
+  }, []);
+
   return (
     <main className="min-h-screen">
       <MaxWrapper>
-        <div className="bg-porsche-banner h-screen w-full bg-no-repeat bg-cover bg-center">
-          <div className="flex flex-col items-center justify-center h-full w-full p-8">
-            <div className="text-center">
-              <h1 className="text-4xl font-bold text-white">
-                Encontramos o seu carro ideal!
-              </h1>
-              <p className="text-white text-lg mt-4">
-                Venha ser mais um cliente e faça parte da nossa história
-              </p>
-            </div>
-
-            <div className="flex space-x-4 mt-8">
-              <Button size="lg" asChild>
-                <Link href="/carros">Catálogo</Link>
-              </Button>
-
-              <Button variant="secondary" size="lg" asChild>
-                <Link href="/aninciar">Anuncie</Link>
-              </Button>
-            </div>
-          </div>
+        <div className="w-full">
+          <Carousel
+            className="w-full"
+            opts={{
+              loop: true,
+            }}
+            autoplay={true}
+            autoplayInterval={4000}
+          >
+            <CarouselContent className="h-[600px]">
+              {announcements.map((announcement, index) => (
+                <CarouselItem key={index} className="w-full h-full">
+                  <div className="w-full h-full p-1">
+                    <div className="w-full h-full relative">
+                      <img
+                        src={announcement.imageUrl}
+                        alt={announcement.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-4 text-white">
+                        <h2 className="text-2xl font-bold">
+                          {announcement.title}
+                        </h2>
+                        <p className="text-lg">
+                          {announcement.brand} - {announcement.model}
+                        </p>
+                        <p className="text-lg font-semibold">
+                          ${announcement.price}
+                        </p>
+                        <Link href={announcement.link}>
+                          <Button variant="link" className="mt-4 text-white">
+                            Ver mais
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2" />
+            <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2" />
+          </Carousel>
         </div>
       </MaxWrapper>
 
