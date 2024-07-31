@@ -146,7 +146,7 @@ export default function Page() {
 
   if (!car)
     return (
-      <MaxWrapper>
+      <MaxWrapper className="min-h-screen">
         <Skeleton className="w-full h-[300px]" />
       </MaxWrapper>
     );

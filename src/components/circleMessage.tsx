@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { MessageCircle, X } from "lucide-react";
 import { Textarea } from "./ui/textarea";
@@ -12,8 +12,7 @@ interface Message {
 
 export function CircleMessage({ message, setMessage }: Message) {
   const [show, setShow] = useState(false);
-
-  const isMobile = window.innerWidth <= 768;
+  const [isMobile, setIsMobile] = useState(false);
 
   const toggleChatBox = () => {
     setShow(!show);
@@ -24,6 +23,15 @@ export function CircleMessage({ message, setMessage }: Message) {
     const whatsappURL = `http://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
     window.open(whatsappURL, "_blank");
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div>
       <Button
