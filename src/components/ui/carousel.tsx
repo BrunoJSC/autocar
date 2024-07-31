@@ -129,15 +129,25 @@ const Carousel = React.forwardRef<
         return;
       }
 
-      const intervalId = setInterval(() => {
-        api.scrollNext();
+      let isPaused = false;
+
+      const autoplayIntervalId = setInterval(() => {
+        if (isPaused) return;
+
         if (api.selectedScrollSnap() === api.scrollSnapList().length - 1) {
-          api.scrollTo(0);
+          // Pausar por um intervalo maior ao atingir o último slide
+          isPaused = true;
+          setTimeout(() => {
+            api.scrollTo(0);
+            isPaused = false;
+          }, autoplayInterval);
+        } else {
+          api.scrollNext();
         }
-      }, autoplayInterval); // Use the autoplayInterval prop
+      }, autoplayInterval);
 
       return () => {
-        clearInterval(intervalId);
+        clearInterval(autoplayIntervalId);
       };
     }, [autoplay, api, autoplayInterval]);
 
@@ -153,8 +163,8 @@ const Carousel = React.forwardRef<
           scrollNext,
           canScrollPrev,
           canScrollNext,
-          autoplay, // Pass autoplay to the context
-          autoplayInterval, // Pass autoplayInterval to the context
+          autoplay,
+          autoplayInterval,
         }}
       >
         <div

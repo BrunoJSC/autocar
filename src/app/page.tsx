@@ -30,6 +30,7 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { client } from "@/lib/sanity";
 import Autoplay from "embla-carousel-autoplay";
+import { CircleMessage } from "@/components/circleMessage";
 
 export interface Announcement {
   title: string;
@@ -41,6 +42,7 @@ export interface Announcement {
 }
 
 export default function Home() {
+  const [message, setMessage] = useState("");
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
   useEffect(() => {
@@ -54,7 +56,8 @@ export default function Home() {
 
   return (
     <main className="min-h-screen">
-      <MaxWrapper>
+      <MaxWrapper className="relative">
+        <CircleMessage message="Vamos conversar?" setMessage={setMessage} />
         <div className="w-full">
           <Carousel
             className="w-full"
@@ -82,7 +85,10 @@ export default function Home() {
                           {announcement.brand} - {announcement.model}
                         </p>
                         <p className="text-lg font-semibold">
-                          ${announcement.price}
+                          {Intl.NumberFormat("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }).format(announcement.price)}
                         </p>
                         <Link href={announcement.link}>
                           <Button variant="link" className="mt-4 text-white">
