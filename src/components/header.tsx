@@ -11,9 +11,14 @@ import { MaxWrapper } from "./max-wrapper";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Separator } from "./ui/separator";
+import { useState } from "react";
 
 export function Header() {
   const pathname = usePathname();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  const closeSheet = () => setIsSheetOpen(false);
+
   return (
     <MaxWrapper>
       <header className="flex items-center justify-between p-4 md:p-8 border-b border-gray-300 bg-white">
@@ -37,7 +42,7 @@ export function Header() {
                 "text-sm font-bold text-secondary-foreground hover:text-primary",
                 {
                   "text-primary": pathname === link.href,
-                },
+                }
               )}
             >
               {link.label}
@@ -50,7 +55,7 @@ export function Header() {
           </Button>
         </nav>
 
-        <Sheet>
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger className="md:hidden" asChild>
             <Button variant="ghost">
               <MenuIcon className="w-6 h-6" />
@@ -66,8 +71,9 @@ export function Header() {
                     "block text-sm font-bold text-secondary-foreground hover:text-primary",
                     {
                       "text-primary": pathname === link.href,
-                    },
+                    }
                   )}
+                  onClick={closeSheet}
                 >
                   {link.label}
                 </Link>

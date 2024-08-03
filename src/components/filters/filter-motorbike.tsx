@@ -11,7 +11,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { SortAsc } from "lucide-react";
+import { SortAsc, Filter } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { locations } from "@/constants/location";
@@ -136,9 +136,12 @@ export const FilterBike: React.FC<FilterProps> = ({
       <div className="md:hidden h-auto">
         <Drawer>
           <DrawerTrigger asChild>
-            <Button variant="outline">
-              <SortAsc className="h-5 w-5" />
-            </Button>
+            <div className="w-full flex items-center justify-between">
+              <h2 className="text-lg font-bold">Filtro</h2>
+              <Button variant="outline">
+                <Filter className="mr-2 h-4 w-4" />
+              </Button>
+            </div>
           </DrawerTrigger>
           <DrawerOverlay />
           <DrawerContent>
