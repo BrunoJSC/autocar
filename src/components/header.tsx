@@ -37,7 +37,7 @@ export function Header() {
                 "text-sm font-bold text-secondary-foreground hover:text-primary",
                 {
                   "text-primary": pathname === link.href,
-                }
+                },
               )}
             >
               {link.label}
@@ -66,7 +66,7 @@ export function Header() {
                     "block text-sm font-bold text-secondary-foreground hover:text-primary",
                     {
                       "text-primary": pathname === link.href,
-                    }
+                    },
                   )}
                 >
                   {link.label}

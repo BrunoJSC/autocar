@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { MessageCircle, X } from "lucide-react";
 import { Textarea } from "./ui/textarea";
+import { cn } from "@/lib/utils";
 
 const PHONE_NUMBER = "5511940723891";
 
@@ -43,9 +44,10 @@ export function CircleMessage({ message, setMessage }: Message) {
 
       {show && (
         <div
-          className={`fixed md:w-[400px] md:bottom-32 md:right-8  bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50 ${
-            isMobile ? " bottom-0 right-0 w-full" : ""
-          }`}
+          className={cn(
+            "fixed bottom-8 right-8 bg-white p-4 rounded-lg shadow-lg z-50",
+            isMobile ? "w-full fixed bottom-0 right-0 left-0" : "w-[400px]"
+          )}
         >
           <div className="flex items-center justify-between mb-5">
             <p>Aqui está a caixa de chat</p>

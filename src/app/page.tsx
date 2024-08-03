@@ -2,7 +2,6 @@
 
 import { MaxWrapper } from "@/components/max-wrapper";
 import { Button } from "@/components/ui/button";
-
 import { services } from "@/constants/services";
 import Link from "next/link";
 import {
@@ -14,31 +13,30 @@ import {
 import { faqs } from "@/constants/faqs";
 import { Separator } from "@/components/ui/separator";
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { client } from "@/lib/sanity";
-import Autoplay from "embla-carousel-autoplay";
 import { CircleMessage } from "@/components/circleMessage";
+import Image from "next/image";
+import { CalendarIcon, CircleGauge, FuelIcon, MapPinIcon } from "lucide-react";
 
 export interface Announcement {
   title: string;
   imageUrl: string;
   link: string;
+  location: string;
   brand: string;
   model: string;
   price: number;
+  fuel: string;
+  year: number;
+  km: number;
 }
 
 export default function Home() {
@@ -48,7 +46,7 @@ export default function Home() {
   useEffect(() => {
     client
       .fetch<Announcement[]>(
-        `*[_type == "announcement"]{title, "imageUrl": image.asset->url, link, brand, model, price}`
+        `*[_type == "announcement"]{title, "imageUrl": image.asset->url, link, brand, model, price, fuel, year, km, location}`
       )
       .then((data: any) => setAnnouncements(data))
       .catch(console.error);
@@ -59,51 +57,58 @@ export default function Home() {
       <MaxWrapper className="relative">
         <CircleMessage message="Vamos conversar?" setMessage={setMessage} />
         <div className="w-full">
-          <Carousel
-            className="w-full"
-            opts={{
-              loop: true,
-            }}
-            autoplay={true}
-            autoplayInterval={4000}
-          >
-            <CarouselContent className="h-[600px]">
-              {announcements.map((announcement, index) => (
-                <CarouselItem key={index} className="w-full h-full">
-                  <div className="w-full h-full p-1">
-                    <div className="w-full h-full relative">
-                      <img
-                        src={announcement.imageUrl}
-                        alt={announcement.title}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-4 text-white">
-                        <h2 className="text-2xl font-bold">
-                          {announcement.title}
-                        </h2>
-                        <p className="text-lg">
-                          {announcement.brand} - {announcement.model}
-                        </p>
-                        <p className="text-lg font-semibold">
-                          {Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(announcement.price)}
-                        </p>
-                        <Link href={announcement.link}>
-                          <Button variant="link" className="mt-4 text-white">
-                            Ver mais
-                          </Button>
-                        </Link>
-                      </div>
+          <h1 className="text-3xl font-bold mt-9">Destaque</h1>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3  grid-cols-1 md:gap-8 gap-4 p-4">
+            {announcements.map((announcement, index) => (
+              <Link key={index} href={announcement.link}>
+                <Card className="w-full h-full">
+                  <CardHeader className="w-full h-60 overflow-hidden p-0">
+                    <Image
+                      src={announcement.imageUrl}
+                      alt={announcement.title}
+                      className="w-full h-full object-cover"
+                      width={500}
+                      height={300}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      priority
+                    />
+                  </CardHeader>
+                  <CardContent>
+                    <CardTitle className="text-lg">
+                      {announcement.brand} - {announcement.model}
+                    </CardTitle>
+                    <p className="text-lg font-normal">
+                      {Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(announcement.price)}
+                    </p>
+                  </CardContent>
+                  <CardFooter className="grid grid-cols-2 border-t p-4 gap-2 text-sm justify-between">
+                    <div className="flex items-center gap-2">
+                      <MapPinIcon className="h-4 w-4 text-gray-500" />
+                      <p className="text-gray-500">{announcement.location}</p>
                     </div>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2" />
-            <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2" />
-          </Carousel>
+                    <div className="flex items-center gap-2">
+                      <CircleGauge className="h-4 w-4 text-gray-500" />
+                      <p className="text-gray-500">
+                        {Intl.NumberFormat("pt-BR").format(announcement.km)}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CalendarIcon className="h-4 w-4 text-gray-500" />
+                      <p className="text-gray-500">Ano - {announcement.year}</p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <FuelIcon className="h-4 w-4 text-gray-500" />
+                      <p className="text-gray-500">{announcement.fuel}</p>
+                    </div>
+                  </CardFooter>
+                </Card>
+              </Link>
+            ))}
+          </div>
         </div>
       </MaxWrapper>
 

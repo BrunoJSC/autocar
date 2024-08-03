@@ -16,8 +16,8 @@ export const announcementType = defineType({
       type: 'url',
     }),
     defineField({
-      name: 'title',
-      title: 'Title',
+      name: 'location',
+      title: 'Location',
       type: 'string',
     }),
 
@@ -35,6 +35,22 @@ export const announcementType = defineType({
     defineField({
       name: 'price',
       title: 'Price',
+      type: 'number',
+    }),
+    defineField({
+      name: 'fuel',
+      title: 'Fuel',
+      type: 'string',
+    }),
+
+    defineField({
+      name: 'year',
+      title: 'Year',
+      type: 'number',
+    }),
+    defineField({
+      name: 'km',
+      title: 'Km',
       type: 'number',
     }),
   ],

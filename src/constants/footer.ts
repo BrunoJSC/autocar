@@ -10,7 +10,6 @@ export const footerSections = [
   {
     title: "Institucional",
     links: [
-      { text: "Financiamento", url: "" },
       { text: "Anunciar meu veículo", url: "" },
       { text: "", url: "" },
     ],
