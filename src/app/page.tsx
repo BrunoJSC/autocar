@@ -97,7 +97,7 @@ export default function Home() {
                     </div>
                     <div className="flex items-center gap-2">
                       <CalendarIcon className="h-4 w-4 text-gray-500" />
-                      <p className="text-gray-500">Ano - {announcement.year}</p>
+                      <p className="text-gray-500">{announcement.year}</p>
                     </div>
 
                     <div className="flex items-center gap-2">

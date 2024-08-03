@@ -30,7 +30,12 @@ export function CircleMessage({ message, setMessage }: Message) {
       setIsMobile(window.innerWidth < 768);
     };
 
+    handleResize(); // Check on initial load
     window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   return (
@@ -46,7 +51,7 @@ export function CircleMessage({ message, setMessage }: Message) {
         <div
           className={cn(
             "fixed bottom-8 right-8 bg-white p-4 rounded-lg shadow-lg z-50",
-            isMobile ? "w-full fixed bottom-0 right-0 left-0" : "w-[400px]"
+            isMobile ? "w-full bottom-0 right-0 left-0" : "w-[400px]"
           )}
         >
           <div className="flex items-center justify-between mb-5">
