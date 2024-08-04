@@ -82,7 +82,9 @@ export function Header() {
               <Separator />
 
               <Button className="text-sm font-bold" asChild>
-                <Link href="/anunciar">Anunciar</Link>
+                <Link href="/anunciar" onClick={closeSheet}>
+                  Anunciar
+                </Link>
               </Button>
             </div>
           </SheetContent>

@@ -3,12 +3,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { MaxWrapper } from "@/components/max-wrapper";
 import { Skeleton } from "@/components/ui/skeleton";
 import { client, urlForImage } from "@/lib/sanity";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -27,7 +26,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -44,55 +42,74 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 
+interface Car {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  yearFabrication: number;
+  yearModification: number;
+  km: number;
+  color: string;
+  location: string;
+  exchange: string;
+  brandCar: string;
+  modelCar: string;
+  bodyType: string;
+  fuel: string;
+  announce: string;
+  document: string;
+  doors: number;
+  mechanic: string;
+  plate: string;
+  accessories: string[];
+  images: string[];
+}
+
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "O nome deve ter pelo menos 2 caracteres",
-  }),
-  cpf: z.string().min(11, {
-    message: "O cpf deve ter pelo menos 11 caracteres",
-  }),
+  name: z
+    .string()
+    .min(2, { message: "O nome deve ter pelo menos 2 caracteres" }),
+  cpf: z
+    .string()
+    .min(11, { message: "O CPF deve ter pelo menos 11 caracteres" }),
   email: z.string().email({ message: "O email deve ser válido" }),
-  phone: z.string().min(9, {
-    message: "O telefone deve ter pelo menos 9 caracteres",
-  }),
-  message: z.string().min(10, {
-    message: "A mensagem deve ter pelo menos 10 caracteres",
-  }),
+  phone: z
+    .string()
+    .min(9, { message: "O telefone deve ter pelo menos 9 caracteres" }),
+  message: z
+    .string()
+    .min(10, { message: "A mensagem deve ter pelo menos 10 caracteres" }),
 });
 
-export default function Page() {
-  const form = useForm<z.infer<typeof formSchema>>({
+const PHONE_NUMBER = "5511940723891";
+const INTEREST_RATE = 0.02; // 2% de juros mensais
+
+const Page = () => {
+  const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      cpf: "",
-      email: "",
-      phone: "",
-      message: "",
-    },
+    defaultValues: { name: "", cpf: "", email: "", phone: "", message: "" },
   });
 
   const { id } = useParams();
   const [car, setCar] = useState<Car | null>(null);
   const [message, setMessage] = useState("");
-  const [downPayment, setDownPayment] = useState<string>("0");
-  const [installments, setInstallments] = useState<number>(12);
-  const [monthlyPayment, setMonthlyPayment] = useState<number>(0);
-  const PHONE_NUMBER = "5511940723891";
-  const INTEREST_RATE = 0.02; // 2% de juros mensais
+  const [downPayment, setDownPayment] = useState("0");
+  const [installments, setInstallments] = useState(12);
+  const [monthlyPayment, setMonthlyPayment] = useState(0);
 
-  useEffect(() => {
+  const fetchCar = useCallback(async () => {
     if (id) {
-      const fetchCar = async () => {
-        const data = await client.fetch(`*[_type == "car" && _id == $id][0]`, {
-          id,
-        });
-        setCar(data);
-      };
-
-      fetchCar();
+      const data = await client.fetch(`*[_type == "car" && _id == $id][0]`, {
+        id,
+      });
+      setCar(data);
     }
   }, [id]);
+
+  useEffect(() => {
+    fetchCar();
+  }, [fetchCar]);
 
   useEffect(() => {
     if (car) {
@@ -109,31 +126,29 @@ export default function Page() {
       const financedAmount = car.price - downPaymentNumber;
       const monthlyRate = INTEREST_RATE;
       const n = installments;
-
       const payment =
         (financedAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -n));
-
       setMonthlyPayment(payment);
     }
   }, [car, downPayment, installments]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = useCallback((values: any) => {
     console.log(values);
-  }
+  }, []);
 
-  function messageWhatsapp() {
+  const messageWhatsapp = useCallback(() => {
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
     window.open(whatsappUrl, "_blank");
-  }
+  }, [message]);
 
-  function sendSimulator() {
+  const sendSimulator = useCallback(() => {
     const downPaymentNumber =
       parseFloat(downPayment.replace(/[^\d.-]/g, "")) || 0;
     const financedAmount = car ? car.price - downPaymentNumber : 0;
     const encodedMessage = encodeURIComponent(
       `Simulação de Financiamento:
-
+      
       Veículo: ${car?.brandCar} - ${car?.modelCar}
       Valor da Entrada: R$ ${downPayment}
       Valor Financiado: R$ ${financedAmount.toFixed(2)}
@@ -142,7 +157,28 @@ export default function Page() {
     );
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
     window.open(whatsappUrl, "_blank");
-  }
+  }, [car, downPayment, installments, monthlyPayment]);
+
+  const carImages = useMemo(
+    () =>
+      car?.images.map((image, index) => (
+        <CarouselItem key={index}>
+          <div>
+            <Card>
+              <Image
+                src={urlForImage(image).width(600).height(400).url()}
+                alt={car.modelCar}
+                width={600}
+                height={400}
+                className="w-full h-full object-cover"
+                priority
+              />
+            </Card>
+          </div>
+        </CarouselItem>
+      )),
+    [car]
+  );
 
   if (!car)
     return (
@@ -155,23 +191,7 @@ export default function Page() {
     <MaxWrapper>
       <section className="p-8 mt-5">
         <Carousel className="w-full max-w-4xl mx-auto">
-          <CarouselContent>
-            {car.images.map((image, index) => (
-              <CarouselItem key={index}>
-                <div>
-                  <Card>
-                    <Image
-                      src={urlForImage(image).width(600).height(400).url()}
-                      alt={car.modelCar}
-                      width={600}
-                      height={400}
-                      className="w-full h-full object-cover"
-                    />
-                  </Card>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
+          <CarouselContent>{carImages}</CarouselContent>
           <CarouselPrevious className="absolute top-1/2 left-4 -translate-y-1/2" />
           <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2" />
         </Carousel>
@@ -196,30 +216,22 @@ export default function Page() {
 
             <CardContent>
               <div className="mt-4 grid gap-5 grid-cols-2 md:grid-cols-3 items-center">
-                <div>
-                  <p className="text-gray-500">Ano</p>
-                  <p>{car.yearFabrication}</p>
-                </div>
-                <div>
-                  <p className="text-gray-500">Combustível</p>
-                  <p>{car.fuel}</p>
-                </div>
-                <div>
-                  <p className="text-gray-500">Km</p>
-                  <p>{Intl.NumberFormat("pt-BR").format(car.km)}</p>
-                </div>
-                <div>
-                  <p className="text-gray-500">Cambio</p>
-                  <p>{car.exchange}</p>
-                </div>
-                <div>
-                  <p className="text-gray-500">Portas</p>
-                  <p>{car.doors}</p>
-                </div>
-                <div>
-                  <p className="text-gray-500">Cor</p>
-                  <p>{car.color}</p>
-                </div>
+                {[
+                  { label: "Ano", value: car.yearFabrication },
+                  { label: "Combustível", value: car.fuel },
+                  {
+                    label: "Km",
+                    value: Intl.NumberFormat("pt-BR").format(car.km),
+                  },
+                  { label: "Cambio", value: car.exchange },
+                  { label: "Portas", value: car.doors },
+                  { label: "Cor", value: car.color },
+                ].map((item, index) => (
+                  <div key={index}>
+                    <p className="text-gray-500">{item.label}</p>
+                    <p>{item.value}</p>
+                  </div>
+                ))}
               </div>
 
               <div className="mt-4">
@@ -245,171 +257,199 @@ export default function Page() {
               </CardDescription>
             </CardHeader>
 
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary-foreground">
-                        Nome
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder="Seu nome" {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
+            <CardContent>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-4"
+                >
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nome</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Nome" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="cpf"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>CPF</FormLabel>
+                        <FormControl>
+                          <Input placeholder="CPF" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Email" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Telefone</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Telefone" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="message"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Mensagem</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Mensagem"
+                            {...field}
+                            value={message}
+                            onChange={(e) => {
+                              field.onChange(e);
+                              setMessage(e.target.value);
+                            }}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="cpf"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary-foreground">
-                        CPF
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder="Digite seu CPF" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        Uso somente para fins de identificação
-                      </FormDescription>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary-foreground">
-                        Email
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder="Digite seu email" {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary-foreground">
-                        Telefone
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder="Digite seu telefone" {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="message"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary-foreground">
-                        Mensagem
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea
-                          id="message"
-                          rows={4}
-                          placeholder="Escreva uma mensagem..."
-                          value={message}
-                          onChange={(e) => {
-                            field.onChange(e);
-                            setMessage(e.target.value);
-                          }}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <Button type="submit" className="w-full">
-                  Enviar
-                </Button>
-              </form>
-
-              <Button
-                variant="secondary"
-                className="w-full mt-2"
-                onClick={messageWhatsapp}
-              >
-                Enviar via WhatsApp
-              </Button>
-            </Form>
+                  <Button type="submit" className="w-full mt-4">
+                    Enviar
+                  </Button>
+                  <Button
+                    type="button"
+                    className="w-full mt-4"
+                    onClick={messageWhatsapp}
+                  >
+                    Enviar Whatsapp
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
           </Card>
         </Card>
 
-        <Card className="mt-5 max-w-4xl mx-auto p-2 grid md:grid-cols-2 gap-8">
-          <CardHeader>
-            <CardTitle>Simule seu financiamento agora</CardTitle>
-            <CardDescription>
-              Faça um teste e veja condições de financiamento
-            </CardDescription>
-          </CardHeader>
+        <Card className="mt-5 max-w-4xl w-full  mx-auto p-2 grid md:grid-cols-2 gap-8">
+          <div>
+            <CardHeader>
+              <CardTitle className="text-primary">
+                Simule seu Financiamento
+              </CardTitle>
+              <CardDescription className="text-black">
+                Preencha os campos abaixo para simular.
+              </CardDescription>
+            </CardHeader>
 
-          <CardContent>
             <div className="space-y-2">
-              <div>
-                <Label>Valor de entrada</Label>
-                <Input
-                  type="text"
-                  placeholder="R$ 0,00"
-                  value={downPayment}
-                  onChange={(e) => setDownPayment(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>Valor da parcela</Label>
-                <Input
-                  type="text"
-                  placeholder="R$ 0,00"
-                  value={monthlyPayment.toFixed(2)}
-                  readOnly
-                />
-              </div>
+              <Label className="text-black">Valor de entrada</Label>
+              <Input
+                placeholder="R$ 0,00"
+                value={downPayment}
+                onChange={(e) => setDownPayment(e.target.value)}
+              />
+            </div>
 
-              <div>
-                <Label>Número de parcelamento</Label>
-                <Select
-                  onValueChange={(value) => setInstallments(Number(value))}
-                  defaultValue="12"
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="12">12X</SelectItem>
-                    <SelectItem value="24">24X</SelectItem>
-                    <SelectItem value="36">36X</SelectItem>
-                    <SelectItem value="48">48X</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button
-                variant="secondary"
-                className="w-full mt-2"
-                onClick={sendSimulator}
+            <div className="space-y-2 mt-2">
+              <Label className="text-black">Número de parcelas</Label>
+              <Select
+                onValueChange={(value) => setInstallments(parseInt(value))}
+                defaultValue="12"
               >
-                Enviar Simulação via WhatsApp
+                <SelectTrigger className="bg-background border-input">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: 48 }, (_, i) => i + 1).map((i) => (
+                    <SelectItem key={i} value={i.toString()}>
+                      {i}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="mt-4">
+              <Button className="w-full" onClick={sendSimulator}>
+                Simular
               </Button>
             </div>
-          </CardContent>
+          </div>
+
+          <Card className="p-4 max-w-sm  bg-black ml-4 w-full mx-auto">
+            <CardHeader>
+              <CardTitle className="text-primary">Resultado</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-primary-foreground space-y-2">
+                <div className="flex justify-between">
+                  <span>Valor do veículo:</span>
+                  <span>
+                    {Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(car.price)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Entrada:</span>
+                  <span>
+                    {Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(parseFloat(downPayment.replace(/[^\d.-]/g, "")))}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Valor financiado:</span>
+                  <span>
+                    {Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(
+                      car.price -
+                        parseFloat(downPayment.replace(/[^\d.-]/g, ""))
+                    )}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Número de parcelas:</span>
+                  <span>{installments}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Valor da parcela:</span>
+                  <span>
+                    {Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(monthlyPayment)}
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </Card>
       </section>
     </MaxWrapper>
   );
-}
+};
+
+export default Page;

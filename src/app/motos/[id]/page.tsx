@@ -3,12 +3,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { MaxWrapper } from "@/components/max-wrapper";
 import { Skeleton } from "@/components/ui/skeleton";
 import { client, urlForImage } from "@/lib/sanity";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -27,7 +26,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -49,7 +47,7 @@ const formSchema = z.object({
     message: "O nome deve ter pelo menos 2 caracteres",
   }),
   cpf: z.string().min(11, {
-    message: "O cpf deve ter pelo menos 11 caracteres",
+    message: "O CPF deve ter pelo menos 11 caracteres",
   }),
   email: z.string().email({ message: "O email deve ser válido" }),
   phone: z.string().min(9, {
@@ -60,8 +58,11 @@ const formSchema = z.object({
   }),
 });
 
+const PHONE_NUMBER = "5511940723891";
+const INTEREST_RATE = 0.02; // 2% de juros mensais
+
 export default function Page() {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -75,21 +76,19 @@ export default function Page() {
   const { id } = useParams();
   const [motorbike, setMotorbike] = useState<Motorbike | null>(null);
   const [message, setMessage] = useState("");
-  const [downPayment, setDownPayment] = useState<string>("0");
-  const [installments, setInstallments] = useState<number>(12);
-  const [monthlyPayment, setMonthlyPayment] = useState<number>(0);
-  const PHONE_NUMBER = "5511940723891";
-  const INTEREST_RATE = 0.02; // 2% de juros mensais
+  const [downPayment, setDownPayment] = useState("0");
+  const [installments, setInstallments] = useState(12);
+  const [monthlyPayment, setMonthlyPayment] = useState(0);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = useCallback((values: any) => {
     console.log(values);
-  }
+  }, []);
 
-  function messageWhatsapp() {
+  const messageWhatsapp = useCallback(() => {
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
     window.open(whatsappUrl, "_blank");
-  }
+  }, [message]);
 
   useEffect(() => {
     if (id) {
@@ -120,30 +119,22 @@ export default function Page() {
       const financedAmount = motorbike.price - downPaymentNumber;
       const monthlyRate = INTEREST_RATE;
       const n = installments;
-
       const payment =
         (financedAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -n));
-
       setMonthlyPayment(payment);
     }
   }, [motorbike, downPayment, installments]);
 
-  function sendSimulator() {
+  const sendSimulator = useCallback(() => {
     const downPaymentNumber =
       parseFloat(downPayment.replace(/[^\d.-]/g, "")) || 0;
     const financedAmount = motorbike ? motorbike.price - downPaymentNumber : 0;
     const encodedMessage = encodeURIComponent(
-      `Simulação de Financiamento:
-
-      Veículo: ${motorbike?.motorbikeBrand} - ${motorbike?.motorbikeModel}
-      Valor da Entrada: R$ ${downPayment}
-      Valor Financiado: R$ ${financedAmount.toFixed(2)}
-      Número de Parcelas: ${installments}
-      Valor da Parcela: R$ ${monthlyPayment.toFixed(2)}`
+      `Simulação de Financiamento:\n\nVeículo: ${motorbike?.motorbikeBrand} - ${motorbike?.motorbikeModel}\nValor da Entrada: R$ ${downPayment}\nValor Financiado: R$ ${financedAmount.toFixed(2)}\nNúmero de Parcelas: ${installments}\nValor da Parcela: R$ ${monthlyPayment.toFixed(2)}`
     );
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
     window.open(whatsappUrl, "_blank");
-  }
+  }, [downPayment, installments, monthlyPayment, motorbike]);
 
   if (!motorbike)
     return (
@@ -237,9 +228,6 @@ export default function Page() {
                       <FormControl>
                         <Input placeholder="Digite seu CPF" {...field} />
                       </FormControl>
-                      <FormDescription>
-                        Uso somente para fins de identificação
-                      </FormDescription>
                     </FormItem>
                   )}
                 />
@@ -283,16 +271,7 @@ export default function Page() {
                         Mensagem
                       </FormLabel>
                       <FormControl>
-                        <Textarea
-                          id="message"
-                          rows={4}
-                          placeholder="Escreva uma mensagem..."
-                          value={message}
-                          onChange={(e) => {
-                            field.onChange(e);
-                            setMessage(e.target.value);
-                          }}
-                        />
+                        <Textarea placeholder="Deixe sua mensagem" {...field} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -302,73 +281,108 @@ export default function Page() {
                   Enviar
                 </Button>
               </form>
-
-              <Button
-                variant="secondary"
-                className="w-full mt-2"
-                onClick={messageWhatsapp}
-              >
-                Whatsapp
-              </Button>
             </Form>
           </Card>
         </Card>
 
-        <Card className="mt-5 max-w-4xl mx-auto p-2 grid md:grid-cols-2 gap-8">
-          <CardHeader>
-            <CardTitle>Simule seu financiamento agora</CardTitle>
-            <CardDescription>
-              Faça um teste e veja condições de financiamento
-            </CardDescription>
-          </CardHeader>
+        <Card className="mt-5 max-w-4xl mx-auto  w-full p-2 grid md:grid-cols-2 gap-8">
+          <div>
+            <CardHeader>
+              <CardTitle className="text-primary">
+                Simule seu Financiamento
+              </CardTitle>
+              <CardDescription className="text-black">
+                Preencha os campos abaixo para simular.
+              </CardDescription>
+            </CardHeader>
 
-          <CardContent>
             <div className="space-y-2">
-              <div>
-                <Label>Valor de entrada</Label>
-                <Input
-                  type="text"
-                  placeholder="R$ 0,00"
-                  value={downPayment}
-                  onChange={(e) => setDownPayment(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>Valor da parcela</Label>
-                <Input
-                  type="text"
-                  placeholder="R$ 0,00"
-                  value={monthlyPayment.toFixed(2)}
-                  readOnly
-                />
-              </div>
+              <Label className="text-black">Valor de entrada</Label>
+              <Input
+                placeholder="R$ 0,00"
+                value={downPayment}
+                onChange={(e) => setDownPayment(e.target.value)}
+              />
+            </div>
 
-              <div>
-                <Label>Número de parcelamento</Label>
-                <Select
-                  onValueChange={(value) => setInstallments(Number(value))}
-                  defaultValue="12"
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="12">12X</SelectItem>
-                    <SelectItem value="24">24X</SelectItem>
-                    <SelectItem value="36">36X</SelectItem>
-                    <SelectItem value="48">48X</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button
-                variant="secondary"
-                className="w-full mt-2"
-                onClick={sendSimulator}
+            <div className="space-y-2 mt-2">
+              <Label className="text-black">Número de parcelas</Label>
+              <Select
+                onValueChange={(value) => setInstallments(parseInt(value))}
+                defaultValue="12"
               >
-                Enviar Simulação via WhatsApp
+                <SelectTrigger className="bg-background border-input">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: 48 }, (_, i) => i + 1).map((i) => (
+                    <SelectItem key={i} value={i.toString()}>
+                      {i}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="mt-4">
+              <Button className="w-full" onClick={sendSimulator}>
+                Simular
               </Button>
             </div>
-          </CardContent>
+          </div>
+
+          <Card className="p-4 max-w-sm bg-black ml-4">
+            <CardHeader>
+              <CardTitle className="text-primary">Resultado</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-primary-foreground space-y-2">
+                <div className="flex justify-between">
+                  <span>Valor do veículo:</span>
+                  <span>
+                    {Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(motorbike.price)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Entrada:</span>
+                  <span>
+                    {Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(parseFloat(downPayment.replace(/[^\d.-]/g, "")))}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Valor financiado:</span>
+                  <span>
+                    {Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(
+                      motorbike.price -
+                        parseFloat(downPayment.replace(/[^\d.-]/g, ""))
+                    )}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Número de parcelas:</span>
+                  <span>{installments}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Valor da parcela:</span>
+                  <span>
+                    {Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(monthlyPayment)}
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </Card>
       </section>
     </MaxWrapper>
