@@ -59,7 +59,7 @@ const formSchema = z.object({
 });
 
 const PHONE_NUMBER = "5511940723891";
-const INTEREST_RATE = 0.02; // 2% de juros mensais
+const INTEREST_RATE = 0.025; // 2.5% de juros mensais
 
 export default function Page() {
   const form = useForm({
@@ -106,7 +106,7 @@ export default function Page() {
 
   useEffect(() => {
     if (motorbike) {
-      const initialMessage = `Tenho interesse neste veículo ${motorbike.motorbikeBrand} - ${motorbike.motorbikeModel}`;
+      const initialMessage = `Tenho interesse neste veículo ${motorbike.motorbikeBrand} - ${motorbike.motorbikeModel} - ${motorbike.yearFabrication} `;
       setMessage(initialMessage);
       form.setValue("message", initialMessage);
     }
@@ -146,29 +146,130 @@ export default function Page() {
   return (
     <MaxWrapper>
       <section className="p-8 mt-5">
-        <Carousel className="w-full max-w-4xl mx-auto">
-          <CarouselContent>
-            {motorbike.images.map((image, index) => (
-              <CarouselItem key={index}>
-                <div>
-                  <Card>
-                    <Image
-                      src={urlForImage(image).width(600).height(400).url()}
-                      alt={motorbike.motorbikeBrand}
-                      width={600}
-                      height={400}
-                      className="w-full h-full object-cover"
-                    />
-                  </Card>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="absolute top-1/2 left-4 -translate-y-1/2" />
-          <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2" />
-        </Carousel>
+        <div className="h-[600px] flex flex-col md:flex-row gap-4">
+          <Carousel className="w-full max-w-4xl mx-auto">
+            <CarouselContent>
+              {motorbike.images.map((image, index) => (
+                <CarouselItem key={index}>
+                  <div>
+                    <Card>
+                      <Image
+                        src={urlForImage(image).width(600).height(400).url()}
+                        alt={motorbike.motorbikeBrand}
+                        width={600}
+                        height={400}
+                        className="w-full h-full object-cover"
+                      />
+                    </Card>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute top-1/2 left-4 -translate-y-1/2" />
+            <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2" />
+          </Carousel>
 
-        <Card className="mt-5 max-w-4xl mx-auto p-2 grid md:grid-cols-2 gap-8">
+          <Card className="flex-grow overflow-y-auto">
+            <CardHeader>
+              <CardTitle className="text-primary">
+                Entre em contato com nossa equipe!
+              </CardTitle>
+              <CardDescription className="text-black">
+                Veja condições de financiamento.
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-4"
+                >
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="">Nome</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Seu nome" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="cpf"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="">CPF</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Digite seu CPF" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="">Email</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Digite seu email" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="">Telefone</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Digite seu telefone" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="message"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="">Mensagem</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Deixe sua mensagem"
+                            {...field}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <Button type="submit" className="w-full">
+                    Enviar
+                  </Button>
+                  <Button
+                    type="button"
+                    className="w-full mt-4"
+                    onClick={messageWhatsapp}
+                  >
+                    Enviar Whatsapp
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card className="mt-5 max-w-7xl mx-auto p-2 flex flex-col gap-4 items-center">
           <div>
             <CardHeader>
               <CardTitle>
@@ -186,106 +287,9 @@ export default function Page() {
               {motorbike.description}
             </CardDescription>
           </div>
-
-          <Card className="p-4 max-w-sm bg-black ml-4">
-            <CardHeader>
-              <CardTitle className="text-primary">
-                Entre em contato com nossa equipe!
-              </CardTitle>
-              <CardDescription className="text-primary-foreground">
-                Veja condições de financiamento.
-              </CardDescription>
-            </CardHeader>
-
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary-foreground">
-                        Nome
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder="Seu nome" {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="cpf"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary-foreground">
-                        CPF
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder="Digite seu CPF" {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary-foreground">
-                        Email
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder="Digite seu email" {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary-foreground">
-                        Telefone
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder="Digite seu telefone" {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="message"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary-foreground">
-                        Mensagem
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="Deixe sua mensagem" {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <Button type="submit" className="w-full">
-                  Enviar
-                </Button>
-              </form>
-            </Form>
-          </Card>
         </Card>
 
-        <Card className="mt-5 max-w-4xl mx-auto  w-full p-2 grid md:grid-cols-2 gap-8">
+        <Card className="mt-5 max-w-7xl w-full  mx-auto p-2 flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
             <CardHeader>
               <CardTitle className="text-primary">
@@ -333,7 +337,9 @@ export default function Page() {
 
           <Card className="p-4 max-w-sm bg-black ml-4">
             <CardHeader>
-              <CardTitle className="text-primary">Resultado</CardTitle>
+              <CardTitle className="text-primary">
+                O que achou da simulação?
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-primary-foreground space-y-2">

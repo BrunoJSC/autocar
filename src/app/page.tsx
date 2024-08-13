@@ -1,7 +1,6 @@
 "use client";
 
 import { MaxWrapper } from "@/components/max-wrapper";
-import { Button } from "@/components/ui/button";
 import { services } from "@/constants/services";
 import Link from "next/link";
 import {
@@ -25,6 +24,8 @@ import { client } from "@/lib/sanity";
 import { CircleMessage } from "@/components/circleMessage";
 import Image from "next/image";
 import { CalendarIcon, CircleGauge, FuelIcon, MapPinIcon } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Search } from "@/components/search";
 
 export interface Announcement {
   title: string;
@@ -40,6 +41,7 @@ export interface Announcement {
 }
 
 export default function Home() {
+  const [search, setSearch] = useState<string>("");
   const [message, setMessage] = useState("");
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
@@ -55,13 +57,16 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       <MaxWrapper className="relative">
+        <Search />
         <CircleMessage message="Vamos conversar?" setMessage={setMessage} />
         <div className="w-full">
-          <h1 className="text-3xl font-bold mt-9">Destaque</h1>
+          <div className="flex justify-center">
+            <h1 className="text-3xl font-bold mt-9">Destaque</h1>
+          </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3  grid-cols-1 md:gap-8 gap-4 p-4">
             {announcements.map((announcement, index) => (
               <Link key={index} href={announcement.link}>
-                <Card className="w-full h-full">
+                <Card className="w-full h-full max-w-md">
                   <CardHeader className="w-full h-60 overflow-hidden p-0">
                     <Image
                       src={announcement.imageUrl}
