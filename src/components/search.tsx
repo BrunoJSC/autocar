@@ -44,7 +44,6 @@ export function Search() {
     const cars = await fetchFilterCars({ modelCar: search });
     const motorbikes = await fetchFilterMotorbike({ motorbikeModel: search });
 
-    // Adiciona a categoria ao resultado para distinguir entre carros e motos
     return [
       ...cars.map((car: any) => ({ ...car, category: "carros" })),
       ...motorbikes.map((bike: any) => ({ ...bike, category: "motos" })),
@@ -56,8 +55,8 @@ export function Search() {
   }
 
   return (
-    <form className="w-full relative flex flex-col md:flex-row gap-4 p-4 md:p-8 bg-black items-center">
-      <div className="relative md:w-full">
+    <form className="w-full relative flex md:flex-row p-4  bg-black md:items-center">
+      <div className="relative w-full md:w-full">
         <SearchComponent
           size={25}
           className="absolute left-4 top-1/2 -translate-y-1/2 text-primary"
