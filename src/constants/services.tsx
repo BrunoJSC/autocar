@@ -1,29 +1,41 @@
-import { HandshakeIcon, MessageSquareIcon, Percent, Plus } from "lucide-react";
+import {
+  HandshakeIcon,
+  MessageSquareIcon,
+  Percent,
+  Plus,
+  HandCoins,
+  SearchCheck,
+} from "lucide-react";
 
 export const services = [
   {
-    title: "Avaliação",
+    title: "Anuncie Aqui",
     description:
-      "Avalie seu veículo de forma rápida e segura em nossa plataforma. É importante garantir que esteja bem conservado para analisarmos da melhor forma e chegarmos a um preço justo.",
-    icon: <MessageSquareIcon />,
-  },
-  {
-    title: "Negociação",
-    description:
-      "Em nossa plataforma você terá uma negociação de alta qualidade, te conectamos com o comprador que procura exatamente o que o seu veículo oferece para facilitar todo o processo.",
-    icon: <HandshakeIcon />,
-  },
-
-  {
-    title: "Venda",
-    description:
-      "Nossa equipe te acompanha e cuida de todos os passos para uma venda simplificada e segura. Tenha a disposição um atendimento qualificado para tirar todas as suas dúvidas das etapas de venda.",
-    icon: <Percent />,
+      "Nosso marketing é elaborado com as melhores estratégias da atualidade. Buscamos a atenção de clientes em potencial e criamos conexões para entender suas necessidades. Nosso time de atendimento cuida de todo o processo, desde o primeiro contato até o agendamento da visita.",
+    icon: <HandCoins />,
   },
   {
     title: "Compra",
     description:
-      "Tenha acesso a um catálogo de carros selecionados por nossa equipe com o objetivo de manter a qualidade em tudo que oferecemos a você. Temos preços abaixo do mercado e facilitamos a sua compra através de troca e financiamento.",
+      "Acesse um catálogo de carros selecionados por nossa equipe para garantir a qualidade em tudo que oferecemos. Facilitamos sua compra através de troca e financiamento, e sempre temos promoções exclusivas e brindes para quem compra através da nossa plataforma.",
+    icon: <HandshakeIcon />,
+  },
+  {
+    title: "Venda",
+    description:
+      "Nossa equipe acompanha e cuida de todos os passos para uma venda simplificada e segura. Oferecemos atendimento qualificado para esclarecer todas as suas dúvidas sobre as etapas de venda.",
+    icon: <Percent />,
+  },
+  {
+    title: "Negociação",
+    description:
+      "Temos um time de atendimento dedicado não apenas a vender, mas a entender suas necessidades e oferecer o melhor caminho para uma compra com condições justas e transparentes. Garantimos que você fique 100% satisfeito com sua conquista.",
     icon: <Plus />,
+  },
+  {
+    title: "Avaliação",
+    description:
+      "Avalie seu veículo de forma rápida e segura em nossa plataforma. É importante garantir que o veículo esteja bem conservado para que possamos analisá-lo da melhor forma e chegar a um preço justo.",
+    icon: <SearchCheck />,
   },
 ];

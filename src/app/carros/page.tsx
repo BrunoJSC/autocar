@@ -6,6 +6,7 @@ import { MaxWrapper } from "@/components/max-wrapper";
 import { ListCar } from "@/components/list-car";
 import { fetchFilterCars } from "@/fetch/car-filter";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSearchParams } from "next/navigation";
 
 type Filters = {
   brandCar: string;
@@ -37,6 +38,7 @@ export default function Page() {
   const [filters, setFilters] = useState<Filters>(initialFilters);
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
 
   const fetchData = async (filters: Filters) => {
     setLoading(true);
@@ -61,8 +63,20 @@ export default function Page() {
   };
 
   useEffect(() => {
-    fetchData(initialFilters);
-  }, []);
+    // Recupera os parâmetros de busca da URL
+    const minPrice = searchParams.get("minPrice");
+    const maxPrice = searchParams.get("maxPrice");
+
+    // Atualiza os filtros iniciais com os valores da URL, se existirem
+    const updatedFilters: Filters = {
+      ...initialFilters,
+      minPrice: minPrice ? parseFloat(minPrice) : undefined,
+      maxPrice: maxPrice ? parseFloat(maxPrice) : undefined,
+    };
+
+    setFilters(updatedFilters);
+    fetchData(updatedFilters);
+  }, [searchParams]);
 
   return (
     <MaxWrapper>

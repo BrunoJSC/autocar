@@ -6,6 +6,9 @@ export const accessoriesType = [
   { id: 5, title: "Direção Hidraulica", value: "direção hidraulica" },
   { id: 6, title: "Som", value: "som" },
   { id: 7, title: "Blindado", value: "blindado" },
+  { id: 8, title: "Retrovisor Elétrico", value: "retrovisor elétrico" },
+  { id: 9, title: "Banco de couro", value: "banco de couro" },
+  { id: 10, title: "Camera de Ré", value: "camera de re" },
 ];
 
 export const accessoriesMotorbikesType = [

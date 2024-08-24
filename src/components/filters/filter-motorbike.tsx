@@ -5,11 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerOverlay,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
 import { Button } from "@/components/ui/button";
 import { SortAsc, Filter } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -134,21 +137,20 @@ export const FilterBike: React.FC<FilterProps> = ({
   return (
     <div className="space-y-4 md:space-y-0 sticky">
       <div className="md:hidden h-auto">
-        <Drawer>
-          <DrawerTrigger asChild>
+        <Sheet>
+          <SheetTrigger asChild>
             <div className="w-full flex items-center justify-between">
               <h2 className="text-lg font-bold">Filtro</h2>
               <Button variant="outline">
                 <Filter className="mr-2 h-4 w-4" />
               </Button>
             </div>
-          </DrawerTrigger>
-          <DrawerOverlay />
-          <DrawerContent>
+          </SheetTrigger>
+          <SheetContent>
             <CardHeader>
               <CardTitle>Motos</CardTitle>
             </CardHeader>
-            <ScrollArea className="h-72 w-full">
+            <ScrollArea className="h-full w-full">
               <CardContent className="space-y-4">
                 <FilterSelect
                   label="Marca"
@@ -302,8 +304,8 @@ export const FilterBike: React.FC<FilterProps> = ({
                 <FilterButtons onSearch={onSearch} clearSearch={clearSearch} />
               </CardContent>
             </ScrollArea>
-          </DrawerContent>
-        </Drawer>
+          </SheetContent>
+        </Sheet>
       </div>
       <div className="hidden md:block space-y-4 md:space-y-0">
         <Card className="max-w-sm">

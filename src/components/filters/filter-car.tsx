@@ -5,11 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerOverlay,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
 import { Button } from "@/components/ui/button";
 import { Filter, SortAsc } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -145,21 +148,20 @@ export const FilterCar: React.FC<FilterProps> = ({
   return (
     <div className="space-y-4 md:space-y-0 sticky">
       <div className="md:hidden h-auto">
-        <Drawer>
-          <DrawerTrigger asChild>
+        <Sheet>
+          <SheetTrigger asChild>
             <div className="w-full flex items-center justify-between">
               <h2 className="text-lg font-bold">Filtro</h2>
               <Button variant="outline">
                 <Filter className="mr-2 h-4 w-4" />
               </Button>
             </div>
-          </DrawerTrigger>
-          <DrawerOverlay />
-          <DrawerContent>
+          </SheetTrigger>
+          <SheetContent>
             <CardHeader>
               <CardTitle>Carros</CardTitle>
             </CardHeader>
-            <ScrollArea className="h-72 w-full">
+            <ScrollArea className="h-full w-full mb-[100px]">
               <CardContent className="space-y-4">
                 <FilterSelect
                   label="Marca"
@@ -181,6 +183,29 @@ export const FilterCar: React.FC<FilterProps> = ({
                     onChange={handleModelChange}
                   />
                 </div>
+
+                <div>
+                  <Label>Motor</Label>
+                  <Select
+                    value={Number(filters.motors).toString()}
+                    onValueChange={handleMotorsChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o tipo de motor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {motorsType.map((motor) => (
+                        <SelectItem
+                          key={motor.id.toString()}
+                          value={motor.value.toString()}
+                        >
+                          {motor.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <FilterSelect
                   label="Localidade"
                   value={filters.location || ""}
@@ -275,28 +300,6 @@ export const FilterCar: React.FC<FilterProps> = ({
                   </Select>
                 </div>
 
-                <div>
-                  <Label>Motor</Label>
-                  <Select
-                    value={Number(filters.motors).toString()}
-                    onValueChange={handleMotorsChange}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione o tipo de motor" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {motorsType.map((motor) => (
-                        <SelectItem
-                          key={motor.id.toString()}
-                          value={motor.value.toString()}
-                        >
-                          {motor.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 <FilterSelect
                   label="Anunciante"
                   value={filters.announce || ""}
@@ -330,18 +333,6 @@ export const FilterCar: React.FC<FilterProps> = ({
                     </SelectContent>
                   </Select>
                 </div>
-                <FilterSelect
-                  label="Selecione a carroceria"
-                  value={filters.bodyType || ""}
-                  onValueChange={handleBodyTypeChange}
-                  options={bodyTypes.map((bodyType) => ({
-                    ...bodyType,
-                    id: bodyType.id.toString(),
-                    value: bodyType.value.toString(),
-                  }))}
-                  placeholder="Selecione uma marca"
-                  id={bodyTypes[0]?.id.toString()}
-                />
 
                 <YearFilter
                   startYear={filters.startYear || 1990}
@@ -358,8 +349,8 @@ export const FilterCar: React.FC<FilterProps> = ({
                 <FilterButtons onSearch={onSearch} clearSearch={clearSearch} />
               </CardContent>
             </ScrollArea>
-          </DrawerContent>
-        </Drawer>
+          </SheetContent>
+        </Sheet>
       </div>
       <div className="hidden md:block space-y-4 md:space-y-0">
         <Card className="max-w-sm">
@@ -387,6 +378,35 @@ export const FilterCar: React.FC<FilterProps> = ({
                 onChange={handleModelChange}
               />
             </div>
+
+            <div>
+              <Label>Motor</Label>
+              <Select
+                value={Number(filters.motors).toString()}
+                onValueChange={handleMotorsChange}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o tipo de motor" />
+                </SelectTrigger>
+                <SelectContent>
+                  {motorsType.map((motor) => (
+                    <SelectItem
+                      key={motor.id.toString()}
+                      value={motor.value.toString()}
+                    >
+                      {motor.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <YearFilter
+              startYear={filters.startYear || 1990}
+              endYear={filters.endYear || new Date().getFullYear()}
+              onStartYearChange={handleStartYearChange}
+              onEndYearChange={handleEndYearChange}
+            />
             <FilterSelect
               label="Localidade"
               value={filters.location || ""}
@@ -399,8 +419,9 @@ export const FilterCar: React.FC<FilterProps> = ({
               placeholder="Selecione a localidade"
               id={locations[0]?.id.toString()}
             />
+
             <FilterSelect
-              label="Combustível"
+              label="Tipo de Combustível"
               value={filters.fuel || ""}
               onValueChange={handleFuelChange}
               options={fuel.map((f) => ({
@@ -411,21 +432,23 @@ export const FilterCar: React.FC<FilterProps> = ({
               placeholder="Selecione o combustível"
               id={fuel[0]?.id.toString()}
             />
+
             <FilterSelect
-              label="Tipo de Cambio"
-              value={filters.exchange}
+              label="Tipo de câmbio"
+              value={filters.exchange || ""}
               onValueChange={handleExchangeChange}
               options={exchange.map((ex) => ({
                 ...ex,
                 id: ex.id.toString(),
                 value: ex.value.toString(),
               }))}
-              placeholder="Selecione o cambio"
+              placeholder="Selecione o tipo de câmbio"
               id={exchange[0]?.id.toString()}
             />
+
             <div className="flex items-center gap-2">
               <FilterPriceSelect
-                label="Preço minimo"
+                label="Preço mínimo"
                 value={filters.minPrice}
                 onValueChange={handleMinPriceChange}
                 options={minPrice.map((price) => ({
@@ -433,10 +456,10 @@ export const FilterCar: React.FC<FilterProps> = ({
                   id: price.id.toString(),
                   value: price.value.toString(),
                 }))}
-                placeholder="Selecione o preço inicial"
+                placeholder="Selecione o preço mínimo"
               />
               <FilterPriceSelect
-                label="Preço maximo"
+                label="Preço máximo"
                 value={filters.maxPrice}
                 onValueChange={handleMaxPriceChange}
                 options={maxPrice.map((price) => ({
@@ -444,9 +467,10 @@ export const FilterCar: React.FC<FilterProps> = ({
                   id: price.id.toString(),
                   value: price.value.toString(),
                 }))}
-                placeholder="Selecione o preço maximo"
+                placeholder="Selecione o preço máximo"
               />
             </div>
+
             <FilterSelect
               label="Cor do carro"
               value={filters.color || ""}
@@ -456,9 +480,10 @@ export const FilterCar: React.FC<FilterProps> = ({
                 id: color.id.toString(),
                 value: color.value.toString(),
               }))}
-              placeholder="Selecione o tipo de troca"
+              placeholder="Selecione a cor"
               id={colors[0]?.id.toString()}
             />
+
             <div>
               <Label>Portas</Label>
               <Select
@@ -482,26 +507,39 @@ export const FilterCar: React.FC<FilterProps> = ({
             </div>
 
             <div>
-              <Label>Motor</Label>
-              <Select
-                value={Number(filters.motors).toString()}
-                onValueChange={handleMotorsChange}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione o tipo de motor" />
-                </SelectTrigger>
-                <SelectContent>
-                  {motorsType.map((motor) => (
-                    <SelectItem
-                      key={motor.id.toString()}
-                      value={motor.value.toString()}
-                    >
-                      {motor.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label>Kilometragem</Label>
+              <Input
+                placeholder="Digite a kilometragem"
+                value={filters.km?.toString() || ""}
+                onChange={(e) => handleKmChange(e.target.value)}
+              />
             </div>
+
+            <FilterSelect
+              label="Tipo de Anúncio"
+              value={filters.announce || ""}
+              onValueChange={handleAnnounceChange}
+              options={announceType.map((type) => ({
+                ...type,
+                id: type.id.toString(),
+                value: type.value.toString(),
+              }))}
+              placeholder="Selecione o tipo de anúncio"
+              id={announceType[0]?.id.toString()}
+            />
+
+            <AccessoriesFilter
+              accessories={accessoriesType}
+              selectedAccessories={filters.accessories || []}
+              onChange={handleAccessoriesChange}
+            />
+
+            <YearFilter
+              startYear={filters.startYear || 1990}
+              endYear={filters.endYear || new Date().getFullYear()}
+              onStartYearChange={handleStartYearChange}
+              onEndYearChange={handleEndYearChange}
+            />
 
             <FilterSelect
               label="Anunciante"
@@ -536,31 +574,6 @@ export const FilterCar: React.FC<FilterProps> = ({
                 </SelectContent>
               </Select>
             </div>
-            <FilterSelect
-              label="Selecione a carroceria"
-              value={filters.bodyType || ""}
-              onValueChange={handleBodyTypeChange}
-              options={bodyTypes.map((bodyType) => ({
-                ...bodyType,
-                id: bodyType.id.toString(),
-                value: bodyType.value.toString(),
-              }))}
-              placeholder="Selecione uma marca"
-              id={bodyTypes[0]?.id.toString()}
-            />
-
-            <YearFilter
-              startYear={filters.startYear || 1990}
-              endYear={filters.endYear || new Date().getFullYear()}
-              onStartYearChange={handleStartYearChange}
-              onEndYearChange={handleEndYearChange}
-            />
-
-            <AccessoriesFilter
-              accessories={accessoriesType}
-              selectedAccessories={filters.accessories || []}
-              onChange={handleAccessoriesChange}
-            />
 
             <FilterButtons onSearch={onSearch} clearSearch={clearSearch} />
           </CardContent>

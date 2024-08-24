@@ -5,9 +5,16 @@ import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  doc,
+  DocumentSnapshot,
+  getDoc,
+} from "firebase/firestore";
 import { db, storage } from "@/utils/firebase";
-import { getDownloadURL, ref } from "firebase/storage";
+import { deleteObject, getDownloadURL, ref } from "firebase/storage";
 
 interface FormCar {
   id: string;
@@ -61,7 +68,27 @@ export default function Page() {
 
   const handleDelete = async (carId: string) => {
     try {
-      await deleteDoc(doc(db, "cars", carId));
+      const carDocRef = doc(db, "cars", carId);
+      const carDocSnapshot = (await getDoc(
+        carDocRef
+      )) as DocumentSnapshot<FormCar>;
+
+      if (!carDocSnapshot.exists()) {
+        throw new Error("Carro não encontrado.");
+      }
+
+      const carData = carDocSnapshot.data() as FormCar;
+      const imageUrls = carData.images;
+
+      const deleteImagePromises = imageUrls.map(async (imageUrl) => {
+        const imageRef = ref(storage, imageUrl);
+        await deleteObject(imageRef);
+      });
+
+      await Promise.all(deleteImagePromises);
+
+      await deleteDoc(carDocRef);
+
       setCars(cars.filter((car) => car.id !== carId));
     } catch (error) {
       console.error("Erro ao deletar o carro:", error);

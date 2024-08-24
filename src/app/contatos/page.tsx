@@ -136,9 +136,12 @@ export default function Page() {
                 Nossos especialistas estão disponíveis para atender seu chamado
               </p>
 
-              <p className="text-sm mt-4 text-gray-500">(11) 99999-9999</p>
+              <p className="text-sm mt-4 text-gray-500">(11) 91367-4909</p>
 
-              <p className="text-sm mt-4 text-gray-500">(11) 99999-9999</p>
+              <p className="text-sm mt-4 text-gray-500">(11) 94072-3891</p>
+              <p className="text-sm mt-4 text-gray-500">
+                contato@autonegocie.com.br
+              </p>
             </div>
           </div>
         </div>
