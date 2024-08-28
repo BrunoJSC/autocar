@@ -295,7 +295,7 @@ const Page = () => {
           </Card>
         </div>
 
-        <Card className="mt-5 max-w-7xl mx-auto p-2 gap-4 items-center ">
+        <Card className="mt-5 max-w-7xl mx-auto p-2 gap-4 items-center h-auto">
           <div>
             <CardHeader>
               <CardTitle>
@@ -326,7 +326,7 @@ const Page = () => {
                 </CardDescription>
               </div>
 
-              <Card className="mt-5 max-w-5xl h-96 w-full p-2 flex flex-col md:flex-row items-center justify-between gap-8">
+              <Card className="mt-5 max-w-5xl md:h-96 h-auto w-full p-2 flex flex-col md:flex-row items-center justify-between gap-8">
                 <div>
                   <CardHeader>
                     <CardTitle className="text-primary">
@@ -376,7 +376,7 @@ const Page = () => {
                   </div>
                 </div>
 
-                <Card className="p-4 max-w-sm bg-black ml-4 w-full md:mr-0">
+                <Card className="p-4 max-w-sm bg-black w-full md:mr-0">
                   <CardHeader>
                     <CardTitle className="text-primary">
                       O que achou da simulação?
