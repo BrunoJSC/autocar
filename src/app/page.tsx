@@ -88,15 +88,15 @@ export default function Home() {
           </div>
 
           <div className="w-full flex flex-col md:flex-row justify-between ">
-            <div className="grid md:grid-cols-2 lg:grid-cols-2  grid-cols-1 md:gap-8 gap-4 p-4">
+            <div className="grid md:grid-cols-3 lg:grid-cols-3  grid-cols-1 md:gap-8 gap-4 p-4">
               {announcements.map((announcement, index) => (
                 <Link key={index} href={announcement.link}>
-                  <Card className="w-full h-full max-w-md">
+                  <Card className="w-full h-full max-w-xs">
                     <CardHeader className="w-full h-60 overflow-hidden p-0">
                       <Image
                         src={announcement.imageUrl}
                         alt={announcement.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover object-center rounded-t-lg"
                         width={500}
                         height={300}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -114,7 +114,7 @@ export default function Home() {
                         }).format(announcement.price)}
                       </p>
                     </CardContent>
-                    <CardFooter className="grid grid-cols-2 border-t p-4 gap-2 text-sm justify-between">
+                    <CardFooter className="grid grid-cols-2 w-full border-t p-4 gap-2 text-sm justify-between">
                       <div className="flex items-center gap-2">
                         <MapPinIcon className="h-4 w-4 text-gray-500" />
                         <p className="text-gray-500">{announcement.location}</p>
@@ -148,7 +148,7 @@ export default function Home() {
                   {blog.map((item) => (
                     <CarouselItem key={item.title} className="w-full ">
                       <Link href={`/oficina/${item._id}`}>
-                        <Card className="w-full max-w-md mx-auto shadow-lg rounded-lg overflow-hidden">
+                        <Card className="w-full max-w-xs mx-auto shadow-lg rounded-lg overflow-hidden">
                           <div className="relative w-full h-64">
                             {item.mainImageUrl && (
                               <Image

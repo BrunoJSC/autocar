@@ -1,5 +1,5 @@
 import { MaxWrapper } from "@/components/max-wrapper";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
@@ -9,6 +9,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { financing } from "@/constants/financing";
 import Image from "next/image";
+import Link from "next/link";
 import { FC } from "react";
 
 // Componente para o item de financiamento
@@ -67,9 +68,15 @@ const Page: FC = () => (
           <h2 className="text-2xl font-bold text-muted">
             Peça seu financiamento
           </h2>
-          <Button variant="default" className="w-full">
+          <Link
+            href="/financiamento/formulario-financiamento"
+            className={buttonVariants({
+              variant: "default",
+              className: "w-full",
+            })}
+          >
             Solicitar financiamento
-          </Button>
+          </Link>
         </div>
         <Separator
           orientation="vertical"

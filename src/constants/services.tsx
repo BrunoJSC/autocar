@@ -20,12 +20,7 @@ export const services = [
       "Acesse um catálogo de carros selecionados por nossa equipe para garantir a qualidade em tudo que oferecemos. Facilitamos sua compra através de troca e financiamento, e sempre temos promoções exclusivas e brindes para quem compra através da nossa plataforma.",
     icon: <HandshakeIcon />,
   },
-  {
-    title: "Venda",
-    description:
-      "Nossa equipe acompanha e cuida de todos os passos para uma venda simplificada e segura. Oferecemos atendimento qualificado para esclarecer todas as suas dúvidas sobre as etapas de venda.",
-    icon: <Percent />,
-  },
+
   {
     title: "Negociação",
     description:

@@ -283,110 +283,123 @@ export default function Page() {
                 }).format(motorbike.price)}
               </h3>
             </CardHeader>
-            <CardDescription className="text-gray-500 mt-2 text-sm leading-normal">
-              {motorbike.description}
-            </CardDescription>
-          </div>
-        </Card>
 
-        <Card className="mt-5 max-w-7xl w-full  mx-auto p-2 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div>
-            <CardHeader>
-              <CardTitle className="text-primary">
-                Simule seu Financiamento
-              </CardTitle>
-              <CardDescription className="text-black">
-                Preencha os campos abaixo para simular.
-              </CardDescription>
-            </CardHeader>
-
-            <div className="space-y-2">
-              <Label className="text-black">Valor de entrada</Label>
-              <Input
-                placeholder="R$ 0,00"
-                value={downPayment}
-                onChange={(e) => setDownPayment(e.target.value)}
-              />
-            </div>
-
-            <div className="space-y-2 mt-2">
-              <Label className="text-black">Número de parcelas</Label>
-              <Select
-                onValueChange={(value) => setInstallments(parseInt(value))}
-                defaultValue="12"
-              >
-                <SelectTrigger className="bg-background border-input">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Array.from({ length: 48 }, (_, i) => i + 1).map((i) => (
-                    <SelectItem key={i} value={i.toString()}>
-                      {i}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="mt-4">
-              <Button className="w-full" onClick={sendSimulator}>
-                Simular
-              </Button>
-            </div>
-          </div>
-
-          <Card className="p-4 max-w-sm bg-black ml-4">
-            <CardHeader>
-              <CardTitle className="text-primary">
-                O que achou da simulação?
-              </CardTitle>
-            </CardHeader>
             <CardContent>
-              <div className="text-primary-foreground space-y-2">
-                <div className="flex justify-between">
-                  <span>Valor do veículo:</span>
-                  <span>
-                    {Intl.NumberFormat("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(motorbike.price)}
-                  </span>
+              <div className="flex flex-col md:flex-row gap-2">
+                <div>
+                  <ul className="list-disc list-inside">
+                    <li>
+                      <span className="font-bold">Marca:</span>{" "}
+                      {motorbike.motorbikeBrand}
+                    </li>
+                    <li>
+                      <span className="font-bold">Modelo:</span>{" "}
+                      {motorbike.motorbikeModel}
+                    </li>
+                    <li>
+                      <span className="font-bold">Ano de Fabricação:</span>{" "}
+                      {motorbike.yearFabrication}
+                    </li>
+                    <li>
+                      <span className="font-bold">Quilometragem:</span>{" "}
+                      {motorbike.mileage} km
+                    </li>
+                    <li>
+                      <span className="font-bold">Cor:</span> {motorbike.color}
+                    </li>
+                    <li>
+                      <span className="font-bold">Combustível:</span>{" "}
+                      {motorbike.fuel}
+                    </li>
+                    <li>
+                      <span className="font-bold">Cilindrada:</span>{" "}
+                      {motorbike.displacement}
+                    </li>
+                    <li>
+                      <span className="font-bold">Tipo de câmbio:</span>{" "}
+                      {motorbike.transmission}
+                    </li>
+                  </ul>
                 </div>
-                <div className="flex justify-between">
-                  <span>Entrada:</span>
-                  <span>
-                    {Intl.NumberFormat("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(parseFloat(downPayment.replace(/[^\d.-]/g, "")))}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Valor financiado:</span>
-                  <span>
-                    {Intl.NumberFormat("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(
-                      motorbike.price -
-                        parseFloat(downPayment.replace(/[^\d.-]/g, ""))
-                    )}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Número de parcelas:</span>
-                  <span>{installments}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Valor da parcela:</span>
-                  <span>
-                    {Intl.NumberFormat("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(monthlyPayment)}
-                  </span>
+                <div>
+                  <ul className="list-disc list-inside">
+                    <li>
+                      <span className="font-bold">Localização:</span>{" "}
+                      {motorbike.location}
+                    </li>
+                    <li>
+                      <span className="font-bold">Condição:</span>{" "}
+                      {motorbike.condition}
+                    </li>
+                    <li>
+                      <span className="font-bold">Carenagem:</span>{" "}
+                      {motorbike.fairing}
+                    </li>
+                    <li>
+                      <span className="font-bold">Placa:</span>{" "}
+                      {motorbike.licensePlate}
+                    </li>
+                    <li>
+                      <span className="font-bold">Acessórios:</span>{" "}
+                      {motorbike.accessories.join(", ")}
+                    </li>
+                  </ul>
                 </div>
               </div>
+
+              <div className="mt-4">
+                <Label className="font-bold">Descrição:</Label>
+                <p>{motorbike.description}</p>
+              </div>
+            </CardContent>
+          </div>
+
+          <Card className="w-full">
+            <CardHeader>
+              <CardTitle>Simulação de Financiamento</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label>Entrada</Label>
+                  <Input
+                    type="text"
+                    placeholder="Valor da entrada"
+                    value={downPayment}
+                    onChange={(e) => setDownPayment(e.target.value)}
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label>Número de Parcelas</Label>
+                  <Select
+                    value={installments.toString()}
+                    onValueChange={(value) => setInstallments(Number(value))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[12, 24, 36, 48, 60].map((n) => (
+                        <SelectItem key={n} value={n.toString()}>
+                          {n} meses
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 mt-4">
+                <Label>
+                  Valor da Parcela:{" "}
+                  {Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(monthlyPayment)}
+                </Label>
+              </div>
+              <Button className="mt-4" onClick={sendSimulator}>
+                Enviar Simulação
+              </Button>
             </CardContent>
           </Card>
         </Card>
@@ -394,3 +407,22 @@ export default function Page() {
     </MaxWrapper>
   );
 }
+
+type Motorbike = {
+  motorbikeBrand: string;
+  motorbikeModel: string;
+  yearFabrication: string;
+  mileage: number;
+  color: string;
+  fuel: string;
+  displacement: string;
+  transmission: string;
+  location: string;
+  condition: string;
+  fairing: string;
+  licensePlate: string;
+  accessories: string[];
+  description: string;
+  images: any[];
+  price: number;
+};

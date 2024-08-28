@@ -295,7 +295,7 @@ const Page = () => {
           </Card>
         </div>
 
-        <Card className="mt-5 max-w-7xl mx-auto p-2 flex flex-col gap-4 items-center">
+        <Card className="mt-5 max-w-7xl mx-auto p-2 gap-4 items-center ">
           <div>
             <CardHeader>
               <CardTitle>
@@ -309,144 +309,132 @@ const Page = () => {
                 }).format(car.price)}
               </h3>
             </CardHeader>
-            <CardDescription className="text-gray-500 mt-2 text-sm leading-normal p-4">
-              {car.description}
-            </CardDescription>
 
-            <CardContent className="mt-4 grid gap-5 grid-cols-2">
-              <div className="mt-4 grid gap-5 grid-cols-2 md:grid-cols-3 items-center">
-                {[
-                  { label: "Ano", value: car.yearFabrication },
-                  { label: "Combustível", value: car.fuel },
-                  {
-                    label: "Km",
-                    value: Intl.NumberFormat("pt-BR").format(car.km),
-                  },
-                  { label: "Cambio", value: car.exchange },
-                  { label: "Portas", value: car.doors },
-                  { label: "Cor", value: car.color },
-                ].map((item, index) => (
-                  <div key={index}>
-                    <p className="text-gray-500">{item.label}</p>
-                    <p>{item.value}</p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-4">
+            <CardContent className="mt-4 grid grid-cols-1 md:grid-cols-2 ">
+              <div>
                 <p className="text-gray-500">Acessórios</p>
-                <div className="mt-4 grid gap-5 grid-cols-2 md:grid-cols-2 items-center">
+                <div className="grid gap-2 grid-cols-2 md:grid-cols-3">
                   {car.accessories.map((accessory) => (
-                    <div key={accessory}>
-                      <p className="text-black">{accessory}</p>
+                    <div key={accessory} className="text-black">
+                      {accessory}
                     </div>
                   ))}
                 </div>
+
+                <CardDescription className="text-gray-500 mt-4 text-sm leading-normal max-w-md">
+                  {car.description}
+                </CardDescription>
               </div>
+
+              <Card className="mt-5 max-w-5xl h-auto w-full p-2 flex flex-col md:flex-row items-center justify-between gap-8">
+                <div>
+                  <CardHeader>
+                    <CardTitle className="text-primary">
+                      Simule seu Financiamento
+                    </CardTitle>
+                    <CardDescription className="text-black">
+                      Preencha os campos abaixo para simular.
+                    </CardDescription>
+                  </CardHeader>
+
+                  <div className="space-y-2">
+                    <Label className="text-black">Valor de entrada</Label>
+                    <Input
+                      placeholder="R$ 0,00"
+                      value={downPayment}
+                      onChange={(e) => setDownPayment(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="space-y-2 mt-2">
+                    <Label className="text-black">Número de parcelas</Label>
+                    <Select
+                      onValueChange={(value) =>
+                        setInstallments(parseInt(value))
+                      }
+                      defaultValue="12"
+                    >
+                      <SelectTrigger className="bg-background border-input">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 48 }, (_, i) => i + 1).map(
+                          (i) => (
+                            <SelectItem key={i} value={i.toString()}>
+                              {i}
+                            </SelectItem>
+                          )
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="mt-4">
+                    <Button className="w-full" onClick={sendSimulator}>
+                      Simular
+                    </Button>
+                  </div>
+                </div>
+
+                <Card className="p-4 max-w-sm bg-black ml-4 w-full md:mr-0">
+                  <CardHeader>
+                    <CardTitle className="text-primary">
+                      O que achou da simulação?
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-primary-foreground space-y-2">
+                      <div className="flex justify-between">
+                        <span>Valor do veículo:</span>
+                        <span>
+                          {Intl.NumberFormat("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }).format(car.price)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Entrada:</span>
+                        <span>
+                          {Intl.NumberFormat("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }).format(
+                            parseFloat(downPayment.replace(/[^\d.-]/g, ""))
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Valor financiado:</span>
+                        <span>
+                          {Intl.NumberFormat("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }).format(
+                            car.price -
+                              parseFloat(downPayment.replace(/[^\d.-]/g, ""))
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Número de parcelas:</span>
+                        <span>{installments}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Valor da parcela:</span>
+                        <span>
+                          {Intl.NumberFormat("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }).format(monthlyPayment)}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Card>
             </CardContent>
           </div>
-        </Card>
-
-        <Card className="mt-5 max-w-7xl w-full  mx-auto p-2 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div>
-            <CardHeader>
-              <CardTitle className="text-primary">
-                Simule seu Financiamento
-              </CardTitle>
-              <CardDescription className="text-black">
-                Preencha os campos abaixo para simular.
-              </CardDescription>
-            </CardHeader>
-
-            <div className="space-y-2">
-              <Label className="text-black">Valor de entrada</Label>
-              <Input
-                placeholder="R$ 0,00"
-                value={downPayment}
-                onChange={(e) => setDownPayment(e.target.value)}
-              />
-            </div>
-
-            <div className="space-y-2 mt-2">
-              <Label className="text-black">Número de parcelas</Label>
-              <Select
-                onValueChange={(value) => setInstallments(parseInt(value))}
-                defaultValue="12"
-              >
-                <SelectTrigger className="bg-background border-input">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Array.from({ length: 48 }, (_, i) => i + 1).map((i) => (
-                    <SelectItem key={i} value={i.toString()}>
-                      {i}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="mt-4">
-              <Button className="w-full" onClick={sendSimulator}>
-                Simular
-              </Button>
-            </div>
-          </div>
-
-          <Card className="p-4 max-w-sm  bg-black ml-4 w-full md:mr-0">
-            <CardHeader>
-              <CardTitle className="text-primary">
-                O que achou da simulação?
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-primary-foreground space-y-2">
-                <div className="flex justify-between">
-                  <span>Valor do veículo:</span>
-                  <span>
-                    {Intl.NumberFormat("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(car.price)}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Entrada:</span>
-                  <span>
-                    {Intl.NumberFormat("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(parseFloat(downPayment.replace(/[^\d.-]/g, "")))}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Valor financiado:</span>
-                  <span>
-                    {Intl.NumberFormat("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(
-                      car.price -
-                        parseFloat(downPayment.replace(/[^\d.-]/g, ""))
-                    )}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Número de parcelas:</span>
-                  <span>{installments}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Valor da parcela:</span>
-                  <span>
-                    {Intl.NumberFormat("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(monthlyPayment)}
-                  </span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </Card>
       </section>
     </MaxWrapper>
