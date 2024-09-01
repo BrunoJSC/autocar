@@ -24,7 +24,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 
-// Função para calcular as parcelas
 const calculateInstallments = (
   totalValue: number,
   downPayment: number,
@@ -55,7 +54,7 @@ const formSchema = z.object({
   downPayment: z.number().min(0, {
     message: "O valor da entrada não pode ser negativo",
   }),
-  installments: z.number().min(1, {
+  installments: z.number().int().min(1, {
     message: "O número de parcelas deve ser pelo menos 1",
   }),
   interestRate: z.number().min(0, {
@@ -64,7 +63,7 @@ const formSchema = z.object({
 });
 
 export default function Page() {
-  const [installmentValue, setInstallmentValue] = useState(""); // Estado para armazenar o valor da parcela
+  const [installmentValue, setInstallmentValue] = useState("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -87,29 +86,75 @@ export default function Page() {
     "interestRate",
   ]);
 
-  const [price, downPayment, installments, interestRate] = watchFields;
+  // useEffect(() => {
+  //   const [price, downPayment, installments, interestRate] = watchFields;
+  //   if (
+  //     price > 0 &&
+  //     downPayment >= 0 &&
+  //     installments > 0 &&
+  //     interestRate >= 0
+  //   ) {
+  //     const result = calculateInstallments(
+  //       price,
+  //       downPayment,
+  //       installments,
+  //       interestRate
+  //     );
+  //     setInstallmentValue(result.installmentValue);
+  //   }
+  // }, [watchFields] );
 
-  // Atualizar o valor das parcelas sempre que o preço, entrada, número de parcelas ou taxa de juros mudar
-  useEffect(() => {
-    if (
-      price > 0 &&
-      downPayment >= 0 &&
-      installments > 0 &&
-      interestRate >= 0
-    ) {
-      const result = calculateInstallments(
-        price,
-        downPayment,
-        installments,
-        interestRate
-      );
-      setInstallmentValue(result.installmentValue);
-    }
-  }, [price, downPayment, installments, interestRate]);
+  const PHONE_NUMBER = "5511940723891";
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+
+    const formatCurrency = (value: number) => {
+      return new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }).format(value);
+    };
+
+    const message = `
+Solicitação de veiculo:
+
+Nome: ${values.name}
+CPF: ${values.cpf}
+Valor do Veículo: ${formatCurrency(values.price)}
+Valor de Entrada: ${formatCurrency(values.downPayment)}
+Número de Parcelas: ${values.installments}
+Taxa de Juros: ${values.interestRate}%
+Valor da Parcela: ${formatCurrency(parseFloat(installmentValue))}
+
+Mensagem do Cliente:
+${values.message}
+    `.trim();
+
+    const sendMessage = () => {
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappURL = `http://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
+      window.open(whatsappURL, "_blank");
+    };
+
+    sendMessage();
   }
+
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      const { price, downPayment, installments, interestRate } = value;
+      if (price && downPayment !== undefined && installments && interestRate) {
+        const result = calculateInstallments(
+          price,
+          downPayment,
+          installments,
+          interestRate
+        );
+        setInstallmentValue(result.installmentValue);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   return (
     <MaxWrapper className="min-h-screen ">
@@ -163,7 +208,8 @@ export default function Page() {
                         <Textarea className="h-24" {...field} />
                       </FormControl>
                       <FormDescription>
-                        Diga o carro ou moto que você se interessou.
+                        Diga o carro ou moto que você se interessou. Outras
+                        coisas como ano, marca e modelo.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -177,7 +223,13 @@ export default function Page() {
                     <FormItem>
                       <FormLabel>Valor do Veículo</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(parseFloat(e.target.value))
+                          }
+                        />
                       </FormControl>
                       <FormDescription>
                         Digite o valor total do carro em interesse.
@@ -194,7 +246,6 @@ export default function Page() {
                   )}
                 />
 
-                {/* Adicionando campo para o valor de entrada */}
                 <FormField
                   control={form.control}
                   name="downPayment"
@@ -202,7 +253,13 @@ export default function Page() {
                     <FormItem>
                       <FormLabel>Valor de Entrada</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(parseFloat(e.target.value))
+                          }
+                        />
                       </FormControl>
                       <FormDescription>
                         Digite o valor de entrada para o financiamento.
@@ -219,7 +276,6 @@ export default function Page() {
                   )}
                 />
 
-                {/* Adicionando campos para número de parcelas e taxa de juros */}
                 <FormField
                   control={form.control}
                   name="installments"
@@ -227,7 +283,13 @@ export default function Page() {
                     <FormItem>
                       <FormLabel>Número de Parcelas</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} />
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(parseInt(e.target.value))
+                          }
+                        />
                       </FormControl>
                       <FormDescription>
                         Digite o número de parcelas desejado.
@@ -243,7 +305,14 @@ export default function Page() {
                     <FormItem>
                       <FormLabel>Taxa de Juros (%)</FormLabel>
                       <FormControl>
-                        <Input type="number" disabled {...field} />
+                        <Input
+                          type="number"
+                          disabled
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(parseFloat(e.target.value))
+                          }
+                        />
                       </FormControl>
                       <FormDescription>
                         Digite a taxa de juros mensal.
@@ -252,7 +321,6 @@ export default function Page() {
                   )}
                 />
 
-                {/* Mostrando o valor da parcela calculado */}
                 {installmentValue && (
                   <div>
                     <p>

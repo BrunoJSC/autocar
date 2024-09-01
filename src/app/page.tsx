@@ -88,11 +88,11 @@ export default function Home() {
           </div>
 
           <div className="w-full flex flex-col md:flex-row justify-between ">
-            <div className="grid md:grid-cols-3 lg:grid-cols-3  grid-cols-1 md:gap-8 gap-4 p-4">
+            <div className="grid md:grid-cols-3 lg:grid-cols-3  grid-cols-1  md:gap-8 gap-4 p-4">
               {announcements.map((announcement, index) => (
-                <Link key={index} href={announcement.link}>
-                  <Card className="w-full h-full max-w-xs">
-                    <CardHeader className="w-full h-60 overflow-hidden p-0">
+                <Link key={index} href={announcement.link} className="w-full">
+                  <Card className="w-full h-full md:max-w-xs">
+                    <CardHeader className="w-full h-60 overflow-hidden p-0 ">
                       <Image
                         src={announcement.imageUrl}
                         alt={announcement.title}
@@ -148,7 +148,7 @@ export default function Home() {
                   {blog.map((item) => (
                     <CarouselItem key={item.title} className="w-full ">
                       <Link href={`/oficina/${item._id}`}>
-                        <Card className="w-full max-w-xs mx-auto shadow-lg rounded-lg overflow-hidden">
+                        <Card className="w-full md:max-w-xs mx-auto shadow-lg rounded-lg overflow-hidden">
                           <div className="relative w-full h-64">
                             {item.mainImageUrl && (
                               <Image

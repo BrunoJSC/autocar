@@ -20,6 +20,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -41,6 +42,8 @@ import {
   SelectValue,
   SelectItem,
 } from "@/components/ui/select";
+import DetailsCard from "@/components/details-card";
+import Link from "next/link";
 
 interface Car {
   _id: string;
@@ -97,6 +100,7 @@ const Page = () => {
   const [downPayment, setDownPayment] = useState("0");
   const [installments, setInstallments] = useState(12);
   const [monthlyPayment, setMonthlyPayment] = useState(0);
+  const [cars, setCars] = useState<Car[]>([]);
 
   const fetchCar = useCallback(async () => {
     if (id) {
@@ -131,6 +135,19 @@ const Page = () => {
       setMonthlyPayment(payment);
     }
   }, [car, downPayment, installments]);
+
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const data: Car[] = await client.fetch(`*[_type == "cars"]`);
+        console.log("Fetched cars data:", data); // Verificar os dados aqui
+        setCars(data);
+      } catch (error) {
+        console.error("Error fetching cars data:", error);
+      }
+    };
+    fetchCars();
+  }, []);
 
   const onSubmit = useCallback((values: any) => {
     console.log(values);
@@ -197,19 +214,22 @@ const Page = () => {
             <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2" />
           </Carousel>
 
-          <Card className="flex-grow overflow-y-auto">
+          <Card className="flex-grow overflow-y-auto bg-black">
             <CardHeader>
               <CardTitle className="text-primary">
                 Entre em contato com nossa equipe!
               </CardTitle>
-              <CardDescription className="text-black">
+              <CardDescription className="text-white">
                 Veja condições de financiamento.
               </CardDescription>
             </CardHeader>
 
             <CardContent>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="">
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="text-white space-y-4"
+                >
                   <FormField
                     control={form.control}
                     name="name"
@@ -295,147 +315,55 @@ const Page = () => {
           </Card>
         </div>
 
-        <Card className="mt-5 max-w-7xl mx-auto p-2 gap-4 items-center h-auto">
-          <div>
-            <CardHeader>
-              <CardTitle>
-                <span className="text-primary">{car.brandCar}</span>{" "}
-                {car.modelCar}
-              </CardTitle>
-              <h3 className="font-bold text-3xl">
-                {Intl.NumberFormat("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(car.price)}
-              </h3>
-            </CardHeader>
+        <DetailsCard
+          vehicleType="car"
+          vehicle={car}
+          downPayment={downPayment}
+          installments={installments}
+          monthlyPayment={monthlyPayment}
+          sendSimulator={sendSimulator}
+          setDownPayment={setDownPayment}
+          setInstallments={setInstallments}
+          i18nIsDynamicList
+        />
+      </section>
 
-            <CardContent className="mt-4 grid grid-cols-1 md:grid-cols-2 ">
-              <div>
-                <p className="text-gray-500">Acessórios</p>
-                <div className="grid gap-2 grid-cols-2 md:grid-cols-3">
-                  {car.accessories.map((accessory) => (
-                    <div key={accessory} className="text-black">
-                      {accessory}
-                    </div>
-                  ))}
+      <section className="p-8 mt-5 bg-red-500 h-[600px]">
+        <Carousel className="w-full max-w-7xl mx-auto" suppressHydrationWarning>
+          <CarouselContent className="p-4">
+            {cars.map((car, index) => (
+              <CarouselItem
+                key={index}
+                className="flex-none w-full md:w-1/2 lg:w-1/3 px-2"
+              >
+                <div className="p-1">
+                  <Card className="w-full h-full">
+                    <CardHeader className="p-0">
+                      <Image
+                        src={urlForImage(car.images[0])
+                          .width(600)
+                          .height(400)
+                          .url()}
+                        alt={car.modelCar}
+                        width={600}
+                        height={400}
+                        className="w-full h-full object-cover rounded-t-lg"
+                        priority
+                      />
+                    </CardHeader>
+                    <CardContent className="w-full aspect-square">
+                      <CardTitle className="mt-2 bg-blue-500">
+                        {car.modelCar} - {car.brandCar}
+                      </CardTitle>
+                    </CardContent>
+                  </Card>
                 </div>
-
-                <CardDescription className="text-gray-500 mt-4 text-sm leading-normal max-w-md">
-                  {car.description}
-                </CardDescription>
-              </div>
-
-              <Card className="mt-5 max-w-5xl md:h-96 h-auto w-full p-2 flex flex-col md:flex-row items-center justify-between gap-8">
-                <div>
-                  <CardHeader>
-                    <CardTitle className="text-primary">
-                      Simule seu Financiamento
-                    </CardTitle>
-                    <CardDescription className="text-black">
-                      Preencha os campos abaixo para simular.
-                    </CardDescription>
-                  </CardHeader>
-
-                  <div className="space-y-2">
-                    <Label className="text-black">Valor de entrada</Label>
-                    <Input
-                      placeholder="R$ 0,00"
-                      value={downPayment}
-                      onChange={(e) => setDownPayment(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="space-y-2 mt-2">
-                    <Label className="text-black">Número de parcelas</Label>
-                    <Select
-                      onValueChange={(value) =>
-                        setInstallments(parseInt(value))
-                      }
-                      defaultValue="12"
-                    >
-                      <SelectTrigger className="bg-background border-input">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Array.from({ length: 48 }, (_, i) => i + 1).map(
-                          (i) => (
-                            <SelectItem key={i} value={i.toString()}>
-                              {i}
-                            </SelectItem>
-                          )
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="mt-4">
-                    <Button className="w-full" onClick={sendSimulator}>
-                      Simular
-                    </Button>
-                  </div>
-                </div>
-
-                <Card className="p-4 max-w-sm bg-black w-full md:mr-0">
-                  <CardHeader>
-                    <CardTitle className="text-primary">
-                      O que achou da simulação?
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-primary-foreground space-y-2">
-                      <div className="flex justify-between">
-                        <span>Valor do veículo:</span>
-                        <span>
-                          {Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(car.price)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Entrada:</span>
-                        <span>
-                          {Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(
-                            parseFloat(downPayment.replace(/[^\d.-]/g, ""))
-                          )}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Valor financiado:</span>
-                        <span>
-                          {Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(
-                            car.price -
-                              parseFloat(downPayment.replace(/[^\d.-]/g, ""))
-                          )}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Número de parcelas:</span>
-                        <span>{installments}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Valor da parcela:</span>
-                        <span>
-                          {Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(monthlyPayment)}
-                        </span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Card>
-            </CardContent>
-          </div>
-        </Card>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </section>
     </MaxWrapper>
   );

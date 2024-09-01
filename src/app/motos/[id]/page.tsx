@@ -41,6 +41,7 @@ import {
   SelectValue,
   SelectItem,
 } from "@/components/ui/select";
+import DetailsCard from "@/components/details-card";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -169,12 +170,12 @@ export default function Page() {
             <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2" />
           </Carousel>
 
-          <Card className="flex-grow overflow-y-auto">
+          <Card className="flex-grow overflow-y-auto bg-black">
             <CardHeader>
               <CardTitle className="text-primary">
                 Entre em contato com nossa equipe!
               </CardTitle>
-              <CardDescription className="text-black">
+              <CardDescription className="text-white">
                 Veja condições de financiamento.
               </CardDescription>
             </CardHeader>
@@ -183,7 +184,7 @@ export default function Page() {
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
+                  className="space-y-4 text-white"
                 >
                   <FormField
                     control={form.control}
@@ -269,140 +270,17 @@ export default function Page() {
           </Card>
         </div>
 
-        <Card className="mt-5 max-w-7xl mx-auto p-2 flex flex-col gap-4 items-center">
-          <div>
-            <CardHeader>
-              <CardTitle>
-                <span className="text-primary">{motorbike.motorbikeBrand}</span>{" "}
-                {motorbike.motorbikeModel}
-              </CardTitle>
-              <h3 className="font-bold text-3xl">
-                {Intl.NumberFormat("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(motorbike.price)}
-              </h3>
-            </CardHeader>
-
-            <CardContent>
-              <div className="flex flex-col md:flex-row gap-2">
-                <div>
-                  <ul className="list-disc list-inside">
-                    <li>
-                      <span className="font-bold">Marca:</span>{" "}
-                      {motorbike.motorbikeBrand}
-                    </li>
-                    <li>
-                      <span className="font-bold">Modelo:</span>{" "}
-                      {motorbike.motorbikeModel}
-                    </li>
-                    <li>
-                      <span className="font-bold">Ano de Fabricação:</span>{" "}
-                      {motorbike.yearFabrication}
-                    </li>
-                    <li>
-                      <span className="font-bold">Quilometragem:</span>{" "}
-                      {motorbike.mileage} km
-                    </li>
-                    <li>
-                      <span className="font-bold">Cor:</span> {motorbike.color}
-                    </li>
-                    <li>
-                      <span className="font-bold">Combustível:</span>{" "}
-                      {motorbike.fuel}
-                    </li>
-                    <li>
-                      <span className="font-bold">Cilindrada:</span>{" "}
-                      {motorbike.displacement}
-                    </li>
-                    <li>
-                      <span className="font-bold">Tipo de câmbio:</span>{" "}
-                      {motorbike.transmission}
-                    </li>
-                  </ul>
-                </div>
-                <div>
-                  <ul className="list-disc list-inside">
-                    <li>
-                      <span className="font-bold">Localização:</span>{" "}
-                      {motorbike.location}
-                    </li>
-                    <li>
-                      <span className="font-bold">Condição:</span>{" "}
-                      {motorbike.condition}
-                    </li>
-                    <li>
-                      <span className="font-bold">Carenagem:</span>{" "}
-                      {motorbike.fairing}
-                    </li>
-                    <li>
-                      <span className="font-bold">Placa:</span>{" "}
-                      {motorbike.licensePlate}
-                    </li>
-                    <li>
-                      <span className="font-bold">Acessórios:</span>{" "}
-                      {motorbike.accessories.join(", ")}
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <Label className="font-bold">Descrição:</Label>
-                <p>{motorbike.description}</p>
-              </div>
-            </CardContent>
-          </div>
-
-          <Card className="w-full">
-            <CardHeader>
-              <CardTitle>Simulação de Financiamento</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label>Entrada</Label>
-                  <Input
-                    type="text"
-                    placeholder="Valor da entrada"
-                    value={downPayment}
-                    onChange={(e) => setDownPayment(e.target.value)}
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Label>Número de Parcelas</Label>
-                  <Select
-                    value={installments.toString()}
-                    onValueChange={(value) => setInstallments(Number(value))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {[12, 24, 36, 48, 60].map((n) => (
-                        <SelectItem key={n} value={n.toString()}>
-                          {n} meses
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2 mt-4">
-                <Label>
-                  Valor da Parcela:{" "}
-                  {Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(monthlyPayment)}
-                </Label>
-              </div>
-              <Button className="mt-4" onClick={sendSimulator}>
-                Enviar Simulação
-              </Button>
-            </CardContent>
-          </Card>
-        </Card>
+        <DetailsCard
+          vehicleType="motorbike"
+          vehicle={motorbike}
+          downPayment={downPayment}
+          setDownPayment={setDownPayment}
+          installments={installments}
+          setInstallments={setInstallments}
+          monthlyPayment={monthlyPayment}
+          sendSimulator={sendSimulator}
+          i18nIsDynamicList
+        />
       </section>
     </MaxWrapper>
   );
