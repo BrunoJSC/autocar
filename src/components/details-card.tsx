@@ -62,7 +62,7 @@ const DetailsCard: React.FC<DetailsCardProps> = ({
     vehicleType === "car";
 
   return (
-    <Card className="mt-5 max-w-7xl mx-auto p-2 gap-4 items-center h-auto">
+    <Card className="mt-5 w-full md:max-w-7xl mx-auto p-2 gap-4 items-center">
       <div>
         <CardHeader>
           <CardTitle>
@@ -90,7 +90,7 @@ const DetailsCard: React.FC<DetailsCardProps> = ({
               ))}
             </div>
 
-            <CardDescription className="text-gray-500 mt-4 text-sm leading-normal max-w-md">
+            <CardDescription className="text-gray-500  mt-4 text-sm leading-normal md:max-w-md">
               {isCar(vehicle) ? vehicle.description : vehicle.description}
             </CardDescription>
           </div>

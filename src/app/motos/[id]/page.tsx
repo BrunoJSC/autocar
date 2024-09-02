@@ -7,7 +7,7 @@ import { MaxWrapper } from "@/components/max-wrapper";
 import { Skeleton } from "@/components/ui/skeleton";
 import { client, urlForImage } from "@/lib/sanity";
 import { useParams } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -20,6 +20,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -42,36 +43,33 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import DetailsCard from "@/components/details-card";
+import Link from "next/link";
+import { getData } from "@/fetch/fetch-motorbike";
+import { CalendarIcon, CircleGauge, FuelIcon, MapPinIcon } from "lucide-react";
 
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "O nome deve ter pelo menos 2 caracteres",
-  }),
-  cpf: z.string().min(11, {
-    message: "O CPF deve ter pelo menos 11 caracteres",
-  }),
+  name: z
+    .string()
+    .min(2, { message: "O nome deve ter pelo menos 2 caracteres" }),
+  cpf: z
+    .string()
+    .min(11, { message: "O CPF deve ter pelo menos 11 caracteres" }),
   email: z.string().email({ message: "O email deve ser válido" }),
-  phone: z.string().min(9, {
-    message: "O telefone deve ter pelo menos 9 caracteres",
-  }),
-  message: z.string().min(10, {
-    message: "A mensagem deve ter pelo menos 10 caracteres",
-  }),
+  phone: z
+    .string()
+    .min(9, { message: "O telefone deve ter pelo menos 9 caracteres" }),
+  message: z
+    .string()
+    .min(10, { message: "A mensagem deve ter pelo menos 10 caracteres" }),
 });
 
 const PHONE_NUMBER = "5511940723891";
 const INTEREST_RATE = 0.025; // 2.5% de juros mensais
 
-export default function Page() {
+const Page = () => {
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      cpf: "",
-      email: "",
-      phone: "",
-      message: "",
-    },
+    defaultValues: { name: "", cpf: "", email: "", phone: "", message: "" },
   });
 
   const { id } = useParams();
@@ -80,34 +78,27 @@ export default function Page() {
   const [downPayment, setDownPayment] = useState("0");
   const [installments, setInstallments] = useState(12);
   const [monthlyPayment, setMonthlyPayment] = useState(0);
+  const [motorbikes, setMotorbikes] = useState<Motorbike[]>([]);
 
-  const onSubmit = useCallback((values: any) => {
-    console.log(values);
-  }, []);
-
-  const messageWhatsapp = useCallback(() => {
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
-    window.open(whatsappUrl, "_blank");
-  }, [message]);
-
-  useEffect(() => {
+  const fetchMotorbike = useCallback(async () => {
     if (id) {
-      const fetchMotorbike = async () => {
-        const data = await client.fetch(
-          `*[_type == "motorbike" && _id == $id][0]`,
-          { id }
-        );
-        setMotorbike(data);
-      };
-
-      fetchMotorbike();
+      const data = await client.fetch(
+        `*[_type == "motorbike" && _id == $id][0]`,
+        {
+          id,
+        }
+      );
+      setMotorbike(data);
     }
   }, [id]);
 
   useEffect(() => {
+    fetchMotorbike();
+  }, [fetchMotorbike]);
+
+  useEffect(() => {
     if (motorbike) {
-      const initialMessage = `Tenho interesse neste veículo ${motorbike.motorbikeBrand} - ${motorbike.motorbikeModel} - ${motorbike.yearFabrication} `;
+      const initialMessage = `Tenho interesse neste veículo ${motorbike.motorbikeBrand} - ${motorbike.motorbikeModel} - ${motorbike.yearFabrication}`;
       setMessage(initialMessage);
       form.setValue("message", initialMessage);
     }
@@ -126,20 +117,70 @@ export default function Page() {
     }
   }, [motorbike, downPayment, installments]);
 
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const data = await getData();
+        console.log("Fetched cars data:", data);
+        setMotorbikes(data as Motorbike[]);
+      } catch (error) {
+        console.error("Error fetching cars data:", error);
+      }
+    };
+    fetchCars();
+  }, []);
+
+  const onSubmit = useCallback((values: any) => {
+    console.log(values);
+  }, []);
+
+  const messageWhatsapp = useCallback(() => {
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
+    window.open(whatsappUrl, "_blank");
+  }, [message]);
+
   const sendSimulator = useCallback(() => {
     const downPaymentNumber =
       parseFloat(downPayment.replace(/[^\d.-]/g, "")) || 0;
     const financedAmount = motorbike ? motorbike.price - downPaymentNumber : 0;
     const encodedMessage = encodeURIComponent(
-      `Simulação de Financiamento:\n\nVeículo: ${motorbike?.motorbikeBrand} - ${motorbike?.motorbikeModel}\nValor da Entrada: R$ ${downPayment}\nValor Financiado: R$ ${financedAmount.toFixed(2)}\nNúmero de Parcelas: ${installments}\nValor da Parcela: R$ ${monthlyPayment.toFixed(2)}`
+      `Simulação de Financiamento:
+      
+      Veículo: ${motorbike?.motorbikeBrand} - ${motorbike?.motorbikeModel}
+      Valor da Entrada: R$ ${downPayment}
+      Valor Financiado: R$ ${financedAmount.toFixed(2)}
+      Número de Parcelas: ${installments}
+      Valor da Parcela: R$ ${monthlyPayment.toFixed(2)}`
     );
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
     window.open(whatsappUrl, "_blank");
-  }, [downPayment, installments, monthlyPayment, motorbike]);
+  }, [motorbike, downPayment, installments, monthlyPayment]);
+
+  const motorbikeImages = useMemo(
+    () =>
+      motorbike?.images.map((image, index) => (
+        <CarouselItem key={index}>
+          <div>
+            <Card>
+              <Image
+                src={urlForImage(image).width(600).height(400).url()}
+                alt={motorbike.motorbikeModel}
+                width={600}
+                height={400}
+                className="w-full h-full object-cover"
+                priority
+              />
+            </Card>
+          </div>
+        </CarouselItem>
+      )),
+    [motorbike]
+  );
 
   if (!motorbike)
     return (
-      <MaxWrapper>
+      <MaxWrapper className="min-h-screen">
         <Skeleton className="w-full h-[300px]" />
       </MaxWrapper>
     );
@@ -147,30 +188,14 @@ export default function Page() {
   return (
     <MaxWrapper>
       <section className="p-8 mt-5">
-        <div className="h-[600px] flex flex-col md:flex-row gap-4">
+        <div className="md:h-[600px] flex flex-col md:flex-row gap-4">
           <Carousel className="w-full max-w-4xl mx-auto">
-            <CarouselContent>
-              {motorbike.images.map((image, index) => (
-                <CarouselItem key={index}>
-                  <div>
-                    <Card>
-                      <Image
-                        src={urlForImage(image).width(600).height(400).url()}
-                        alt={motorbike.motorbikeBrand}
-                        width={600}
-                        height={400}
-                        className="w-full h-full object-cover"
-                      />
-                    </Card>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
+            <CarouselContent>{motorbikeImages}</CarouselContent>
             <CarouselPrevious className="absolute top-1/2 left-4 -translate-y-1/2" />
             <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2" />
           </Carousel>
 
-          <Card className="flex-grow overflow-y-auto bg-black">
+          <Card className="flex-grow md:overflow-y-auto nd:h-[700px] bg-black">
             <CardHeader>
               <CardTitle className="text-primary">
                 Entre em contato com nossa equipe!
@@ -184,77 +209,78 @@ export default function Page() {
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4 text-white"
+                  className="text-white space-y-4"
                 >
                   <FormField
                     control={form.control}
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="">Nome</FormLabel>
+                        <FormLabel>Nome</FormLabel>
                         <FormControl>
-                          <Input placeholder="Seu nome" {...field} />
+                          <Input placeholder="Nome" {...field} />
                         </FormControl>
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="cpf"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="">CPF</FormLabel>
+                        <FormLabel>CPF</FormLabel>
                         <FormControl>
-                          <Input placeholder="Digite seu CPF" {...field} />
+                          <Input placeholder="CPF" {...field} />
                         </FormControl>
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="">Email</FormLabel>
+                        <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="Digite seu email" {...field} />
+                          <Input placeholder="Email" {...field} />
                         </FormControl>
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="">Telefone</FormLabel>
+                        <FormLabel>Telefone</FormLabel>
                         <FormControl>
-                          <Input placeholder="Digite seu telefone" {...field} />
+                          <Input placeholder="Telefone" {...field} />
                         </FormControl>
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="message"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="">Mensagem</FormLabel>
+                        <FormLabel>Mensagem</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Deixe sua mensagem"
+                            placeholder="Mensagem"
                             {...field}
+                            value={message}
+                            onChange={(e) => {
+                              field.onChange(e);
+                              setMessage(e.target.value);
+                            }}
                           />
                         </FormControl>
                       </FormItem>
                     )}
                   />
 
-                  <Button type="submit" className="w-full">
+                  <Button type="submit" className="w-full mt-4">
                     Enviar
                   </Button>
                   <Button
@@ -271,36 +297,100 @@ export default function Page() {
         </div>
 
         <DetailsCard
-          vehicleType="motorbike"
+          vehicleType="car"
           vehicle={motorbike}
           downPayment={downPayment}
-          setDownPayment={setDownPayment}
           installments={installments}
-          setInstallments={setInstallments}
           monthlyPayment={monthlyPayment}
           sendSimulator={sendSimulator}
+          setDownPayment={setDownPayment}
+          setInstallments={setInstallments}
           i18nIsDynamicList
         />
       </section>
+
+      <section className="p-8 mt-5 bg-gray-100 h-[600px] flex items-center justify-center">
+        {motorbikes && motorbikes.length > 0 ? (
+          <Carousel
+            className="w-full md:max-w-6xl mx-auto"
+            suppressHydrationWarning
+          >
+            <CarouselContent className="p-4">
+              {motorbikes.map((motorbike, index) => (
+                <CarouselItem
+                  key={index}
+                  className="flex-none w-full md:w-1/2 lg:w-1/3 px-2"
+                >
+                  <div className="p-1">
+                    <Link href={`/motos/${motorbike._id}`}>
+                      <Card className="w-full h-[400px]">
+                        <CardHeader className="p-0">
+                          {motorbike.images && motorbike.images.length > 0 && (
+                            <Image
+                              src={motorbike.images[0].url}
+                              alt={motorbike.motorbikeModel}
+                              width={600}
+                              height={400}
+                              className="w-full h-48 object-cover rounded-t-lg"
+                              priority
+                            />
+                          )}
+                        </CardHeader>
+                        <CardContent>
+                          <CardTitle className="mt-2">
+                            {motorbike.motorbikeBrand}{" "}
+                            <span className="text-green-500">
+                              {motorbike.motorbikeModel}
+                            </span>
+                          </CardTitle>
+
+                          <CardDescription className="font-bold text-gray-500 mt-5">
+                            {Intl.NumberFormat("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            }).format(motorbike.price)}
+                          </CardDescription>
+                        </CardContent>
+                        <CardFooter className="grid grid-cols-2 w-full border-t p-4 gap-2 text-sm justify-between">
+                          <div className="flex items-center gap-2">
+                            <MapPinIcon className="h-4 w-4 text-gray-500" />
+                            <p className="text-gray-500">
+                              {motorbike.location}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <CircleGauge className="h-4 w-4 text-gray-500" />
+                            <p className="text-gray-500">
+                              {Intl.NumberFormat("pt-BR").format(motorbike.km)}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <CalendarIcon className="h-4 w-4 text-gray-500" />
+                            <p className="text-gray-500">
+                              {motorbike.yearFabrication}
+                            </p>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <FuelIcon className="h-4 w-4 text-gray-500" />
+                            <p className="text-gray-500">{motorbike.fuel}</p>
+                          </div>
+                        </CardFooter>
+                      </Card>
+                    </Link>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute top-1/2 left-4 -translate-y-1/2" />
+            <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2" />
+          </Carousel>
+        ) : (
+          <p>Nenhum carro disponível</p>
+        )}
+      </section>
     </MaxWrapper>
   );
-}
-
-type Motorbike = {
-  motorbikeBrand: string;
-  motorbikeModel: string;
-  yearFabrication: string;
-  mileage: number;
-  color: string;
-  fuel: string;
-  displacement: string;
-  transmission: string;
-  location: string;
-  condition: string;
-  fairing: string;
-  licensePlate: string;
-  accessories: string[];
-  description: string;
-  images: any[];
-  price: number;
 };
+
+export default Page;

@@ -44,30 +44,8 @@ import {
 } from "@/components/ui/select";
 import DetailsCard from "@/components/details-card";
 import Link from "next/link";
-
-interface Car {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  yearFabrication: number;
-  yearModification: number;
-  km: number;
-  color: string;
-  location: string;
-  exchange: string;
-  brandCar: string;
-  modelCar: string;
-  bodyType: string;
-  fuel: string;
-  announce: string;
-  document: string;
-  doors: number;
-  mechanic: string;
-  plate: string;
-  accessories: string[];
-  images: string[];
-}
+import { getData } from "@/fetch/fetch-car";
+import { CalendarIcon, CircleGauge, FuelIcon, MapPinIcon } from "lucide-react";
 
 const formSchema = z.object({
   name: z
@@ -139,9 +117,9 @@ const Page = () => {
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const data: Car[] = await client.fetch(`*[_type == "cars"]`);
-        console.log("Fetched cars data:", data); // Verificar os dados aqui
-        setCars(data);
+        const data = await getData();
+        console.log("Fetched cars data:", data);
+        setCars(data as Car[]);
       } catch (error) {
         console.error("Error fetching cars data:", error);
       }
@@ -207,14 +185,14 @@ const Page = () => {
   return (
     <MaxWrapper>
       <section className="p-8 mt-5">
-        <div className="h-[600px] flex flex-col md:flex-row gap-4">
+        <div className="md:h-[600px] flex flex-col md:flex-row gap-4">
           <Carousel className="w-full max-w-4xl mx-auto">
             <CarouselContent>{carImages}</CarouselContent>
             <CarouselPrevious className="absolute top-1/2 left-4 -translate-y-1/2" />
             <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2" />
           </Carousel>
 
-          <Card className="flex-grow overflow-y-auto bg-black">
+          <Card className="flex-grow md:overflow-y-auto h-[700px] bg-black">
             <CardHeader>
               <CardTitle className="text-primary">
                 Entre em contato com nossa equipe!
@@ -328,42 +306,83 @@ const Page = () => {
         />
       </section>
 
-      <section className="p-8 mt-5 bg-red-500 h-[600px]">
-        <Carousel className="w-full max-w-7xl mx-auto" suppressHydrationWarning>
-          <CarouselContent className="p-4">
-            {cars.map((car, index) => (
-              <CarouselItem
-                key={index}
-                className="flex-none w-full md:w-1/2 lg:w-1/3 px-2"
-              >
-                <div className="p-1">
-                  <Card className="w-full h-full">
-                    <CardHeader className="p-0">
-                      <Image
-                        src={urlForImage(car.images[0])
-                          .width(600)
-                          .height(400)
-                          .url()}
-                        alt={car.modelCar}
-                        width={600}
-                        height={400}
-                        className="w-full h-full object-cover rounded-t-lg"
-                        priority
-                      />
-                    </CardHeader>
-                    <CardContent className="w-full aspect-square">
-                      <CardTitle className="mt-2 bg-blue-500">
-                        {car.modelCar} - {car.brandCar}
-                      </CardTitle>
-                    </CardContent>
-                  </Card>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+      <section className="p-8 mt-5 bg-gray-100 h-[600px] flex items-center justify-center">
+        {cars && cars.length > 0 ? (
+          <Carousel
+            className="w-full md:max-w-6xl mx-auto"
+            suppressHydrationWarning
+          >
+            <CarouselContent className="p-4">
+              {cars.map((car, index) => (
+                <CarouselItem
+                  key={index}
+                  className="flex-none w-full md:w-1/2 lg:w-1/3 px-2"
+                >
+                  <div className="p-1">
+                    <Link href={`/carros/${car._id}`}>
+                      <Card className="w-full h-[400px]">
+                        <CardHeader className="p-0">
+                          {car.images && car.images.length > 0 && (
+                            <Image
+                              src={car.images[0].url}
+                              alt={car.modelCar}
+                              width={600}
+                              height={400}
+                              className="w-full h-48 object-cover rounded-t-lg"
+                              priority
+                            />
+                          )}
+                        </CardHeader>
+                        <CardContent>
+                          <CardTitle className="mt-2">
+                            {car.brandCar}{" "}
+                            <span className="text-green-500">
+                              {car.modelCar}
+                            </span>
+                          </CardTitle>
+
+                          <CardDescription className="font-bold text-gray-500 mt-5">
+                            {Intl.NumberFormat("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            }).format(car.price)}
+                          </CardDescription>
+                        </CardContent>
+                        <CardFooter className="grid grid-cols-2 w-full border-t p-4 gap-2 text-sm justify-between">
+                          <div className="flex items-center gap-2">
+                            <MapPinIcon className="h-4 w-4 text-gray-500" />
+                            <p className="text-gray-500">{car.location}</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <CircleGauge className="h-4 w-4 text-gray-500" />
+                            <p className="text-gray-500">
+                              {Intl.NumberFormat("pt-BR").format(car.km)}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <CalendarIcon className="h-4 w-4 text-gray-500" />
+                            <p className="text-gray-500">
+                              {car.yearFabrication}
+                            </p>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <FuelIcon className="h-4 w-4 text-gray-500" />
+                            <p className="text-gray-500">{car.fuel}</p>
+                          </div>
+                        </CardFooter>
+                      </Card>
+                    </Link>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute top-1/2 left-4 -translate-y-1/2" />
+            <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2" />
+          </Carousel>
+        ) : (
+          <p>Nenhum carro disponível</p>
+        )}
       </section>
     </MaxWrapper>
   );
