@@ -21,7 +21,7 @@ export const carType = defineType({
           {title: 'Nissan', value: 'nissan'},
           {title: 'Renault', value: 'renault'},
           {title: 'Volkswagen', value: 'volkswagen'},
-          {title: 'Toyota', value: 'Toyota'},
+          {title: 'Toyota', value: 'toyota'},
           {title: 'Peugeot', value: 'peugeot'},
           {title: 'Citroen', value: 'citroen'},
           {title: 'Mercedes-Benz', value: 'mercedes-benz'},

@@ -1,6 +1,6 @@
 export const brandCars = [
   { id: 1, title: "Honda", value: "honda" },
-  { id: 2, title: "Toyota", value: "toyota" },
+  { id: 2, title: "Toyota", value: "Toyota" },
   { id: 3, title: "Ford", value: "ford" },
   { id: 4, title: "Nissan", value: "nissan" },
   { id: 5, title: "Chevrolet", value: "chevrolet" },

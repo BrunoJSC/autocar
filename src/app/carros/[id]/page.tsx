@@ -171,7 +171,7 @@ const Page = () => {
             </Card>
           </div>
         </CarouselItem>
-      )),
+      )) ?? [],
     [car]
   );
 
@@ -306,7 +306,7 @@ const Page = () => {
         />
       </section>
 
-      <section className="p-8 mt-5 bg-gray-100 h-[600px] flex items-center justify-center">
+      <section className="p-8 mt-5 h-[600px] flex items-center justify-center">
         {cars && cars.length > 0 ? (
           <Carousel
             className="w-full md:max-w-6xl mx-auto"

@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { FilterCar } from "@/components/filters/filter-car";
 import { MaxWrapper } from "@/components/max-wrapper";
 import { ListCar } from "@/components/list-car";
 import { fetchFilterCars } from "@/fetch/car-filter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams } from "next/navigation";
+import FilterCar from "@/components/filters/filter-car";
 
 type Filters = {
   brandCar: string;
@@ -63,11 +63,9 @@ export default function Page() {
   };
 
   useEffect(() => {
-    // Recupera os parâmetros de busca da URL
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
 
-    // Atualiza os filtros iniciais com os valores da URL, se existirem
     const updatedFilters: Filters = {
       ...initialFilters,
       minPrice: minPrice ? parseFloat(minPrice) : undefined,
