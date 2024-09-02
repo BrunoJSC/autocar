@@ -192,7 +192,7 @@ const Page = () => {
             <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2" />
           </Carousel>
 
-          <Card className="flex-grow md:overflow-y-auto h-[700px] bg-black">
+          <Card className="flex-grow md:overflow-y-auto h-[700px] md:h-auto bg-black">
             <CardHeader>
               <CardTitle className="text-primary">
                 Entre em contato com nossa equipe!
