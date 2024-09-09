@@ -140,9 +140,9 @@ export default function Home() {
         <Search />
         <CircleMessage message="Vamos conversar?" setMessage={setMessage} />
 
-        <div className="w-full ">
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 p-4">
-            <div className="col-span-3 flex flex-col justify-center items-center">
+        <div className="w-full">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 p-4 w-full">
+            <div className="col-span-3 flex flex-col justify-center items-center w-full">
               <h2 className="text-2xl font-bold mb-4">Destaques</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {announcements.map((announcement, index) => (
@@ -154,7 +154,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="w-full md:max-w-xs mx-auto bg-red-500">
+            <div className="w-full md:w-full mx-auto">
               <div className="flex justify-center items-center">
                 <h2 className="text-2xl font-bold mb-4">Artigos</h2>
               </div>
@@ -167,7 +167,7 @@ export default function Home() {
                   {blog.map((item) => (
                     <CarouselItem key={item.title} className="w-full">
                       <Link href={`/oficina/${item._id}`}>
-                        <Card className="w-full md:max-w-xs md:h-[400px] mx-auto shadow-lg rounded-lg overflow-hidden bg-red-500">
+                        <Card className="w-full md:w-full md:h-[400px] mx-auto shadow-lg rounded-lg overflow-hidden">
                           <div className="relative w-full h-64">
                             {item.mainImageUrl && (
                               <Image

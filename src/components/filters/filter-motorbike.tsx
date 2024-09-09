@@ -1,46 +1,42 @@
 "use client";
 
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useCallback, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-
 import { Button } from "@/components/ui/button";
-import { SortAsc, Filter } from "lucide-react";
+import { Filter } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-import { locations } from "@/constants/location";
-import { brandBikes } from "@/constants/brand-bikes";
-import { fuel } from "@/constants/fuel";
-import { exchange } from "@/constants/exchange";
-import { maxPrice, minPrice } from "@/constants/prices";
-import { colors } from "@/constants/colors";
-import { bodyTypes } from "@/constants/body-type";
-import { kms } from "@/constants/kms";
-import YearFilter from "@/constants/year-filter";
 
 import FilterSelect from "./FilterSelect";
 import FilterPriceSelect from "./filter-price-select";
 import FilterButtons from "./filter-buttons";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { cylindersType } from "@/constants/cylinders";
-import { announceType } from "@/constants/announce-type";
+import YearFilter from "@/constants/year-filter";
 import AccessoriesFilter from "./accessories-filter";
 import { accessoriesMotorbikesType } from "@/constants/accessories";
+import { announceType } from "@/constants/announce-type";
+import { brandBikes } from "@/constants/brand-bikes";
+import { colors } from "@/constants/colors";
+import { cylindersType } from "@/constants/cylinders";
+import { exchange } from "@/constants/exchange";
+import { fuel } from "@/constants/fuel";
+import { kms } from "@/constants/kms";
+import { locations } from "@/constants/location";
+import { minPrice, maxPrice } from "@/constants/prices";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@radix-ui/react-select";
 
 type Filters = {
   motorbikeBrand: string;
@@ -72,67 +68,173 @@ export const FilterBike: React.FC<FilterProps> = ({
   onSearch,
   clearSearch,
 }) => {
-  const handleBrandChange = (value: string) => {
-    setFilters({ ...filters, motorbikeBrand: value });
-  };
+  // Memoized handler functions to prevent unnecessary re-renders
+  const handleBrandChange = useCallback(
+    (value: string) =>
+      setFilters((prev) => ({ ...prev, motorbikeBrand: value })),
+    [setFilters]
+  );
 
-  const handleModelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilters({ ...filters, motorbikeModel: e.target.value || "" });
-  };
+  const handleModelChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setFilters((prev) => ({ ...prev, motorbikeModel: e.target.value || "" })),
+    [setFilters]
+  );
 
-  const handleLocationChange = (value: string) => {
-    setFilters({ ...filters, location: value });
-  };
+  const handleLocationChange = useCallback(
+    (value: string) => setFilters((prev) => ({ ...prev, location: value })),
+    [setFilters]
+  );
 
-  const handleFuelChange = (value: string) => {
-    setFilters({ ...filters, fuel: value });
-  };
+  const handleFuelChange = useCallback(
+    (value: string) => setFilters((prev) => ({ ...prev, fuel: value })),
+    [setFilters]
+  );
 
-  const handleExchangeChange = (value: string) => {
-    setFilters({ ...filters, exchange: value });
-  };
+  const handleExchangeChange = useCallback(
+    (value: string) => setFilters((prev) => ({ ...prev, exchange: value })),
+    [setFilters]
+  );
 
-  const handleMinPriceChange = (value: string) => {
-    setFilters({
-      ...filters,
-      minPrice: value ? Number(value) : undefined,
-    });
-  };
+  const handleMinPriceChange = useCallback(
+    (value: string) =>
+      setFilters((prev) => ({
+        ...prev,
+        minPrice: value ? Number(value) : undefined,
+      })),
+    [setFilters]
+  );
 
-  const handleMaxPriceChange = (value: string) => {
-    setFilters({
-      ...filters,
-      maxPrice: value ? Number(value) : undefined,
-    });
-  };
+  const handleMaxPriceChange = useCallback(
+    (value: string) =>
+      setFilters((prev) => ({
+        ...prev,
+        maxPrice: value ? Number(value) : undefined,
+      })),
+    [setFilters]
+  );
 
-  const handleKmChange = (value: string) => {
-    setFilters({ ...filters, km: value ? Number(value) : undefined });
-  };
+  const handleKmChange = useCallback(
+    (value: string) =>
+      setFilters((prev) => ({
+        ...prev,
+        km: value ? Number(value) : undefined,
+      })),
+    [setFilters]
+  );
 
-  const handleAnnounceChange = (value: string) => {
-    setFilters({ ...filters, announce: value });
-  };
+  const handleCylindersChange = useCallback(
+    (value: string) =>
+      setFilters((prev) => ({ ...prev, cylinders: Number(value) })),
+    [setFilters]
+  );
 
-  const handleAccessoriesChange = (selected: string[]) => {
-    setFilters({ ...filters, accessories: selected });
-  };
+  const handleAnnounceChange = useCallback(
+    (value: string) => setFilters((prev) => ({ ...prev, announce: value })),
+    [setFilters]
+  );
 
-  const handleColorChange = (value: string) => {
-    setFilters({ ...filters, color: value });
-  };
+  const handleAccessoriesChange = useCallback(
+    (selected: string[]) =>
+      setFilters((prev) => ({ ...prev, accessories: selected })),
+    [setFilters]
+  );
 
-  const handleStartYearChange = (year: number) => {
-    setFilters({ ...filters, startYear: year });
-  };
+  const handleColorChange = useCallback(
+    (value: string) => setFilters((prev) => ({ ...prev, color: value })),
+    [setFilters]
+  );
 
-  const handleEndYearChange = (year: number) => {
-    setFilters({ ...filters, endYear: year });
-  };
+  const handleStartYearChange = useCallback(
+    (year: number) => setFilters((prev) => ({ ...prev, startYear: year })),
+    [setFilters]
+  );
 
-  const handleCylindersChange = (value: string) => {
-    setFilters({ ...filters, cylinders: value ? Number(value) : undefined });
-  };
+  const handleEndYearChange = useCallback(
+    (year: number) => setFilters((prev) => ({ ...prev, endYear: year })),
+    [setFilters]
+  );
+
+  // Memoizing options to avoid unnecessary re-renders
+  const brandOptions = useMemo(
+    () =>
+      brandBikes.map((bike) => ({
+        ...bike,
+        id: bike.id.toString(),
+        value: bike.value.toString(),
+      })),
+    []
+  );
+
+  const locationOptions = useMemo(
+    () =>
+      locations.map((loc) => ({
+        ...loc,
+        id: loc.id.toString(),
+        value: loc.value.toString(),
+      })),
+    []
+  );
+
+  const fuelOptions = useMemo(
+    () =>
+      fuel.map((f) => ({
+        ...f,
+        id: f.id.toString(),
+        value: f.value.toString(),
+      })),
+    []
+  );
+
+  const exchangeOptions = useMemo(
+    () =>
+      exchange.map((ex) => ({
+        ...ex,
+        id: ex.id.toString(),
+        value: ex.value.toString(),
+      })),
+    []
+  );
+
+  const colorOptions = useMemo(
+    () =>
+      colors.map((color) => ({
+        ...color,
+        id: color.id.toString(),
+        value: color.value.toString(),
+      })),
+    []
+  );
+
+  const announceOptions = useMemo(
+    () =>
+      announceType.map((announce) => ({
+        ...announce,
+        id: announce.id.toString(),
+        value: announce.value.toString(),
+      })),
+    []
+  );
+
+  const cylindersOptions = useMemo(
+    () =>
+      cylindersType.map((cylinder) => ({
+        ...cylinder,
+        id: cylinder.id.toString(),
+        value: cylinder.value.toString(),
+      })),
+    []
+  );
+
+  const kmOptions = useMemo(
+    () =>
+      kms.map((km) => ({
+        ...km,
+        id: km.id.toString(),
+        value: km.value.toString(),
+      })),
+    []
+  );
 
   return (
     <div className="space-y-4 md:space-y-0 sticky">
@@ -156,13 +258,8 @@ export const FilterBike: React.FC<FilterProps> = ({
                   label="Marca"
                   value={filters.motorbikeBrand || ""}
                   onValueChange={handleBrandChange}
-                  options={brandBikes.map((bike) => ({
-                    ...bike,
-                    id: bike.id.toString(),
-                    value: bike.value.toString(),
-                  }))}
+                  options={brandOptions}
                   placeholder="Selecione uma marca"
-                  id={brandBikes[0]?.id.toString()}
                 />
                 <div>
                   <Label>Modelo</Label>
@@ -172,42 +269,14 @@ export const FilterBike: React.FC<FilterProps> = ({
                     onChange={handleModelChange}
                   />
                 </div>
-                <FilterSelect
-                  label="Localidade"
-                  value={filters.location || ""}
-                  onValueChange={handleLocationChange}
-                  options={locations.map((loc) => ({
-                    ...loc,
-                    id: loc.id.toString(),
-                    value: loc.value.toString(),
-                  }))}
-                  placeholder="Selecione a localidade"
-                  id={locations[0]?.id.toString()}
+
+                <YearFilter
+                  startYear={filters.startYear || 1990}
+                  endYear={filters.endYear || new Date().getFullYear()}
+                  onStartYearChange={handleStartYearChange}
+                  onEndYearChange={handleEndYearChange}
                 />
-                <FilterSelect
-                  label="Tipo de Combustível"
-                  value={filters.fuel || ""}
-                  onValueChange={handleFuelChange}
-                  options={fuel.map((f) => ({
-                    ...f,
-                    id: f.id.toString(),
-                    value: f.value.toString(),
-                  }))}
-                  placeholder="Selecione o combustível"
-                  id={fuel[0]?.id.toString()}
-                />
-                <FilterSelect
-                  label="Tipo de câmbio"
-                  value={filters.exchange || ""}
-                  onValueChange={handleExchangeChange}
-                  options={exchange.map((ex) => ({
-                    ...ex,
-                    id: ex.id.toString(),
-                    value: ex.value.toString(),
-                  }))}
-                  placeholder="Selecione o tipo de câmbio"
-                  id={exchange[0]?.id.toString()}
-                />
+
                 <div className="flex items-center gap-2">
                   <FilterPriceSelect
                     label="Preço mínimo"
@@ -232,18 +301,7 @@ export const FilterBike: React.FC<FilterProps> = ({
                     placeholder="Selecione o preço máximo"
                   />
                 </div>
-                <FilterSelect
-                  label="Cor"
-                  value={filters.color || ""}
-                  onValueChange={handleColorChange}
-                  options={colors.map((color) => ({
-                    ...color,
-                    id: color.id.toString(),
-                    value: color.value.toString(),
-                  }))}
-                  placeholder="Selecione a cor"
-                  id={colors[0]?.id.toString()}
-                />
+
                 <div>
                   <Label>Quilometragem</Label>
                   <Select
@@ -254,17 +312,46 @@ export const FilterBike: React.FC<FilterProps> = ({
                       <SelectValue placeholder="Selecione a quilometragem" />
                     </SelectTrigger>
                     <SelectContent>
-                      {kms.map((km) => (
-                        <SelectItem
-                          key={km.id.toString()}
-                          value={km.value.toString()}
-                        >
+                      {kmOptions.map((km) => (
+                        <SelectItem key={km.id} value={km.value}>
                           {km.title}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
+
+                <FilterSelect
+                  label="Tipo de Combustível"
+                  value={filters.fuel || ""}
+                  onValueChange={handleFuelChange}
+                  options={fuelOptions}
+                  placeholder="Selecione o combustível"
+                />
+
+                <FilterSelect
+                  label="Localidade"
+                  value={filters.location || ""}
+                  onValueChange={handleLocationChange}
+                  options={locationOptions}
+                  placeholder="Selecione a localidade"
+                />
+
+                <FilterSelect
+                  label="Cor"
+                  value={filters.color || ""}
+                  onValueChange={handleColorChange}
+                  options={colorOptions}
+                  placeholder="Selecione a cor"
+                />
+
+                <FilterSelect
+                  label="Tipo de câmbio"
+                  value={filters.exchange || ""}
+                  onValueChange={handleExchangeChange}
+                  options={exchangeOptions}
+                  placeholder="Selecione o câmbio"
+                />
 
                 <div>
                   <Label>Cilindradas</Label>
@@ -273,14 +360,11 @@ export const FilterBike: React.FC<FilterProps> = ({
                     onValueChange={handleCylindersChange}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecione a quilometragem" />
+                      <SelectValue placeholder="Selecione as cilindradas" />
                     </SelectTrigger>
                     <SelectContent>
-                      {cylindersType.map((cylinder) => (
-                        <SelectItem
-                          key={cylinder.id.toString()}
-                          value={cylinder.value.toString()}
-                        >
+                      {cylindersOptions.map((cylinder) => (
+                        <SelectItem key={cylinder.id} value={cylinder.value}>
                           {cylinder.title}
                         </SelectItem>
                       ))}
@@ -288,11 +372,12 @@ export const FilterBike: React.FC<FilterProps> = ({
                   </Select>
                 </div>
 
-                <YearFilter
-                  startYear={filters.startYear || 1990}
-                  endYear={filters.endYear || new Date().getFullYear()}
-                  onStartYearChange={handleStartYearChange}
-                  onEndYearChange={handleEndYearChange}
+                <FilterSelect
+                  label="Anunciante"
+                  value={filters.announce || ""}
+                  onValueChange={handleAnnounceChange}
+                  options={announceOptions}
+                  placeholder="Selecione o anunciante"
                 />
 
                 <AccessoriesFilter
@@ -317,13 +402,8 @@ export const FilterBike: React.FC<FilterProps> = ({
               label="Marca"
               value={filters.motorbikeBrand || ""}
               onValueChange={handleBrandChange}
-              options={brandBikes.map((bike) => ({
-                ...bike,
-                id: bike.id.toString(),
-                value: bike.value.toString(),
-              }))}
+              options={brandOptions}
               placeholder="Selecione uma marca"
-              id={brandBikes[0]?.id.toString()}
             />
             <div>
               <Label>Modelo</Label>
@@ -333,42 +413,14 @@ export const FilterBike: React.FC<FilterProps> = ({
                 onChange={handleModelChange}
               />
             </div>
-            <FilterSelect
-              label="Localidade"
-              value={filters.location || ""}
-              onValueChange={handleLocationChange}
-              options={locations.map((loc) => ({
-                ...loc,
-                id: loc.id.toString(),
-                value: loc.value.toString(),
-              }))}
-              placeholder="Selecione a localidade"
-              id={locations[0]?.id.toString()}
+
+            <YearFilter
+              startYear={filters.startYear || 1990}
+              endYear={filters.endYear || new Date().getFullYear()}
+              onStartYearChange={handleStartYearChange}
+              onEndYearChange={handleEndYearChange}
             />
-            <FilterSelect
-              label="Tipo de Combustível"
-              value={filters.fuel || ""}
-              onValueChange={handleFuelChange}
-              options={fuel.map((f) => ({
-                ...f,
-                id: f.id.toString(),
-                value: f.value.toString(),
-              }))}
-              placeholder="Selecione o combustível"
-              id={fuel[0]?.id.toString()}
-            />
-            <FilterSelect
-              label="Tipo de câmbio"
-              value={filters.exchange || ""}
-              onValueChange={handleExchangeChange}
-              options={exchange.map((ex) => ({
-                ...ex,
-                id: ex.id.toString(),
-                value: ex.value.toString(),
-              }))}
-              placeholder="Selecione o tipo de câmbio"
-              id={exchange[0]?.id.toString()}
-            />
+
             <div className="flex items-center gap-2">
               <FilterPriceSelect
                 label="Preço mínimo"
@@ -393,18 +445,7 @@ export const FilterBike: React.FC<FilterProps> = ({
                 placeholder="Selecione o preço máximo"
               />
             </div>
-            <FilterSelect
-              label="Cor"
-              value={filters.color || ""}
-              onValueChange={handleColorChange}
-              options={colors.map((color) => ({
-                ...color,
-                id: color.id.toString(),
-                value: color.value.toString(),
-              }))}
-              placeholder="Selecione a cor"
-              id={colors[0]?.id.toString()}
-            />
+
             <div>
               <Label>Quilometragem</Label>
               <Select
@@ -415,17 +456,46 @@ export const FilterBike: React.FC<FilterProps> = ({
                   <SelectValue placeholder="Selecione a quilometragem" />
                 </SelectTrigger>
                 <SelectContent>
-                  {kms.map((km) => (
-                    <SelectItem
-                      key={km.id.toString()}
-                      value={km.value.toString()}
-                    >
+                  {kmOptions.map((km) => (
+                    <SelectItem key={km.id} value={km.value}>
                       {km.title}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
+
+            <FilterSelect
+              label="Tipo de Combustível"
+              value={filters.fuel || ""}
+              onValueChange={handleFuelChange}
+              options={fuelOptions}
+              placeholder="Selecione o combustível"
+            />
+
+            <FilterSelect
+              label="Localidade"
+              value={filters.location || ""}
+              onValueChange={handleLocationChange}
+              options={locationOptions}
+              placeholder="Selecione a localidade"
+            />
+
+            <FilterSelect
+              label="Cor"
+              value={filters.color || ""}
+              onValueChange={handleColorChange}
+              options={colorOptions}
+              placeholder="Selecione a cor"
+            />
+
+            <FilterSelect
+              label="Tipo de câmbio"
+              value={filters.exchange || ""}
+              onValueChange={handleExchangeChange}
+              options={exchangeOptions}
+              placeholder="Selecione o câmbio"
+            />
 
             <div>
               <Label>Cilindradas</Label>
@@ -434,14 +504,11 @@ export const FilterBike: React.FC<FilterProps> = ({
                 onValueChange={handleCylindersChange}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione a quilometragem" />
+                  <SelectValue placeholder="Selecione as cilindradas" />
                 </SelectTrigger>
                 <SelectContent>
-                  {cylindersType.map((cylinder) => (
-                    <SelectItem
-                      key={cylinder.id.toString()}
-                      value={cylinder.value.toString()}
-                    >
+                  {cylindersOptions.map((cylinder) => (
+                    <SelectItem key={cylinder.id} value={cylinder.value}>
                       {cylinder.title}
                     </SelectItem>
                   ))}
@@ -453,20 +520,8 @@ export const FilterBike: React.FC<FilterProps> = ({
               label="Anunciante"
               value={filters.announce || ""}
               onValueChange={handleAnnounceChange}
-              options={announceType.map((announce) => ({
-                ...announce,
-                id: announce.id.toString(),
-                value: announce.value.toString(),
-              }))}
+              options={announceOptions}
               placeholder="Selecione o anunciante"
-              id={announceType[0]?.id.toString()}
-            />
-
-            <YearFilter
-              startYear={filters.startYear || 1990}
-              endYear={filters.endYear || new Date().getFullYear()}
-              onStartYearChange={handleStartYearChange}
-              onEndYearChange={handleEndYearChange}
             />
 
             <AccessoriesFilter
@@ -483,4 +538,4 @@ export const FilterBike: React.FC<FilterProps> = ({
   );
 };
 
-export default FilterBike;
+export default React.memo(FilterBike);
