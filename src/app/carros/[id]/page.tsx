@@ -306,7 +306,10 @@ const Page = () => {
         />
       </section>
 
-      <section className="p-8 mt-5 h-[600px] flex items-center justify-center">
+      <section className="p-8 mt-5 h-[600px] flex flex-col items-center justify-center">
+        <div className="flex  items-center justify-center">
+          <h2 className="text-2xl font-bold">Outras opções</h2>
+        </div>
         {cars && cars.length > 0 ? (
           <Carousel
             className="w-full md:max-w-6xl mx-auto"

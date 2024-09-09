@@ -63,7 +63,7 @@ export function Search() {
         />
         <Input
           placeholder="Pesquisar modelo"
-          className="w-full pl-12 rounded-full py-8"
+          className="w-full pl-12 rounded-full py-5"
           value={search}
           onChange={handleSearch}
         />

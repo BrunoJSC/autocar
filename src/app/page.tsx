@@ -21,7 +21,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { client, urlForImage } from "@/lib/sanity";
 import { CircleMessage } from "@/components/circleMessage";
 import Image from "next/image";
@@ -61,20 +61,78 @@ export default function Home() {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
   useEffect(() => {
-    client
-      .fetch<Announcement[]>(
-        `*[_type == "announcement"]{title, "imageUrl": image.asset->url, link, brand, model, price, fuel, year, km, location}`
-      )
-      .then((data: any) => setAnnouncements(data))
-      .catch(console.error);
-
     async function fetchData() {
-      const data = await fetchBlogData();
-      setBlog(data);
+      try {
+        const [announcementData, blogData] = await Promise.all([
+          client.fetch<Announcement[]>(
+            `*[_type == "announcement"]{title, "imageUrl": image.asset->url, link, brand, model, price, fuel, year, km, location}`
+          ),
+          fetchBlogData(),
+        ]);
+        setAnnouncements(announcementData);
+        setBlog(blogData);
+      } catch (error) {
+        console.error(error);
+      }
     }
 
     fetchData();
   }, []);
+
+  const MemoizedAnnouncementCard = memo(AnnouncementCard);
+
+  function AnnouncementCard({ announcement }: { announcement: Announcement }) {
+    return (
+      <div>
+        <Link href={announcement.link} className="w-full">
+          <Card className="w-full h-full md:max-w-xs">
+            <CardHeader className="w-full h-60 overflow-hidden p-0 ">
+              <Image
+                src={announcement.imageUrl}
+                alt={announcement.title}
+                className="w-full h-full object-cover object-center rounded-t-lg"
+                width={500}
+                height={300}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                priority
+              />
+            </CardHeader>
+            <CardContent>
+              <CardTitle className="text-lg">
+                {announcement.brand} - {announcement.model}
+              </CardTitle>
+              <p className="text-lg font-normal">
+                {Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(announcement.price)}
+              </p>
+            </CardContent>
+            <CardFooter className="grid grid-cols-2 w-full border-t p-4 gap-2 text-sm justify-between">
+              <div className="flex items-center gap-2">
+                <MapPinIcon className="h-4 w-4 text-gray-500" />
+                <p className="text-gray-500">{announcement.location}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <CircleGauge className="h-4 w-4 text-gray-500" />
+                <p className="text-gray-500">
+                  {Intl.NumberFormat("pt-BR").format(announcement.km)}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <CalendarIcon className="h-4 w-4 text-gray-500" />
+                <p className="text-gray-500">{announcement.year}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <FuelIcon className="h-4 w-4 text-gray-500" />
+                <p className="text-gray-500">{announcement.fuel}</p>
+              </div>
+            </CardFooter>
+          </Card>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen">
@@ -83,70 +141,22 @@ export default function Home() {
         <CircleMessage message="Vamos conversar?" setMessage={setMessage} />
 
         <div className="w-full">
-          <div className="flex justify-center">
-            <h1 className="text-3xl font-bold mt-9">Destaque</h1>
-          </div>
-
-          <div className="w-full flex flex-col md:flex-row justify-between ">
-            <div className="grid md:grid-cols-3 lg:grid-cols-3  grid-cols-1  md:gap-8 gap-4 p-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 p-4 h-auto bg-red-500">
+            <div className="md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 bg-green-500">
               {announcements.map((announcement, index) => (
-                <Link key={index} href={announcement.link} className="w-full">
-                  <Card className="w-full h-full md:max-w-xs">
-                    <CardHeader className="w-full h-60 overflow-hidden p-0 ">
-                      <Image
-                        src={announcement.imageUrl}
-                        alt={announcement.title}
-                        className="w-full h-full object-cover object-center rounded-t-lg"
-                        width={500}
-                        height={300}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        priority
-                      />
-                    </CardHeader>
-                    <CardContent>
-                      <CardTitle className="text-lg">
-                        {announcement.brand} - {announcement.model}
-                      </CardTitle>
-                      <p className="text-lg font-normal">
-                        {Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(announcement.price)}
-                      </p>
-                    </CardContent>
-                    <CardFooter className="grid grid-cols-2 w-full border-t p-4 gap-2 text-sm justify-between">
-                      <div className="flex items-center gap-2">
-                        <MapPinIcon className="h-4 w-4 text-gray-500" />
-                        <p className="text-gray-500">{announcement.location}</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <CircleGauge className="h-4 w-4 text-gray-500" />
-                        <p className="text-gray-500">
-                          {Intl.NumberFormat("pt-BR").format(announcement.km)}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <CalendarIcon className="h-4 w-4 text-gray-500" />
-                        <p className="text-gray-500">{announcement.year}</p>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <FuelIcon className="h-4 w-4 text-gray-500" />
-                        <p className="text-gray-500">{announcement.fuel}</p>
-                      </div>
-                    </CardFooter>
-                  </Card>
-                </Link>
+                <MemoizedAnnouncementCard
+                  key={index}
+                  announcement={announcement}
+                />
               ))}
             </div>
-            <div className="w-full lg:w-1/3 p-4">
-              <div className="flex justify-center mb-5 md:hidden">
-                <h1 className="text-3xl font-bold mt-9">Blog</h1>
-              </div>
+
+            <div className=" bg-blue-500">
+              {/* Carousel do Blog ajustado para ocupar a mesma altura dos cards */}
               <Carousel autoplay autoplayInterval={3000}>
                 <CarouselContent>
                   {blog.map((item) => (
-                    <CarouselItem key={item.title} className="w-full ">
+                    <CarouselItem key={item.title} className="w-full">
                       <Link href={`/oficina/${item._id}`}>
                         <Card className="w-full md:max-w-xs mx-auto shadow-lg rounded-lg overflow-hidden">
                           <div className="relative w-full h-64">
@@ -176,163 +186,100 @@ export default function Home() {
           </div>
         </div>
 
-        <section className="p-4">
-          <div className="flex flex-col space-y-4 items-center">
-            <h1 className="text-3xl font-bold">Explore por Faixa de Preço</h1>
-            <p className="text-lg mt-4 text-center text-gray-700">
-              Selecione uma faixa de preço para visualizar os veículos
-              disponíveis.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-4 justify-center mt-2">
-            <Link
-              href={{
-                pathname: "/carros",
-                query: { maxPrice: 20000 },
-              }}
-              className={cn(buttonVariants(), "w-48")}
-            >
-              Carros até 15 Mil
-            </Link>
-            <Link
-              href={{
-                pathname: "/carros",
-                query: { maxPrice: 25000 },
-              }}
-              className={cn(buttonVariants(), "w-48")}
-            >
-              Carros até 25 Mil
-            </Link>
-            <Link
-              href={{
-                pathname: "/carros",
-                query: { maxPrice: 30000 },
-              }}
-              className={cn(buttonVariants(), "w-48")}
-            >
-              Carros até 30 Mil
-            </Link>
-
-            <Link
-              href={{
-                pathname: "/carros",
-                query: { maxPrice: 40000 },
-              }}
-              className={cn(buttonVariants(), "w-48")}
-            >
-              Carros até 40 Mil
-            </Link>
-
-            <Link
-              href={{
-                pathname: "/carros",
-                query: { maxPrice: 50000 },
-              }}
-              className={cn(buttonVariants(), "w-48")}
-            >
-              Carros até 50 Mil
-            </Link>
-
-            <Link
-              href={{
-                pathname: "/carros",
-                query: { maxPrice: 60000 },
-              }}
-              className={cn(buttonVariants(), "w-48")}
-            >
-              Carros até 60 Mil
-            </Link>
-
-            <Link
-              href={{
-                pathname: "/carros",
-                query: { maxPrice: 70000 },
-              }}
-              className={cn(buttonVariants(), "w-48")}
-            >
-              Carros até 70 Mil
-            </Link>
-
-            <Link
-              href={{
-                pathname: "/carros",
-                query: { maxPrice: 80000 },
-              }}
-              className={cn(buttonVariants(), "w-48")}
-            >
-              Carros até 80 Mil
-            </Link>
-
-            <Link
-              href={{
-                pathname: "/carros",
-                query: { maxPrice: 90000 },
-              }}
-              className={cn(buttonVariants(), "w-48")}
-            >
-              Carros até 90 Mil
-            </Link>
-
-            <Link
-              href={{
-                pathname: "/carros",
-                query: { maxPrice: 100000 },
-              }}
-              className={cn(buttonVariants(), "w-48")}
-            >
-              Carros até 100 Mil
-            </Link>
-          </div>
-        </section>
+        <PriceRangeSection />
       </MaxWrapper>
 
       <MaxWrapper className="py-8 p-8">
-        <section>
-          <div className="flex flex-col space-y-4 items-center">
-            <h1 className="text-3xl font-bold">
-              A melhor plataforma de negociação de veículos
-            </h1>
-            <p className="text-lg mt-4 text-center text-gray-700">
-              A AutoNegocie revolucionou a maneira como as pessoas compram e
-              vendem veículos. Como uma plataforma inovadora, ela se destaca por
-              sua abordagem eficiente e segura de conectar compradores e
-              vendedores.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 gap-4 mt-8 grid-cols-1">
-            {services.map((service) => (
-              <Card key={service.title} className="w-full p-4 space-y-4">
-                <CardHeader>
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary text-primary-foreground">
-                    {service.icon}
-                  </div>
-                </CardHeader>
-                <CardTitle>{service.title}</CardTitle>
-                <CardDescription>{service.description}</CardDescription>
-              </Card>
-            ))}
-          </div>
-        </section>
-
+        <PlatformDescription />
         <Separator className="my-24" orientation="horizontal" />
-
-        <section className="p-8">
-          <div className="flex flex-col space-y-4 items-center">
-            <h1 className="text-3xl font-bold">
-              Perguntas frequentes sobre a plataforma
-            </h1>
-          </div>
-
-          <Accordion type="single" collapsible className="w-full">
-            {faqs.map((faq) => (
-              <AccordionItem value={faq.id} key={faq.id}>
-                <AccordionTrigger>{faq.title}</AccordionTrigger>
-                <AccordionContent>{faq.text}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </section>
+        <FaqSection />
       </MaxWrapper>
     </main>
   );
 }
+
+const PriceRangeSection = memo(function PriceRangeSection() {
+  return (
+    <section className="p-4">
+      <div className="flex flex-col space-y-4 items-center">
+        <h1 className="text-3xl font-bold">Explore por Faixa de Preço</h1>
+        <p className="text-lg mt-4 text-center text-gray-700">
+          Selecione uma faixa de preço para visualizar os veículos disponíveis.
+        </p>
+      </div>
+      <div className="flex flex-wrap gap-4 justify-center mt-2">
+        {[
+          { maxPrice: 20000, label: "Carros até 15 Mil" },
+          { maxPrice: 25000, label: "Carros até 25 Mil" },
+          { maxPrice: 30000, label: "Carros até 30 Mil" },
+          { maxPrice: 40000, label: "Carros até 40 Mil" },
+          { maxPrice: 50000, label: "Carros até 50 Mil" },
+          { maxPrice: 60000, label: "Carros até 60 Mil" },
+          { maxPrice: 70000, label: "Carros até 70 Mil" },
+          { maxPrice: 80000, label: "Carros até 80 Mil" },
+          { maxPrice: 90000, label: "Carros até 90 Mil" },
+          { maxPrice: 100000, label: "Carros até 100 Mil" },
+        ].map(({ maxPrice, label }) => (
+          <Link
+            key={maxPrice}
+            href={{ pathname: "/carros", query: { maxPrice } }}
+            className={cn(buttonVariants(), "w-48")}
+          >
+            {label}
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+});
+
+const PlatformDescription = memo(function PlatformDescription() {
+  return (
+    <section>
+      <div className="flex flex-col space-y-4 items-center">
+        <h1 className="text-3xl font-bold">
+          A melhor plataforma de negociação de veículos
+        </h1>
+        <p className="text-lg mt-4 text-center text-gray-700">
+          A AutoNegocie revolucionou a maneira como as pessoas compram e vendem
+          veículos. Como uma plataforma inovadora, ela se destaca por sua
+          abordagem eficiente e segura de conectar compradores e vendedores.
+        </p>
+      </div>
+      <div className="grid md:grid-cols-2 gap-4 mt-8 grid-cols-1">
+        {services.map((service) => (
+          <Card key={service.title} className="w-full p-4 space-y-4">
+            <CardHeader>
+              <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary text-primary-foreground">
+                {service.icon}
+              </div>
+            </CardHeader>
+            <CardTitle>{service.title}</CardTitle>
+            <CardDescription>{service.description}</CardDescription>
+          </Card>
+        ))}
+      </div>
+    </section>
+  );
+});
+
+const FaqSection = memo(function FaqSection() {
+  return (
+    <section className="p-8">
+      <div className="flex flex-col space-y-4 items-center">
+        <h1 className="text-3xl font-bold">
+          Perguntas frequentes sobre a plataforma
+        </h1>
+      </div>
+
+      <Accordion type="single" collapsible className="w-full">
+        {faqs.map((faq) => (
+          <AccordionItem value={faq.id} key={faq.id}>
+            <AccordionTrigger>{faq.title}</AccordionTrigger>
+            <AccordionContent>{faq.text}</AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </section>
+  );
+});
