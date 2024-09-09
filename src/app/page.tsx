@@ -152,7 +152,6 @@ export default function Home() {
             </div>
 
             <div className=" bg-blue-500">
-              {/* Carousel do Blog ajustado para ocupar a mesma altura dos cards */}
               <Carousel autoplay autoplayInterval={3000}>
                 <CarouselContent>
                   {blog.map((item) => (
