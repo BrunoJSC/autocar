@@ -154,16 +154,20 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="w-full">
+            <div className="w-full md:max-w-xs mx-auto bg-red-500">
               <div className="flex justify-center items-center">
                 <h2 className="text-2xl font-bold mb-4">Artigos</h2>
               </div>
-              <Carousel autoplay autoplayInterval={3000}>
+              <Carousel
+                autoplay
+                autoplayInterval={3000}
+                className="w-full mx-auto"
+              >
                 <CarouselContent>
                   {blog.map((item) => (
                     <CarouselItem key={item.title} className="w-full">
                       <Link href={`/oficina/${item._id}`}>
-                        <Card className="w-full md:max-w-xs mx-auto shadow-lg rounded-lg overflow-hidden">
+                        <Card className="w-full md:max-w-xs md:h-[400px] mx-auto shadow-lg rounded-lg overflow-hidden bg-red-500">
                           <div className="relative w-full h-64">
                             {item.mainImageUrl && (
                               <Image
@@ -175,7 +179,7 @@ export default function Home() {
                             )}
                           </div>
                           <CardHeader className="p-4 space-y-2 text-center bg-white">
-                            <CardTitle className="text-2xl font-semibold text-gray-800">
+                            <CardTitle className="text-xl font-semibold text-gray-800">
                               {item.title}
                             </CardTitle>
                           </CardHeader>

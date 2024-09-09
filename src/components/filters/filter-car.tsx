@@ -318,30 +318,32 @@ export const FilterCar: React.FC<FilterProps> = ({
                   </Select>
                 </div>
 
-                <FilterSelect
-                  label="Localidade"
-                  value={filters.location || ""}
-                  onValueChange={handleLocationChange}
-                  options={locationOptions}
-                  placeholder="Selecione a localidade"
-                  id={locations[0]?.id.toString()}
+                <div>
+                  <Label>Tipo de carroceria</Label>
+                  <Select
+                    value={filters.bodyType || ""}
+                    onValueChange={handleBodyTypeChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o tipo de carroceria" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {bodyTypes.map((bodyType) => (
+                        <SelectItem key={bodyType.id} value={bodyType.value}>
+                          {bodyType.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <YearFilter
+                  startYear={filters.startYear || 1990}
+                  endYear={filters.endYear || new Date().getFullYear()}
+                  onStartYearChange={handleStartYearChange}
+                  onEndYearChange={handleEndYearChange}
                 />
-                <FilterSelect
-                  label="Tipo de Combustível"
-                  value={filters.fuel || ""}
-                  onValueChange={handleFuelChange}
-                  options={fuelOptions}
-                  placeholder="Selecione o combustível"
-                  id={fuel[0]?.id.toString()}
-                />
-                <FilterSelect
-                  label="Tipo de câmbio"
-                  value={filters.exchange || ""}
-                  onValueChange={handleExchangeChange}
-                  options={exchangeOptions}
-                  placeholder="Selecione o tipo de troca"
-                  id={exchange[0]?.id.toString()}
-                />
+
                 <div className="flex items-center gap-2">
                   <FilterPriceSelect
                     label="Preço minimo"
@@ -366,14 +368,53 @@ export const FilterCar: React.FC<FilterProps> = ({
                     placeholder="Selecione o preço maximo"
                   />
                 </div>
+
                 <FilterSelect
-                  label="Cor do carro"
-                  value={filters.color || ""}
-                  onValueChange={handleColorChange}
-                  options={colorOptions}
+                  label="Tipo de câmbio"
+                  value={filters.exchange || ""}
+                  onValueChange={handleExchangeChange}
+                  options={exchangeOptions}
                   placeholder="Selecione o tipo de troca"
-                  id={colors[0]?.id.toString()}
+                  id={exchange[0]?.id.toString()}
                 />
+
+                <div>
+                  <Label>Quilometragem</Label>
+                  <Select
+                    value={Number(filters.km).toString()}
+                    onValueChange={handleKmChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a quilometragem" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {kmOptions.map((km) => (
+                        <SelectItem key={km.id} value={km.value}>
+                          {km.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <FilterSelect
+                  label="Tipo de Combustível"
+                  value={filters.fuel || ""}
+                  onValueChange={handleFuelChange}
+                  options={fuelOptions}
+                  placeholder="Selecione o combustível"
+                  id={fuel[0]?.id.toString()}
+                />
+
+                <FilterSelect
+                  label="Localidade"
+                  value={filters.location || ""}
+                  onValueChange={handleLocationChange}
+                  options={locationOptions}
+                  placeholder="Selecione a localidade"
+                  id={locations[0]?.id.toString()}
+                />
+
                 <div>
                   <Label>Portas</Label>
                   <Select
@@ -394,37 +435,21 @@ export const FilterCar: React.FC<FilterProps> = ({
                 </div>
 
                 <FilterSelect
+                  label="Cor do carro"
+                  value={filters.color || ""}
+                  onValueChange={handleColorChange}
+                  options={colorOptions}
+                  placeholder="Selecione o tipo de troca"
+                  id={colors[0]?.id.toString()}
+                />
+
+                <FilterSelect
                   label="Anunciante"
                   value={filters.announce || ""}
                   onValueChange={handleAnnounceChange}
                   options={announceOptions}
                   placeholder="Selecione o anunciante"
                   id={announceType[0]?.id.toString()}
-                />
-                <div>
-                  <Label>Quilometragem</Label>
-                  <Select
-                    value={Number(filters.km).toString()}
-                    onValueChange={handleKmChange}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione a quilometragem" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {kmOptions.map((km) => (
-                        <SelectItem key={km.id} value={km.value}>
-                          {km.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <YearFilter
-                  startYear={filters.startYear || 1990}
-                  endYear={filters.endYear || new Date().getFullYear()}
-                  onStartYearChange={handleStartYearChange}
-                  onEndYearChange={handleEndYearChange}
                 />
 
                 <AccessoriesFilter
@@ -480,20 +505,84 @@ export const FilterCar: React.FC<FilterProps> = ({
               </Select>
             </div>
 
+            <div>
+              <Label>Tipo de carroceria</Label>
+              <Select
+                value={filters.bodyType || ""}
+                onValueChange={handleBodyTypeChange}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o tipo de carroceria" />
+                </SelectTrigger>
+                <SelectContent>
+                  {bodyTypes.map((bodyType) => (
+                    <SelectItem key={bodyType.id} value={bodyType.value}>
+                      {bodyType.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             <YearFilter
               startYear={filters.startYear || 1990}
               endYear={filters.endYear || new Date().getFullYear()}
               onStartYearChange={handleStartYearChange}
               onEndYearChange={handleEndYearChange}
             />
+
+            <div className="flex items-center gap-2">
+              <FilterPriceSelect
+                label="Preço minimo"
+                value={filters.minPrice}
+                onValueChange={handleMinPriceChange}
+                options={minPrice.map((price) => ({
+                  ...price,
+                  id: price.id.toString(),
+                  value: price.value.toString(),
+                }))}
+                placeholder="Selecione o preço inicial"
+              />
+              <FilterPriceSelect
+                label="Preço maximo"
+                value={filters.maxPrice}
+                onValueChange={handleMaxPriceChange}
+                options={maxPrice.map((price) => ({
+                  ...price,
+                  id: price.id.toString(),
+                  value: price.value.toString(),
+                }))}
+                placeholder="Selecione o preço maximo"
+              />
+            </div>
+
             <FilterSelect
-              label="Localidade"
-              value={filters.location || ""}
-              onValueChange={handleLocationChange}
-              options={locationOptions}
-              placeholder="Selecione a localidade"
-              id={locations[0]?.id.toString()}
+              label="Tipo de câmbio"
+              value={filters.exchange || ""}
+              onValueChange={handleExchangeChange}
+              options={exchangeOptions}
+              placeholder="Selecione o tipo de troca"
+              id={exchange[0]?.id.toString()}
             />
+
+            <div>
+              <Label>Quilometragem</Label>
+              <Select
+                value={Number(filters.km).toString()}
+                onValueChange={handleKmChange}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione a quilometragem" />
+                </SelectTrigger>
+                <SelectContent>
+                  {kmOptions.map((km) => (
+                    <SelectItem key={km.id} value={km.value}>
+                      {km.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
             <FilterSelect
               label="Tipo de Combustível"
@@ -505,46 +594,12 @@ export const FilterCar: React.FC<FilterProps> = ({
             />
 
             <FilterSelect
-              label="Tipo de câmbio"
-              value={filters.exchange || ""}
-              onValueChange={handleExchangeChange}
-              options={exchangeOptions}
-              placeholder="Selecione o tipo de câmbio"
-              id={exchange[0]?.id.toString()}
-            />
-
-            <div className="flex items-center gap-2">
-              <FilterPriceSelect
-                label="Preço mínimo"
-                value={filters.minPrice}
-                onValueChange={handleMinPriceChange}
-                options={minPrice.map((price) => ({
-                  ...price,
-                  id: price.id.toString(),
-                  value: price.value.toString(),
-                }))}
-                placeholder="Selecione o preço mínimo"
-              />
-              <FilterPriceSelect
-                label="Preço máximo"
-                value={filters.maxPrice}
-                onValueChange={handleMaxPriceChange}
-                options={maxPrice.map((price) => ({
-                  ...price,
-                  id: price.id.toString(),
-                  value: price.value.toString(),
-                }))}
-                placeholder="Selecione o preço máximo"
-              />
-            </div>
-
-            <FilterSelect
-              label="Cor do carro"
-              value={filters.color || ""}
-              onValueChange={handleColorChange}
-              options={colorOptions}
-              placeholder="Selecione a cor"
-              id={colors[0]?.id.toString()}
+              label="Localidade"
+              value={filters.location || ""}
+              onValueChange={handleLocationChange}
+              options={locationOptions}
+              placeholder="Selecione a localidade"
+              id={locations[0]?.id.toString()}
             />
 
             <div>
@@ -566,35 +621,13 @@ export const FilterCar: React.FC<FilterProps> = ({
               </Select>
             </div>
 
-            <div>
-              <Label>Kilometragem</Label>
-              <Input
-                placeholder="Digite a kilometragem"
-                value={filters.km?.toString() || ""}
-                onChange={(e) => handleKmChange(e.target.value)}
-              />
-            </div>
-
             <FilterSelect
-              label="Tipo de Anúncio"
-              value={filters.announce || ""}
-              onValueChange={handleAnnounceChange}
-              options={announceOptions}
-              placeholder="Selecione o tipo de anúncio"
-              id={announceType[0]?.id.toString()}
-            />
-
-            <AccessoriesFilter
-              accessories={accessoriesType}
-              selectedAccessories={filters.accessories || []}
-              onChange={handleAccessoriesChange}
-            />
-
-            <YearFilter
-              startYear={filters.startYear || 1990}
-              endYear={filters.endYear || new Date().getFullYear()}
-              onStartYearChange={handleStartYearChange}
-              onEndYearChange={handleEndYearChange}
+              label="Cor do carro"
+              value={filters.color || ""}
+              onValueChange={handleColorChange}
+              options={colorOptions}
+              placeholder="Selecione o tipo de troca"
+              id={colors[0]?.id.toString()}
             />
 
             <FilterSelect
@@ -605,24 +638,12 @@ export const FilterCar: React.FC<FilterProps> = ({
               placeholder="Selecione o anunciante"
               id={announceType[0]?.id.toString()}
             />
-            <div>
-              <Label>Quilometragem</Label>
-              <Select
-                value={Number(filters.km).toString()}
-                onValueChange={handleKmChange}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione a quilometragem" />
-                </SelectTrigger>
-                <SelectContent>
-                  {kmOptions.map((km) => (
-                    <SelectItem key={km.id} value={km.value}>
-                      {km.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+
+            <AccessoriesFilter
+              accessories={accessoriesType}
+              selectedAccessories={filters.accessories || []}
+              onChange={handleAccessoriesChange}
+            />
 
             <FilterButtons onSearch={onSearch} clearSearch={clearSearch} />
           </CardContent>
