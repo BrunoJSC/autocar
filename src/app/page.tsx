@@ -140,18 +140,24 @@ export default function Home() {
         <Search />
         <CircleMessage message="Vamos conversar?" setMessage={setMessage} />
 
-        <div className="w-full">
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 p-4 h-auto bg-red-500">
-            <div className="md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 bg-green-500">
-              {announcements.map((announcement, index) => (
-                <MemoizedAnnouncementCard
-                  key={index}
-                  announcement={announcement}
-                />
-              ))}
+        <div className="w-full ">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 p-4">
+            <div className="col-span-3 flex flex-col justify-center items-center">
+              <h2 className="text-2xl font-bold mb-4">Destaques</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {announcements.map((announcement, index) => (
+                  <MemoizedAnnouncementCard
+                    key={index}
+                    announcement={announcement}
+                  />
+                ))}
+              </div>
             </div>
 
-            <div className=" bg-blue-500">
+            <div className="w-full">
+              <div className="flex justify-center items-center">
+                <h2 className="text-2xl font-bold mb-4">Artigos</h2>
+              </div>
               <Carousel autoplay autoplayInterval={3000}>
                 <CarouselContent>
                   {blog.map((item) => (
