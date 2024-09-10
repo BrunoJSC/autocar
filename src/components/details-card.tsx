@@ -20,6 +20,7 @@ import {
   SelectValue,
   SelectItem,
 } from "@/components/ui/select";
+import { Separator } from "./ui/separator";
 
 interface Car {
   yearModification: number;
@@ -106,7 +107,7 @@ const DetailsCard: React.FC<DetailsCardProps> = ({
 
         <CardContent>
           <div className="grid md:grid-cols-4 gap-4 grid-cols-1">
-            <div className="w-[100px] h-[100px] bg-red-500">
+            <div className="w-[100px] h-[100px]">
               <p className="text-gray-500">Ano</p>
               <p className="text-black">
                 {isCar(vehicle)
@@ -122,7 +123,53 @@ const DetailsCard: React.FC<DetailsCardProps> = ({
                   : vehicle.yearModification}
               </p>
             </div>
+
+            <div>
+              <p className="text-gray-500">Placa</p>
+              <p className="text-black">
+                {isCar(vehicle) ? vehicle.plate : vehicle.plate}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-gray-500">KM</p>
+              <p className="text-black">
+                {isCar(vehicle)
+                  ? Intl.NumberFormat("pt-BR").format(vehicle.km)
+                  : Intl.NumberFormat("pt-BR").format(vehicle.km)}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-gray-500">Cor</p>
+              <p className="text-black">
+                {isCar(vehicle) ? vehicle.color : vehicle.color}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-gray-500">Marca</p>
+              <p className="text-black">
+                {isCar(vehicle) ? vehicle.brandCar : vehicle.motorbikeBrand}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-gray-500">Portas</p>
+              <p className="text-black">
+                {isCar(vehicle) ? vehicle.doors : ""}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-gray-500">Combustível</p>
+              <p className="text-black">
+                {isCar(vehicle) ? vehicle.fuel : vehicle.fuel}
+              </p>
+            </div>
           </div>
+
+          <Separator className="my-8" />
 
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2">
             <div>
