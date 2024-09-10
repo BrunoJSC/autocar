@@ -36,7 +36,7 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@radix-ui/react-select";
+} from "@/components/ui/select";
 
 type Filters = {
   motorbikeBrand: string;
