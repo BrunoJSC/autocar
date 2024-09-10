@@ -159,9 +159,9 @@ ${values.message}
   return (
     <MaxWrapper className="min-h-screen ">
       <section>
-        <div className="">
+        <div className="p-4">
           <Form {...form}>
-            <Card className="max-w-xl mx-auto my-24">
+            <Card className="max-w-xl mx-auto my-24 w-full">
               <CardHeader>
                 <CardTitle>Financiamento</CardTitle>
                 <CardDescription>

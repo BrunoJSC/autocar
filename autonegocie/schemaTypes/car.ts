@@ -65,6 +65,12 @@ export const carType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'yearModification',
+      title: 'Ano de Modificação',
+      type: 'number',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: 'fuel',
       title: 'Combustível',
       type: 'string',

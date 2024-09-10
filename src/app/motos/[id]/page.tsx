@@ -24,28 +24,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-  SelectItem,
-} from "@/components/ui/select";
+
 import DetailsCard from "@/components/details-card";
 import Link from "next/link";
 import { getData } from "@/fetch/fetch-motorbike";
 import { CalendarIcon, CircleGauge, FuelIcon, MapPinIcon } from "lucide-react";
+import { ContactForm } from "@/components/contact-form";
 
 const formSchema = z.object({
   name: z
@@ -195,7 +181,7 @@ const Page = () => {
             <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2" />
           </Carousel>
 
-          <Card className="flex-grow md:overflow-y-auto h-[700px] md:h-auto bg-black">
+          <Card className="flex-grow md:overflow-y-auto h-[720px] md:h-auto bg-black">
             <CardHeader>
               <CardTitle className="text-primary">
                 Entre em contato com nossa equipe!
@@ -206,92 +192,11 @@ const Page = () => {
             </CardHeader>
 
             <CardContent>
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="text-white space-y-4"
-                >
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Nome</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Nome" {...field} />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="cpf"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>CPF</FormLabel>
-                        <FormControl>
-                          <Input placeholder="CPF" {...field} />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Email" {...field} />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Telefone</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Telefone" {...field} />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="message"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Mensagem</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Mensagem"
-                            {...field}
-                            value={message}
-                            onChange={(e) => {
-                              field.onChange(e);
-                              setMessage(e.target.value);
-                            }}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-
-                  <Button type="submit" className="w-full mt-4">
-                    Enviar
-                  </Button>
-                  <Button
-                    type="button"
-                    className="w-full mt-4"
-                    onClick={messageWhatsapp}
-                  >
-                    Enviar Whatsapp
-                  </Button>
-                </form>
-              </Form>
+              <ContactForm
+                onSubmit={onSubmit}
+                defaultValues={form.getValues()}
+                initialMessage={message}
+              />
             </CardContent>
           </Card>
         </div>

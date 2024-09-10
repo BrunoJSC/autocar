@@ -19,7 +19,7 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
                 alt={car.brandCar}
                 width={200}
                 height={200}
-                className="w-full h-48 object-cover"
+                className="w-full h-48 object-cover rounded-t-lg"
                 priority
               />
               <div className="p-4">

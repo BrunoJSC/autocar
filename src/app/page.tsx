@@ -159,6 +159,11 @@ export default function Home() {
               className="md:h-[520px] mx-auto md:mr-4"
             />
 
+            <Separator
+              orientation="horizontal"
+              className="w-full md:hidden block"
+            />
+
             <div className="w-full md:w-[20%] ">
               <h2 className="text-2xl font-bold mb-4 text-center">Artigos</h2>
               <Carousel
