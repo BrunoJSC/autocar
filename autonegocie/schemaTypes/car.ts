@@ -59,6 +59,13 @@ export const carType = defineType({
       },
     }),
     defineField({
+      name: 'date',
+      title: 'Data da publicação',
+      type: 'date',
+      validation: (Rule) => Rule.required(),
+    }),
+
+    defineField({
       name: 'yearFabrication',
       title: 'Ano de Fabricação',
       type: 'number',
