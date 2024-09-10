@@ -45,14 +45,21 @@ interface Car {
 interface Motorbike {
   motorbikeBrand: string;
   motorbikeModel: string;
-  price: number;
-  description: string;
-  accessories: string[];
+  location: string;
   yearFabrication: number;
   yearModification: number;
-  km: number;
-  color: string;
   fuel: string;
+  km: number;
+  exchange: string;
+  color: string;
+  description: string;
+  accessories: string[];
+  price: number;
+  cylinder: string;
+  condition: string;
+  announce: string;
+  fairing: string;
+  plate: string;
 }
 
 interface DetailsCardProps {

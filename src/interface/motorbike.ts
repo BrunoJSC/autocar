@@ -5,6 +5,7 @@ interface Motorbike {
   images: { url: string }[];
   location: string;
   yearFabrication: number;
+  yearModification: number;
   fuel: string;
   km: number;
   exchange: string;
