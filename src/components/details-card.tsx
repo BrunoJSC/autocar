@@ -1,6 +1,5 @@
-// components/ui/CarDetailsCard.tsx
-
 "use client";
+import { ptBR } from "date-fns/locale";
 
 import React from "react";
 import {
@@ -21,6 +20,12 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Separator } from "./ui/separator";
+import {
+  formatDistance,
+  parseISO,
+  format,
+  formatDistanceToNow,
+} from "date-fns";
 
 interface Car {
   yearModification: number;
@@ -41,6 +46,7 @@ interface Car {
   announce: string;
   doors: number;
   plate: string;
+  date: Date;
 }
 
 interface Motorbike {
@@ -61,6 +67,7 @@ interface Motorbike {
   announce: string;
   fairing: string;
   plate: string;
+  date: Date;
 }
 
 interface DetailsCardProps {
@@ -103,6 +110,17 @@ const DetailsCard: React.FC<DetailsCardProps> = ({
               currency: "BRL",
             }).format(vehicle.price)}
           </h3>
+
+          <div>
+            <h2 className="text-gray-500">
+              <span className="text-black">Anúncio criado em </span>
+              {vehicle.date
+                ? format(new Date(vehicle.date), "dd/MM/yyyy", {
+                    locale: ptBR,
+                  })
+                : ""}
+            </h2>
+          </div>
         </CardHeader>
 
         <CardContent>

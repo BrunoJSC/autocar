@@ -24,17 +24,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 
 import DetailsCard from "@/components/details-card";
 import Link from "next/link";
@@ -209,7 +198,7 @@ const Page = () => {
 
         <DetailsCard
           vehicleType="car"
-          vehicle={car}
+          vehicle={car as any}
           downPayment={downPayment}
           installments={installments}
           monthlyPayment={monthlyPayment}

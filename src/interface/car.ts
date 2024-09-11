@@ -20,4 +20,5 @@ interface Car {
   doors: number;
   plate: string;
   imageUrl: string;
+  date: Date;
 }

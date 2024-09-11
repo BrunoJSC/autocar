@@ -203,7 +203,7 @@ const Page = () => {
 
         <DetailsCard
           vehicleType="car"
-          vehicle={motorbike}
+          vehicle={motorbike as any}
           downPayment={downPayment}
           installments={installments}
           monthlyPayment={monthlyPayment}
