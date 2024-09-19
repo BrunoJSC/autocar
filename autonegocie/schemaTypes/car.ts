@@ -39,6 +39,9 @@ export const carType = defineType({
       name: 'images',
       title: 'Imagens',
       type: 'array',
+      options: {
+        layout: 'grid',
+      },
       of: [
         {
           type: 'image',
@@ -47,9 +50,7 @@ export const carType = defineType({
           },
         },
       ],
-      options: {
-        layout: 'grid',
-      },
+
       validation: (Rule) => Rule.required(),
     }),
     defineField({

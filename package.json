@@ -49,6 +49,8 @@
     "react-hook-form": "^7.52.1",
     "react-select": "^5.8.0",
     "resend": "^4.0.0",
+    "sanity-plugin-media": "^2.3.2",
+    "sanity-plugin-media-library": "^2.1.2",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.1",
