@@ -39,7 +39,14 @@ export const carType = defineType({
       name: 'images',
       title: 'Imagens',
       type: 'array',
-      of: [{type: 'image'}],
+      of: [
+        {
+          type: 'image',
+          options: {
+            hotspot: true,
+          },
+        },
+      ],
       options: {
         layout: 'grid',
       },
