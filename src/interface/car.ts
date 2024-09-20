@@ -21,4 +21,5 @@ interface Car {
   plate: string;
   imageUrl: string;
   date: Date;
+  isSold: boolean;
 }

@@ -19,5 +19,5 @@ interface Motorbike {
   fairing: string;
   plate: string;
   imageUrl: string;
-  date?: Date;
+  date: Date;
 }

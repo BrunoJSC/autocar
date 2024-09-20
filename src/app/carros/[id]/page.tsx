@@ -25,11 +25,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import DetailsCard from "@/components/details-card";
 import Link from "next/link";
 import { getData } from "@/fetch/fetch-car";
 import { CalendarIcon, CircleGauge, FuelIcon, MapPinIcon } from "lucide-react";
 import { ContactForm } from "@/components/contact-form";
+import CarDetailsCard from "@/components/car-card-details";
 
 const formSchema = z.object({
   name: z
@@ -196,9 +196,9 @@ const Page = () => {
           </Card>
         </div>
 
-        <DetailsCard
-          vehicleType="car"
-          vehicle={car as any}
+        <CarDetailsCard
+          car={car}
+          key={car._id}
           downPayment={downPayment}
           installments={installments}
           monthlyPayment={monthlyPayment}
