@@ -65,7 +65,7 @@ export default function Home() {
       try {
         const [announcementData, blogData] = await Promise.all([
           client.fetch<Announcement[]>(
-            `*[_type == "announcement"]{title, "imageUrl": image.asset->url, link, brand, model, price, fuel, year, km, location}`
+            `*[_type == "announcement"]{title, "imageUrl": image.asset->url, link, brand, model, price, fuel, year, km, location}`,
           ),
           fetchBlogData(),
         ]);
