@@ -155,7 +155,13 @@ const Page = () => {
                 width={600}
                 height={400}
                 className="w-full h-full object-cover"
-                priority
+                quality={100}
+                loading="lazy"
+                style={{
+                  objectFit: "cover",
+                  objectPosition: "center",
+                  aspectRatio: "16 / 9",
+                }}
               />
             </Card>
           </div>

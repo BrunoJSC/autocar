@@ -12,7 +12,7 @@ interface Car {
   imageUrl: string;
   location: string;
   km: number;
-  motors: string;
+  motors: number;
   price: number;
 }
 
@@ -38,7 +38,7 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
       setDisplayedCars(newCars);
       setCurrentPage(currentPage + 1);
       setIsLoading(false);
-    }, 1000); // Simula um delay de carregamento
+    }, 1000);
   };
 
   const CarCard: React.FC<{ car: Car }> = ({ car }) => (
@@ -66,7 +66,7 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
           <div className="text-gray-600 text-sm mb-4">
             <p>{car.location}</p>
             <p>KM {Intl.NumberFormat("pt-BR").format(car.km)}</p>
-            <p>Motor: {car.motors}</p>
+            <p>Motor: {car.motors.toFixed(1)}</p>
           </div>
           <p className="text-xl font-bold text-primary">
             {Intl.NumberFormat("pt-BR", {

@@ -14,7 +14,7 @@ interface Car {
   accessories: string[];
   price: number;
   bodyType: string;
-  motors: string;
+  motors: number;
   condition: string;
   announce: string;
   doors: number;

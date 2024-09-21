@@ -97,7 +97,8 @@ export default function Home() {
                 width={500}
                 height={300}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                priority
+                quality={90}
+                loading="lazy"
               />
             </CardHeader>
             <CardContent>

@@ -40,7 +40,7 @@ interface Car {
   announce: string;
   doors: number;
   plate: string;
-  motors: string;
+  motors: number;
   date: Date;
   isSold: boolean;
 }

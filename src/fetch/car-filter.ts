@@ -130,7 +130,8 @@ export const fetchFilterCars = async ({
       km,
       bodyType,
       accessories,
-      yearFabrication
+      yearFabrication,
+      motors
     }`;
   }
 
