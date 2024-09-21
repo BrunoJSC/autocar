@@ -148,7 +148,7 @@ const Page = () => {
       motorbike?.images.map((image, index) => (
         <CarouselItem key={index}>
           <div>
-            <Card>
+            <Card className="w-full h-[300px] md:h-[600px] flex justify-center items-center">
               <Image
                 src={urlForImage(image).width(600).height(400).url()}
                 alt={motorbike.motorbikeModel}

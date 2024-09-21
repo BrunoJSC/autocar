@@ -144,7 +144,7 @@ const Page = () => {
       car?.images.map((image, index) => (
         <CarouselItem key={index} className="mx-auto">
           <div>
-            <Card className="w-full h-[600px] flex justify-center items-center">
+            <Card className="w-full h-[300px] md:h-[600px] flex justify-center items-center">
               <Image
                 src={
                   urlForImage(image).width(600).height(400).url() ||
@@ -154,7 +154,7 @@ const Page = () => {
                 width={600}
                 height={400}
                 className="w-full h-full object-cover object-center"
-                quality={100} // Aumenta a qualidade da imagem
+                quality={100}
                 loading="lazy"
               />
             </Card>
