@@ -3,7 +3,6 @@
 import { MaxWrapper } from "@/components/max-wrapper";
 import { services } from "@/constants/services";
 import { useRouter } from "next/navigation";
-
 import Link from "next/link";
 import {
   Accordion,
@@ -39,6 +38,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export interface Announcement {
   title: string;
@@ -59,6 +59,7 @@ export default function Home() {
   const [message, setMessage] = useState("");
   const [blog, setBlog] = useState<Blog[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -73,6 +74,8 @@ export default function Home() {
         setBlog(blogData);
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -85,8 +88,8 @@ export default function Home() {
     return (
       <div>
         <Link href={announcement.link} className="w-full">
-          <Card className="w-full h-full md:max-w-xs">
-            <CardHeader className="w-full h-60 overflow-hidden p-0 ">
+          <Card className="w-full h-full md:max-w-2xl">
+            <CardHeader className="w-full h-64 overflow-hidden p-0 ">
               <Image
                 src={announcement.imageUrl}
                 alt={announcement.title}
@@ -98,8 +101,16 @@ export default function Home() {
               />
             </CardHeader>
             <CardContent>
-              <CardTitle className="text-lg">
-                {announcement.brand} - {announcement.model}
+              <CardTitle className="text-lg text-primary flex items-center gap-2">
+                {announcement.brand}{" "}
+                <span className="text-black">
+                  {announcement.model.slice(
+                    0,
+                    announcement.model.length > 8
+                      ? 6
+                      : announcement.model.length
+                  ) + "..."}
+                </span>
               </CardTitle>
               <p className="text-lg font-normal">
                 {Intl.NumberFormat("pt-BR", {
@@ -134,23 +145,60 @@ export default function Home() {
     );
   }
 
+  function AnnouncementCardSkeleton() {
+    return (
+      <Card className="w-full h-full md:max-w-xs">
+        <CardHeader className="w-full h-60 overflow-hidden p-0">
+          <Skeleton className="w-full h-full rounded-t-lg" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-6 w-3/4 mb-2" />
+          <Skeleton className="h-6 w-1/2" />
+        </CardContent>
+        <CardFooter className="grid grid-cols-2 w-full border-t p-4 gap-2">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-full" />
+        </CardFooter>
+      </Card>
+    );
+  }
+
+  function BlogCardSkeleton() {
+    return (
+      <Card className="w-full md:h-[400px] mx-auto shadow-lg rounded-lg overflow-hidden">
+        <Skeleton className="w-full h-64" />
+        <CardHeader className="p-4 space-y-2 text-center bg-white">
+          <Skeleton className="h-6 w-3/4 mx-auto" />
+        </CardHeader>
+      </Card>
+    );
+  }
+
   return (
     <main className="min-h-screen">
       <MaxWrapper className="relative">
         <Search />
         <CircleMessage message="Vamos conversar?" setMessage={setMessage} />
 
-        <div className="w-full p-4 mt-8  px-24">
+        <div className="w-full p-4 mt-8 px-24">
           <div className="flex flex-col md:flex-row gap-8">
             <div className="w-full md:w-[80%]">
               <h2 className="text-2xl font-bold mb-4 text-center">Destaques</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {announcements.map((announcement, index) => (
-                  <MemoizedAnnouncementCard
-                    key={index}
-                    announcement={announcement}
-                  />
-                ))}
+                {isLoading
+                  ? Array(6)
+                      .fill(0)
+                      .map((_, index) => (
+                        <AnnouncementCardSkeleton key={index} />
+                      ))
+                  : announcements.map((announcement, index) => (
+                      <MemoizedAnnouncementCard
+                        key={index}
+                        announcement={announcement}
+                      />
+                    ))}
               </div>
             </div>
 
@@ -172,32 +220,38 @@ export default function Home() {
                 className="w-full mx-auto"
               >
                 <CarouselContent>
-                  {blog.map((item) => (
-                    <CarouselItem key={item.title} className="w-full">
-                      <Link href={`/oficina/${item._id}`}>
-                        <Card className="w-full md:h-[400px] mx-auto shadow-lg rounded-lg overflow-hidden">
-                          <div className="relative w-full h-64">
-                            {item.mainImageUrl && (
-                              <Image
-                                src={item.mainImageUrl}
-                                alt={item.title}
-                                fill
-                                className="object-cover"
-                              />
-                            )}
-                          </div>
-                          <CardHeader className="p-4 space-y-2 text-center bg-white">
-                            <CardTitle className="text-xl font-semibold text-gray-800">
-                              {item.title}
-                            </CardTitle>
-                          </CardHeader>
-                        </Card>
-                      </Link>
-                    </CarouselItem>
-                  ))}
+                  {isLoading
+                    ? Array(3)
+                        .fill(0)
+                        .map((_, index) => (
+                          <CarouselItem key={index} className="w-full">
+                            <BlogCardSkeleton />
+                          </CarouselItem>
+                        ))
+                    : blog.map((item) => (
+                        <CarouselItem key={item.title} className="w-full">
+                          <Link href={`/oficina/${item._id}`}>
+                            <Card className="w-full md:h-[400px] mx-auto shadow-lg rounded-lg overflow-hidden">
+                              <div className="relative w-full h-64">
+                                {item.mainImageUrl && (
+                                  <Image
+                                    src={item.mainImageUrl}
+                                    alt={item.title}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                )}
+                              </div>
+                              <CardHeader className="p-4 space-y-2 text-center bg-white">
+                                <CardTitle className="text-xl font-semibold text-gray-800">
+                                  {item.title}
+                                </CardTitle>
+                              </CardHeader>
+                            </Card>
+                          </Link>
+                        </CarouselItem>
+                      ))}
                 </CarouselContent>
-                {/* <CarouselNext />
-                <CarouselPrevious /> */}
               </Carousel>
             </div>
           </div>
