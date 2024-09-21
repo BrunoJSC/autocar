@@ -1,4 +1,4 @@
 export const exchange = [
-  { id: 1, title: "Manual", value: "manual" },
-  { id: 2, title: "Automático", value: "automático" },
+  { id: 1, title: "Automático", value: "Automático" },
+  { id: 2, title: "Manual", value: "Manual" },
 ];

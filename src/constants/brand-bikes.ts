@@ -8,4 +8,13 @@ export const brandBikes = [
   { id: 7, title: "Triumph", value: "Triumph" },
   { id: 8, title: "Harley-Davidson", value: "Harley-Davidson" },
   { id: 9, title: "Yamaha", value: "Yamaha" },
+  { id: 10, title: "Dicati", value: "Ducati" },
+  { id: 11, title: "Dafra", value: "Dafra" },
+  { id: 12, title: "Haojue", value: "Haojue" },
+  { id: 13, title: "Kymco", value: "Kymco" },
+  { id: 14, title: "MXF", value: "MXF" },
+  { id: 15, title: "Piaggio", value: "Piaggio" },
+  { id: 16, title: "Pro Tork", value: "Pro Tork" },
+  { id: 17, title: "Royal Enfield", value: "Royal Enfield" },
+  { id: 18, title: "Shineray", value: "Shineray" },
 ];
