@@ -66,7 +66,7 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
           <div className="text-gray-600 text-sm mb-4">
             <p>{car.location}</p>
             <p>KM {Intl.NumberFormat("pt-BR").format(car.km)}</p>
-            <p>Motor: {car.motors.toFixed(1)}</p>
+            <p>Motor: {car.motors ? car.motors.toFixed(1) : "N/A"}</p>
           </div>
           <p className="text-xl font-bold text-primary">
             {Intl.NumberFormat("pt-BR", {
