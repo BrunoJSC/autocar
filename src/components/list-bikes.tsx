@@ -20,6 +20,13 @@ export const ListMotorbike: React.FC<MotorbikeListProps> = ({ motorbikes }) => {
                 width={200}
                 height={200}
                 className="w-full h-48 object-cover"
+                quality={90}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                loading="lazy"
+                style={{
+                  objectFit: "cover",
+                  objectPosition: "center",
+                }}
                 priority
               />
               <div className="p-4">

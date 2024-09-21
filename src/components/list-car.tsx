@@ -20,7 +20,14 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
                 width={200}
                 height={200}
                 className="w-full h-48 object-cover rounded-t-lg"
+                quality={90}
                 priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                loading="lazy"
+                style={{
+                  objectFit: "cover",
+                  objectPosition: "center",
+                }}
               />
               <div className="p-4">
                 <div className="flex items-center gap-2">

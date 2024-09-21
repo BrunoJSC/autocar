@@ -20,6 +20,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import CarDetailsGrid from "./car-grid-details";
 
 interface Car {
   yearModification: number;
@@ -88,53 +89,7 @@ const CarDetailsCard: React.FC<CarDetailsCardProps> = ({
         </CardHeader>
 
         <CardContent>
-          <div className="grid md:grid-cols-4 gap-4 grid-cols-1">
-            <div className="w-[100px] h-[100px]">
-              <p className="text-gray-500">Ano</p>
-              <p className="text-black">{car.yearFabrication}</p>
-            </div>
-            <div>
-              <p className="text-gray-500">Modelo</p>
-              <p className="text-black">{car.yearModification}</p>
-            </div>
-
-            <div>
-              <p className="text-gray-500">Placa</p>
-              <p className="text-black">
-                {car.plate
-                  ? car.plate.slice(0, -1).replace(/./g, "*") +
-                    car.plate.slice(-1)
-                  : "0000"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-gray-500">KM</p>
-              <p className="text-black">
-                {Intl.NumberFormat("pt-BR").format(car.km)}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-gray-500">Cor</p>
-              <p className="text-black">{car.color}</p>
-            </div>
-
-            <div>
-              <p className="text-gray-500">Marca</p>
-              <p className="text-black">{car.brandCar}</p>
-            </div>
-
-            <div>
-              <p className="text-gray-500">Portas</p>
-              <p className="text-black">{car.doors}</p>
-            </div>
-
-            <div>
-              <p className="text-gray-500">Combustível</p>
-              <p className="text-black">{car.fuel}</p>
-            </div>
-          </div>
+          <CarDetailsGrid car={car} />
 
           <Separator className="my-8" />
 
