@@ -26,11 +26,11 @@ export const ListMotorbike: React.FC<MotorbikeListProps> = ({ motorbikes }) => {
               />
             </div>
             <div className="p-4">
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="text-xl font-semibold text-gray-800">
+              <div className="flex gap-2 items-center mb-2">
+                <h3 className="text-sm font-semibold text-primary">
                   {motorbike.motorbikeBrand}
                 </h3>
-                <p className="text-sm text-gray-600 font-medium">
+                <p className="text-sm text-black font-semibold">
                   {motorbike.motorbikeModel}
                 </p>
               </div>

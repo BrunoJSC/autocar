@@ -270,6 +270,25 @@ export const FilterBike: React.FC<FilterProps> = ({
                   />
                 </div>
 
+                <div>
+                  <Label>Cilindradas</Label>
+                  <Select
+                    value={Number(filters.cylinders).toString()}
+                    onValueChange={handleCylindersChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione as cilindradas" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {cylindersOptions.map((cylinder) => (
+                        <SelectItem key={cylinder.id} value={cylinder.value}>
+                          {cylinder.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <YearFilter
                   startYear={filters.startYear || 1990}
                   endYear={filters.endYear || new Date().getFullYear()}
@@ -353,25 +372,6 @@ export const FilterBike: React.FC<FilterProps> = ({
                   placeholder="Selecione o câmbio"
                 />
 
-                <div>
-                  <Label>Cilindradas</Label>
-                  <Select
-                    value={Number(filters.cylinders).toString()}
-                    onValueChange={handleCylindersChange}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione as cilindradas" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {cylindersOptions.map((cylinder) => (
-                        <SelectItem key={cylinder.id} value={cylinder.value}>
-                          {cylinder.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 <FilterSelect
                   label="Anunciante"
                   value={filters.announce || ""}
@@ -412,6 +412,25 @@ export const FilterBike: React.FC<FilterProps> = ({
                 value={filters.motorbikeModel}
                 onChange={handleModelChange}
               />
+            </div>
+
+            <div>
+              <Label>Cilindradas</Label>
+              <Select
+                value={Number(filters.cylinders).toString()}
+                onValueChange={handleCylindersChange}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione as cilindradas" />
+                </SelectTrigger>
+                <SelectContent>
+                  {cylindersOptions.map((cylinder) => (
+                    <SelectItem key={cylinder.id} value={cylinder.value}>
+                      {cylinder.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <YearFilter
@@ -496,25 +515,6 @@ export const FilterBike: React.FC<FilterProps> = ({
               options={exchangeOptions}
               placeholder="Selecione o câmbio"
             />
-
-            <div>
-              <Label>Cilindradas</Label>
-              <Select
-                value={Number(filters.cylinders).toString()}
-                onValueChange={handleCylindersChange}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione as cilindradas" />
-                </SelectTrigger>
-                <SelectContent>
-                  {cylindersOptions.map((cylinder) => (
-                    <SelectItem key={cylinder.id} value={cylinder.value}>
-                      {cylinder.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
 
             <FilterSelect
               label="Anunciante"
