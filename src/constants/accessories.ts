@@ -9,9 +9,13 @@ export const accessoriesType = [
   { id: 8, title: "Retrovisor Elétrico", value: "retrovisor elétrico" },
   { id: 9, title: "Banco de couro", value: "banco de couro" },
   { id: 10, title: "Camera de Ré", value: "camera de re" },
-  { title: "Direção Elétrica", value: "direção-eletrica" },
-  { title: "Rádio MP3", value: "radio-mp3" },
-  { title: "Sensor de estacionamento", value: "sensor-de-estacionamento" },
+  { id: 11, title: "Direção Elétrica", value: "direção-eletrica" },
+  { id: 12, title: "Rádio MP3", value: "radio-mp3" },
+  {
+    id: 13,
+    title: "Sensor de estacionamento",
+    value: "sensor-de-estacionamento",
+  },
 ];
 
 export const accessoriesMotorbikesType = [
