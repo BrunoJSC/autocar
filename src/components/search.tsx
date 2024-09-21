@@ -1,18 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Search as SearchComponent } from "lucide-react";
-import { Input } from "@/components/ui/input"; // Componente Shadcn
-import { Dispatch, SetStateAction } from "react";
+import { Input } from "@/components/ui/input";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { fetchFilterCars } from "@/fetch/car-filter";
 import { fetchFilterMotorbike } from "@/fetch/motorbike-filter";
-
-interface SearchProps {
-  search?: string;
-  setSearch?: Dispatch<SetStateAction<string>>;
-}
+import debounce from "lodash/debounce";
 
 interface Vehicle {
   _id: string;
@@ -20,42 +15,61 @@ interface Vehicle {
   modelCar?: string;
   motorbikeBrand?: string;
   motorbikeModel?: string;
-  category: "carros" | "motos"; // Mantendo a distinção clara
+  category: "carros" | "motos";
 }
 
 export function Search() {
   const [search, setSearch] = useState<string>("");
   const [suggestions, setSuggestions] = useState<Vehicle[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (search.length > 2) {
-        const data = await getVehiclesData(search);
-        setSuggestions(data);
+  const fetchVehiclesData = useCallback(async (searchTerm: string) => {
+    setIsLoading(true);
+    try {
+      const [cars, motorbikes] = await Promise.all([
+        fetchFilterCars({ modelCar: searchTerm }),
+        fetchFilterMotorbike({ motorbikeModel: searchTerm }),
+      ]);
+
+      const combinedResults = [
+        ...cars.map((car: any) => ({ ...car, category: "carros" })),
+        ...motorbikes.map((bike: any) => ({ ...bike, category: "motos" })),
+      ];
+
+      setSuggestions(combinedResults);
+    } catch (error) {
+      console.error("Error fetching vehicle data:", error);
+      setSuggestions([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const debouncedFetch = useCallback(
+    debounce((searchTerm: string) => {
+      if (searchTerm.length > 2) {
+        fetchVehiclesData(searchTerm);
       } else {
         setSuggestions([]);
       }
+    }, 300),
+    [fetchVehiclesData]
+  );
+
+  useEffect(() => {
+    debouncedFetch(search);
+
+    return () => {
+      debouncedFetch.cancel();
     };
-
-    fetchData();
-  }, [search]);
-
-  async function getVehiclesData(search: string) {
-    const cars = await fetchFilterCars({ modelCar: search });
-    const motorbikes = await fetchFilterMotorbike({ motorbikeModel: search });
-
-    return [
-      ...cars.map((car: any) => ({ ...car, category: "carros" })),
-      ...motorbikes.map((bike: any) => ({ ...bike, category: "motos" })),
-    ];
-  }
+  }, [search, debouncedFetch]);
 
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearch(e.target.value);
   }
 
   return (
-    <form className="w-full relative flex md:flex-row p-4  bg-black md:items-center">
+    <form className="w-full relative flex md:flex-row p-4 bg-black md:items-center">
       <div className="relative w-full md:w-full">
         <SearchComponent
           size={25}
@@ -68,8 +82,14 @@ export function Search() {
           onChange={handleSearch}
         />
 
-        {suggestions.length > 0 && (
-          <ul className="absolute mt-2 bg-white border border-gray-300 rounded-lg w-full z-10">
+        {isLoading && (
+          <div className="absolute mt-2 p-2 bg-white border border-gray-300 rounded-lg w-full text-center">
+            Carregando...
+          </div>
+        )}
+
+        {!isLoading && suggestions.length > 0 && (
+          <ul className="absolute mt-2 bg-white border border-gray-300 rounded-lg w-full z-10 max-h-60 overflow-y-auto">
             {suggestions.map((vehicle) => (
               <li
                 key={vehicle._id}
