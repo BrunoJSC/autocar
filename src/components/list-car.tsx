@@ -8,6 +8,8 @@ interface CarListProps {
 }
 
 export const ListCar: React.FC<CarListProps> = ({ cars }) => {
+  console.log(JSON.stringify(cars, null, 2));
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {cars.map((car) => (
@@ -26,17 +28,18 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
               />
             </div>
             <div className="p-4">
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="text-xl font-semibold text-gray-800">
+              <div className="flex gap-2 items-center mb-2">
+                <h3 className="text-sm font-semibold text-primary">
                   {car.brandCar}
                 </h3>
-                <p className="text-sm text-gray-600 font-medium">
+                <p className="text-sm text-black font-semibold">
                   {car.modelCar}
                 </p>
               </div>
               <div className="text-gray-600 text-sm mb-4">
                 <p>{car.location}</p>
                 <p>KM {Intl.NumberFormat("pt-BR").format(car.km)}</p>
+                <p>Motor: {car.motors}</p>
               </div>
               <p className="text-xl font-bold text-primary">
                 {Intl.NumberFormat("pt-BR", {

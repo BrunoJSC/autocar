@@ -36,11 +36,11 @@ interface Car {
   accessories: string[];
   price: number;
   bodyType: string;
-  motors: string;
   condition: string;
   announce: string;
   doors: number;
   plate: string;
+  motors: string;
   date: Date;
   isSold: boolean;
 }
@@ -64,26 +64,41 @@ const CarDetailsCard: React.FC<CarDetailsCardProps> = ({
   monthlyPayment,
   sendSimulator,
 }) => {
+  const {
+    brandCar = "Marca Desconhecida",
+    modelCar = "Modelo Desconhecido",
+    price = 0,
+    date = null,
+    description = "Nenhuma descrição disponível",
+    accessories = [],
+  } = car || {}; // Verifique se o objeto `car` existe
+
+  const formattedDate = date
+    ? format(new Date(date), "dd/MM/yyyy", { locale: ptBR })
+    : "Data indisponível";
+
+  const formattedPrice = Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(price);
+
+  const formattedDownPayment = parseFloat(
+    downPayment.replace(/[^\d.-]/g, "") || "0"
+  );
+
   return (
     <Card className="mt-5 w-full md:max-w-7xl mx-auto p-2 gap-4 items-center">
       <div>
         <CardHeader>
           <CardTitle>
-            <span className="text-primary">{car.brandCar}</span> {car.modelCar}
+            <span className="text-primary">{brandCar}</span> {modelCar}
           </CardTitle>
-          <h3 className="font-bold text-3xl">
-            {Intl.NumberFormat("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            }).format(car.price)}
-          </h3>
+          <h3 className="font-bold text-3xl">{formattedPrice}</h3>
 
           <div>
             <h2 className="text-gray-500">
               <span className="text-black">Anúncio criado em </span>
-              {car.date
-                ? format(new Date(car.date), "dd/MM/yyyy", { locale: ptBR })
-                : ""}
+              {formattedDate}
             </h2>
           </div>
         </CardHeader>
@@ -97,15 +112,19 @@ const CarDetailsCard: React.FC<CarDetailsCardProps> = ({
             <div>
               <p className="text-gray-500">Acessórios</p>
               <div className="grid gap-2 grid-cols-2 md:grid-cols-3">
-                {car.accessories.map((accessory) => (
-                  <div key={accessory} className="text-black">
-                    {accessory}
-                  </div>
-                ))}
+                {accessories.length > 0 ? (
+                  accessories.map((accessory) => (
+                    <div key={accessory} className="text-black">
+                      {accessory}
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-black">Nenhum acessório informado</div>
+                )}
               </div>
 
               <CardDescription className="text-gray-500  mt-4 text-sm leading-normal md:max-w-md">
-                {car.description}
+                {description}
               </CardDescription>
             </div>
 
@@ -169,12 +188,7 @@ const CarDetailsCard: React.FC<CarDetailsCardProps> = ({
                   <div className="text-primary-foreground space-y-2">
                     <div className="flex justify-between">
                       <span>Valor do veículo:</span>
-                      <span>
-                        {Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(car.price)}
-                      </span>
+                      <span>{formattedPrice}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Entrada:</span>
@@ -182,9 +196,7 @@ const CarDetailsCard: React.FC<CarDetailsCardProps> = ({
                         {Intl.NumberFormat("pt-BR", {
                           style: "currency",
                           currency: "BRL",
-                        }).format(
-                          parseFloat(downPayment.replace(/[^\d.-]/g, ""))
-                        )}
+                        }).format(formattedDownPayment)}
                       </span>
                     </div>
                     <div className="flex justify-between">
@@ -193,10 +205,7 @@ const CarDetailsCard: React.FC<CarDetailsCardProps> = ({
                         {Intl.NumberFormat("pt-BR", {
                           style: "currency",
                           currency: "BRL",
-                        }).format(
-                          car.price -
-                            parseFloat(downPayment.replace(/[^\d.-]/g, ""))
-                        )}
+                        }).format(price - formattedDownPayment)}
                       </span>
                     </div>
                     <div className="flex justify-between">

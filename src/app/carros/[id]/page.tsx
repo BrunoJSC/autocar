@@ -24,7 +24,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 import Link from "next/link";
 import { getData } from "@/fetch/fetch-car";
 import { CalendarIcon, CircleGauge, FuelIcon, MapPinIcon } from "lucide-react";
@@ -102,7 +101,6 @@ const Page = () => {
     const fetchCars = async () => {
       try {
         const data = await getData();
-        console.log("Fetched cars data:", data);
         setCars(data as Car[]);
       } catch (error) {
         console.error("Error fetching cars data:", error);
@@ -138,6 +136,9 @@ const Page = () => {
     window.open(whatsappUrl, "_blank");
   }, [car, downPayment, installments, monthlyPayment]);
 
+  // Função para lidar com imagens ausentes
+  const placeholderImage = "/path/to/placeholder.jpg"; // Adicione um caminho de placeholder de sua escolha
+
   const carImages = useMemo(
     () =>
       car?.images.map((image, index) => (
@@ -145,12 +146,16 @@ const Page = () => {
           <div>
             <Card>
               <Image
-                src={urlForImage(image).width(600).height(400).url()}
-                alt={car.modelCar}
+                src={
+                  urlForImage(image).width(600).height(400).url() ||
+                  placeholderImage
+                }
+                alt={car.modelCar || "Imagem indisponível"}
                 width={600}
                 height={400}
-                className="w-full h-full object-cover"
-                priority
+                className="w-full h-full object-cover object-center"
+                quality={100}
+                loading="lazy"
               />
             </Card>
           </div>
@@ -210,7 +215,7 @@ const Page = () => {
       </section>
 
       <section className="p-8 mt-5 h-[600px] flex flex-col items-center justify-center">
-        <div className="flex  items-center justify-center">
+        <div className="flex items-center justify-center">
           <h2 className="text-2xl font-bold">Outras opções</h2>
         </div>
         {cars && cars.length > 0 ? (
@@ -228,10 +233,19 @@ const Page = () => {
                     <Link href={`/carros/${car._id}`}>
                       <Card className="w-full h-[400px]">
                         <CardHeader className="p-0">
-                          {car.images && car.images.length > 0 && (
+                          {car.images && car.images.length > 0 ? (
                             <Image
-                              src={car.images[0].url}
-                              alt={car.modelCar}
+                              src={car.images[0].url || placeholderImage}
+                              alt={car.modelCar || "Imagem indisponível"}
+                              width={600}
+                              height={400}
+                              className="w-full h-48 object-cover rounded-t-lg"
+                              priority
+                            />
+                          ) : (
+                            <Image
+                              src={placeholderImage}
+                              alt="Imagem indisponível"
                               width={600}
                               height={400}
                               className="w-full h-48 object-cover rounded-t-lg"

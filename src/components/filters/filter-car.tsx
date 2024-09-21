@@ -42,6 +42,7 @@ import AccessoriesFilter from "./accessories-filter";
 import { accessoriesType } from "@/constants/accessories";
 import YearFilter from "@/constants/year-filter";
 import { motorsType } from "@/constants/motors";
+import { mechanics } from "@/constants/mechanic";
 
 type Filters = {
   brandCar: string;
@@ -60,6 +61,7 @@ type Filters = {
   startYear?: number;
   endYear?: number;
   motors?: number;
+  mechanic?: string;
 };
 
 interface FilterProps {
@@ -264,6 +266,16 @@ export const FilterCar: React.FC<FilterProps> = ({
     []
   );
 
+  const mechanicOptions = useMemo(
+    () =>
+      mechanics.map((mechanic) => ({
+        ...mechanic,
+        id: mechanic.id.toString(),
+        value: mechanic.value.toString(),
+      })),
+    []
+  );
+
   return (
     <div className="space-y-4 md:space-y-0 sticky">
       <div className="md:hidden h-auto">
@@ -439,6 +451,15 @@ export const FilterCar: React.FC<FilterProps> = ({
                   value={filters.color || ""}
                   onValueChange={handleColorChange}
                   options={colorOptions}
+                  placeholder="Selecione o tipo de troca"
+                  id={colors[0]?.id.toString()}
+                />
+
+                <FilterSelect
+                  label="Parte mecânica"
+                  value={filters.mechanic || ""}
+                  onValueChange={handleColorChange}
+                  options={mechanicOptions}
                   placeholder="Selecione o tipo de troca"
                   id={colors[0]?.id.toString()}
                 />
@@ -626,6 +647,15 @@ export const FilterCar: React.FC<FilterProps> = ({
               value={filters.color || ""}
               onValueChange={handleColorChange}
               options={colorOptions}
+              placeholder="Selecione o tipo de troca"
+              id={colors[0]?.id.toString()}
+            />
+
+            <FilterSelect
+              label="Parte mecânica"
+              value={filters.mechanic || ""}
+              onValueChange={handleColorChange}
+              options={mechanicOptions}
               placeholder="Selecione o tipo de troca"
               id={colors[0]?.id.toString()}
             />
