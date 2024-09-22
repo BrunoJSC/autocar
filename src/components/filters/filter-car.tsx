@@ -652,14 +652,14 @@ export const FilterCar: React.FC<FilterProps> = ({
               id={colors[0]?.id.toString()}
             />
 
-            <FilterSelect
+            {/* <FilterSelect
               label="Parte mecânica"
               value={filters.mechanic || ""}
               onValueChange={handleColorChange}
               options={mechanicOptions}
               placeholder="Selecione o tipo de troca"
               id={colors[0]?.id.toString()}
-            />
+            /> */}
 
             <FilterSelect
               label="Anunciante"

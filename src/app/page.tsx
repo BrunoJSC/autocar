@@ -274,7 +274,9 @@ const PriceRangeSection = memo(function PriceRangeSection() {
   return (
     <section className="p-4">
       <div className="flex flex-col space-y-4 items-center">
-        <h1 className="text-3xl font-bold">Explore por Faixa de Preço</h1>
+        <h1 className="text-3xl text-center font-bold">
+          Explore por Faixa de Preço
+        </h1>
         <p className="text-lg mt-4 text-center text-gray-700">
           Selecione uma faixa de preço para visualizar os veículos disponíveis.
         </p>

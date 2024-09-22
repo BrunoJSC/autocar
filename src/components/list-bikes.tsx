@@ -46,35 +46,50 @@ export const ListMotorbike: React.FC<MotorbikeListProps> = ({ motorbikes }) => {
     <Link href={`/motos/${motorbike._id}`}>
       <Card className="w-full h-full shadow-md transition-transform transform hover:scale-105 hover:shadow-lg">
         <div className="overflow-hidden rounded-t-lg">
-          <Image
-            src={motorbike.imageUrl}
-            alt={`${motorbike.motorbikeBrand} - ${motorbike.motorbikeModel}`}
-            width={400}
-            height={250}
-            className="w-full h-60 object-cover object-center"
-            quality={90}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            loading="lazy"
-          />
+          {motorbike.imageUrl ? (
+            <Image
+              src={motorbike.imageUrl}
+              alt={`${motorbike.motorbikeBrand || "Marca desconhecida"} - ${
+                motorbike.motorbikeModel || "Modelo desconhecido"
+              }`}
+              width={400}
+              height={250}
+              className="w-full h-60 object-cover object-center"
+              quality={90}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              loading="lazy"
+            />
+          ) : (
+            <div className="w-full h-60 bg-gray-200 flex items-center justify-center">
+              <span>Imagem indisponível</span>
+            </div>
+          )}
         </div>
         <div className="p-4">
           <div className="flex gap-2 items-center mb-2">
             <h3 className="text-sm font-semibold text-primary">
-              {motorbike.motorbikeBrand}
+              {motorbike.motorbikeBrand || "Marca desconhecida"}
             </h3>
             <p className="text-sm text-black font-semibold">
-              {motorbike.motorbikeModel}
+              {motorbike.motorbikeModel || "Modelo desconhecido"}
             </p>
           </div>
           <div className="text-gray-600 text-sm mb-4">
-            <p>{motorbike.location}</p>
-            <p>KM {Intl.NumberFormat("pt-BR").format(motorbike.km)}</p>
+            <p>{motorbike.location || "Localização não informada"}</p>
+            <p>
+              KM{" "}
+              {motorbike.km
+                ? Intl.NumberFormat("pt-BR").format(motorbike.km)
+                : "N/A"}
+            </p>
           </div>
           <p className="text-xl font-bold text-primary">
-            {Intl.NumberFormat("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            }).format(motorbike.price)}
+            {motorbike.price
+              ? Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(motorbike.price)
+              : "Preço não disponível"}
           </p>
         </div>
       </Card>

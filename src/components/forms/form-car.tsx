@@ -314,7 +314,7 @@ export function FormCar() {
           name="mechanic"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mecânico</FormLabel>
+              <FormLabel>Parte Mecânica</FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger>
