@@ -13,6 +13,7 @@ interface Motorbike {
   description: string;
   accessories: string[];
   price: number;
+  motors: number;
   cylinder: string;
   condition: string;
   announce: string;

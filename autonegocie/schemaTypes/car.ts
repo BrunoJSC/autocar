@@ -154,6 +154,7 @@ export const carType = defineType({
         list: [
           {title: 'Automático', value: 'Automático'},
           {title: 'Manual', value: 'Manual'},
+          {title: 'Semi automático', value: 'Semi-automático'},
         ],
       },
     }),

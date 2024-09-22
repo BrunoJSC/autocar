@@ -103,7 +103,9 @@ export const fetchFilterMotorbike = async ({
       "imageUrl": images[0].asset->url,
       price,
       km,
-      cylinders
+      cylinders,
+      motors,
+      yearFabrication
     }`;
   }
 

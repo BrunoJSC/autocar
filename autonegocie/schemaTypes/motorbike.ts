@@ -75,6 +75,13 @@ export const motorbikeType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'yearModification',
+      title: 'Ano de modelo',
+      type: 'number',
+      validation: (Rule) => Rule.required(),
+    }),
+
+    defineField({
       name: 'km',
       title: 'Quilometragem',
       type: 'number',
@@ -144,6 +151,9 @@ export const motorbikeType = defineType({
       name: 'images',
       title: 'Imagens',
       type: 'array',
+      options: {
+        layout: 'grid',
+      },
       of: [{type: 'image'}],
     }),
     defineField({
@@ -194,10 +204,36 @@ export const motorbikeType = defineType({
       title: 'Placa',
       type: 'string',
     }),
+
+    defineField({
+      name: 'motors',
+      title: 'Motor',
+      type: 'number',
+      options: {
+        list: [
+          {title: '1.0', value: 1.0},
+          {title: '1.3', value: 1.3},
+          {title: '1.4', value: 1.4},
+          {title: '1.5', value: 1.5},
+          {title: '1.6', value: 1.6},
+          {title: '1.8', value: 1.8},
+          {title: '2.0', value: 2.0},
+          {title: '2.2', value: 2.2},
+          {title: '2.4', value: 2.4},
+          {title: '3.0', value: 3.0},
+        ],
+      },
+    }),
     defineField({
       name: 'exchange',
       title: 'Câmbio',
       type: 'string',
+      options: {
+        list: [
+          {title: 'Manual', value: 'manual'},
+          {title: 'Automatico', value: 'automatico'},
+        ],
+      },
     }),
   ],
 })
