@@ -117,14 +117,27 @@ export const carType = defineType({
       name: 'yearFabrication',
       title: 'Ano de Fabricação',
       type: 'number',
-      validation: (Rule) => Rule.required().min(1900).max(new Date().getFullYear()),
+      options: {
+        list: Array.from({length: 50}, (_, i) => {
+          const year = new Date().getFullYear() - i
+          return {title: year.toString(), value: year}
+        }),
+      },
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'yearModification',
       title: 'Ano de Modificação',
       type: 'number',
-      validation: (Rule) => Rule.required(),
+      options: {
+        list: Array.from({length: 50}, (_, i) => {
+          const year = new Date().getFullYear() - i
+          return {title: year.toString(), value: year}
+        }),
+      },
+      validation: (Rule) => Rule.required().greaterThan(Rule.valueOfField('yearFabrication')),
     }),
+
     defineField({
       name: 'fuel',
       title: 'Combustível',

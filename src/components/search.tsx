@@ -8,6 +8,7 @@ import Link from "next/link";
 import { fetchFilterCars } from "@/fetch/car-filter";
 import { fetchFilterMotorbike } from "@/fetch/motorbike-filter";
 import debounce from "lodash/debounce";
+import { useRouter } from "next/router";
 
 interface Vehicle {
   _id: string;
@@ -22,6 +23,7 @@ export function Search() {
   const [search, setSearch] = useState<string>("");
   const [suggestions, setSuggestions] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   const fetchVehiclesData = useCallback(async (searchTerm: string) => {
     setIsLoading(true);
