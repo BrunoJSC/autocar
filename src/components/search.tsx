@@ -8,7 +8,7 @@ import Link from "next/link";
 import { fetchFilterCars } from "@/fetch/car-filter";
 import { fetchFilterMotorbike } from "@/fetch/motorbike-filter";
 import debounce from "lodash/debounce";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 interface Vehicle {
   _id: string;

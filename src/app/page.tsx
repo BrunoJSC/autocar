@@ -2,7 +2,6 @@
 
 import { MaxWrapper } from "@/components/max-wrapper";
 import { services } from "@/constants/services";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Accordion,
@@ -54,8 +53,6 @@ export interface Announcement {
 }
 
 export default function Home() {
-  const router = useRouter();
-
   const [message, setMessage] = useState("");
   const [blog, setBlog] = useState<Blog[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
