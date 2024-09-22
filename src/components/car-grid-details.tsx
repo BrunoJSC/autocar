@@ -18,7 +18,7 @@ interface CarProps {
 const CarDetailsGrid = ({ car }: CarProps) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      <Card className="bg-red-500 shadow-sm hover:shadow-md transition-shadow duration-300">
+      <Card className="shadow-sm hover:shadow-md transition-shadow duration-300">
         <CardContent className="p-4">
           <p className="text-sm font-medium text-gray-500">Ano</p>
           <p className="text-lg font-semibold text-black mt-1">
