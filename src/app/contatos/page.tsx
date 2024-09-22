@@ -28,7 +28,7 @@ export default function Page() {
   return (
     <MaxWrapper>
       <section className="min-h-screen">
-        <div className="bg-contact-banner h-screen w-full bg-no-repeat bg-cover bg-center">
+        <div className="bg-contact-banner w-full bg-no-repeat bg-cover bg-center">
           <div className="flex flex-col items-center justify-center h-full w-full p-8">
             <div className="text-center">
               <h1 className="text-4xl font-bold text-white">
