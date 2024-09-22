@@ -20,7 +20,7 @@ const nextConfig = {
   experimental: {
     taint: true,
   },
-  reactStrictMode: true,
+  reactStrictMode: false,
   async rewrites() {
     return [
       {
