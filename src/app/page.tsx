@@ -183,7 +183,7 @@ export default function Home() {
         <Search />
         <CircleMessage message="Vamos conversar?" setMessage={setMessage} />
 
-        <div className="w-full p-4 mt-8 px-24">
+        <div className="w-full p-4 mt-8 md:px-24">
           <div className="flex flex-col md:flex-row gap-8">
             <div className="w-full md:w-[80%]">
               <h2 className="text-2xl font-bold mb-4 text-center">Destaques</h2>
