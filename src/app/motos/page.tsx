@@ -17,7 +17,7 @@ type Filters = {
   minPrice?: number;
   maxPrice?: number;
   km?: number;
-  cilynders?: number;
+  cylinders?: number;
   announce?: string;
 };
 
