@@ -117,7 +117,7 @@ export const carType = defineType({
       name: 'yearFabrication',
       title: 'Ano de Fabricação',
       type: 'number',
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => Rule.required().min(1900).max(new Date().getFullYear()),
     }),
     defineField({
       name: 'yearModification',

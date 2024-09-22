@@ -71,7 +71,7 @@ const CarDetailsCard: React.FC<CarDetailsCardProps> = ({
     date = null,
     description = "Nenhuma descrição disponível",
     accessories = [],
-  } = car || {}; // Verifique se o objeto `car` existe
+  } = car || {};
 
   const formattedDate = date
     ? format(new Date(date), "dd/MM/yyyy", { locale: ptBR })
@@ -104,7 +104,7 @@ const CarDetailsCard: React.FC<CarDetailsCardProps> = ({
         </CardHeader>
 
         <CardContent>
-          <CarDetailsGrid car={car} />
+          <CarDetailsGrid car={car as any} />
 
           <Separator className="my-8" />
 
