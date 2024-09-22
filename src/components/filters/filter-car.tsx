@@ -484,8 +484,9 @@ export const FilterCar: React.FC<FilterProps> = ({
           </SheetContent>
         </Sheet>
       </div>
+
       <div className="hidden md:block space-y-4 md:space-y-0">
-        <Card className="max-w-sm">
+        <Card className="max-w-sm sticky top-0/ overflow-scroll">
           <CardHeader>
             <CardTitle>Carros</CardTitle>
           </CardHeader>
