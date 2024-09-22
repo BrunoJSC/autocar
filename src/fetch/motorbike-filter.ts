@@ -104,7 +104,6 @@ export const fetchFilterMotorbike = async ({
       price,
       km,
       cylinders,
-      motors,
       yearFabrication
     }`;
   }

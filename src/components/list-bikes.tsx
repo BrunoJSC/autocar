@@ -12,7 +12,7 @@ interface Motorbike {
   imageUrl: string;
   location: string;
   km: number;
-  motors: number;
+  cylinders: number;
   price: number;
   yearFabrication: number;
 }
@@ -80,7 +80,7 @@ export const ListMotorbike: React.FC<MotorbikeListProps> = ({ motorbikes }) => {
             <p>{motorbike.location || "Localização não informada"}</p>
             <p>Ano: {motorbike.yearFabrication || "N/A"}</p>
             <p>
-              Motor: {motorbike.motors ? motorbike.motors.toFixed(1) : "N/A"}
+              Cilindradas: {motorbike.cylinders ? motorbike.cylinders : "N/A"}
             </p>
           </div>
           <p className="text-xl font-bold text-primary">

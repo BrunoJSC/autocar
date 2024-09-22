@@ -206,25 +206,6 @@ export const motorbikeType = defineType({
     }),
 
     defineField({
-      name: 'motors',
-      title: 'Motor',
-      type: 'number',
-      options: {
-        list: [
-          {title: '1.0', value: 1.0},
-          {title: '1.3', value: 1.3},
-          {title: '1.4', value: 1.4},
-          {title: '1.5', value: 1.5},
-          {title: '1.6', value: 1.6},
-          {title: '1.8', value: 1.8},
-          {title: '2.0', value: 2.0},
-          {title: '2.2', value: 2.2},
-          {title: '2.4', value: 2.4},
-          {title: '3.0', value: 3.0},
-        ],
-      },
-    }),
-    defineField({
       name: 'exchange',
       title: 'Câmbio',
       type: 'string',
