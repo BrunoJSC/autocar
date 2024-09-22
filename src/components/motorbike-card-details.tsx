@@ -34,7 +34,7 @@ interface Motorbike {
   description: string;
   accessories: string[];
   price: number;
-  cylinder: number;
+  cylinders: number;
   condition: string;
   announce: string;
   fairing: string;
