@@ -16,6 +16,12 @@ export const accessoriesType = [
     title: "Sensor de estacionamento",
     value: "sensor-de-estacionamento",
   },
+  { id: 14, title: "Rodas de liga leve", value: "rodas-de-liga-leve" },
+  { id: 15, title: "Farol de milha", value: "farol-de-milha" },
+  { id: 16, title: "Air bag", value: "air bag" },
+  { id: 17, title: "Camera de ré", value: "camera-de-re" },
+  { id: 18, title: "Controle no volante", value: "controle-no-volante" },
+  { id: 19, title: "Alarme", value: "alarme" },
 ];
 
 export const accessoriesMotorbikesType = [
