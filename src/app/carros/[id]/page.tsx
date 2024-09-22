@@ -29,6 +29,7 @@ import { getData } from "@/fetch/fetch-car";
 import { CalendarIcon, CircleGauge, FuelIcon, MapPinIcon } from "lucide-react";
 import { ContactForm } from "@/components/contact-form";
 import CarDetailsCard from "@/components/car-card-details";
+import dynamic from "next/dynamic";
 
 const formSchema = z.object({
   name: z
@@ -49,6 +50,12 @@ const formSchema = z.object({
 const PHONE_NUMBER = "5511940723891";
 const INTEREST_RATE = 0.025; // 2.5% de juros mensais
 
+// Componente dinâmico para o carrossel de carros
+const DynamicCarCarousel = dynamic(() => import("@/components/car-carousel"), {
+  ssr: false,
+  loading: () => <p>Carregando...</p>,
+});
+
 const Page = () => {
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -62,6 +69,11 @@ const Page = () => {
   const [installments, setInstallments] = useState(12);
   const [monthlyPayment, setMonthlyPayment] = useState(0);
   const [cars, setCars] = useState<Car[]>([]);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const fetchCar = useCallback(async () => {
     if (id) {
@@ -136,7 +148,7 @@ const Page = () => {
     window.open(whatsappUrl, "_blank");
   }, [car, downPayment, installments, monthlyPayment]);
 
-  const placeholderImage = "/path/to/placeholder.jpg";
+  const placeholderImage = "/icons/logo.svg";
 
   const carImages = useMemo(() => {
     return car && car.images && car.images.length > 0
@@ -174,11 +186,13 @@ const Page = () => {
     <MaxWrapper>
       <section className="p-8 mt-5">
         <div className="md:h-[600px] flex flex-col md:flex-row gap-4">
-          <Carousel className="w-full max-w-4xl mx-auto">
-            <CarouselContent>{carImages}</CarouselContent>
-            <CarouselPrevious className="absolute top-1/2 left-4 -translate-y-1/2" />
-            <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2" />
-          </Carousel>
+          {isClient && (
+            <Carousel className="w-full max-w-4xl mx-auto">
+              <CarouselContent>{carImages}</CarouselContent>
+              <CarouselPrevious className="absolute top-1/2 left-4 -translate-y-1/2" />
+              <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2" />
+            </Carousel>
+          )}
 
           <Card className="flex-grow md:overflow-y-auto h-[720px] md:h-auto bg-black">
             <CardHeader>
@@ -217,88 +231,11 @@ const Page = () => {
         <div className="flex items-center justify-center">
           <h2 className="text-2xl font-bold">Outras opções</h2>
         </div>
-        {cars && cars.length > 0 ? (
-          <Carousel
-            className="w-full md:max-w-6xl mx-auto"
-            suppressHydrationWarning
-          >
-            <CarouselContent className="p-4">
-              {cars.map((car, index) => (
-                <CarouselItem
-                  key={index}
-                  className="flex-none w-full md:w-1/2 lg:w-1/3 px-2"
-                >
-                  <div className="p-1">
-                    <Link href={`/carros/${car._id}`}>
-                      <Card className="w-full h-[400px]">
-                        <CardHeader className="p-0">
-                          {car.images && car.images.length > 0 ? (
-                            <Image
-                              src={car.images[0].url || placeholderImage}
-                              alt={car.modelCar || "Imagem indisponível"}
-                              width={600}
-                              height={400}
-                              className="w-full h-48 object-cover rounded-t-lg"
-                              priority
-                            />
-                          ) : (
-                            <Image
-                              src={placeholderImage}
-                              alt="Imagem indisponível"
-                              width={600}
-                              height={400}
-                              className="w-full h-48 object-cover rounded-t-lg"
-                              priority
-                            />
-                          )}
-                        </CardHeader>
-                        <CardContent>
-                          <CardTitle className="mt-2">
-                            {car.brandCar}{" "}
-                            <span className="text-green-500">
-                              {car.modelCar}
-                            </span>
-                          </CardTitle>
-
-                          <CardDescription className="font-bold text-gray-500 mt-5">
-                            {Intl.NumberFormat("pt-BR", {
-                              style: "currency",
-                              currency: "BRL",
-                            }).format(car.price)}
-                          </CardDescription>
-                        </CardContent>
-                        <CardFooter className="grid grid-cols-2 w-full border-t p-4 gap-2 text-sm justify-between">
-                          <div className="flex items-center gap-2">
-                            <MapPinIcon className="h-4 w-4 text-gray-500" />
-                            <p className="text-gray-500">{car.location}</p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <CircleGauge className="h-4 w-4 text-gray-500" />
-                            <p className="text-gray-500">
-                              {Intl.NumberFormat("pt-BR").format(car.km)}
-                            </p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <CalendarIcon className="h-4 w-4 text-gray-500" />
-                            <p className="text-gray-500">
-                              {car.yearFabrication}
-                            </p>
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            <FuelIcon className="h-4 w-4 text-gray-500" />
-                            <p className="text-gray-500">{car.fuel}</p>
-                          </div>
-                        </CardFooter>
-                      </Card>
-                    </Link>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="absolute top-1/2 left-4 -translate-y-1/2" />
-            <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2" />
-          </Carousel>
+        {isClient && cars && cars.length > 0 ? (
+          <DynamicCarCarousel
+            cars={cars as any}
+            placeholderImage={placeholderImage}
+          />
         ) : (
           <p>Nenhum carro disponível</p>
         )}
