@@ -136,33 +136,32 @@ const Page = () => {
     window.open(whatsappUrl, "_blank");
   }, [car, downPayment, installments, monthlyPayment]);
 
-  // Função para lidar com imagens ausentes
-  const placeholderImage = "/path/to/placeholder.jpg"; // Adicione um caminho de placeholder de sua escolha
+  const placeholderImage = "/path/to/placeholder.jpg";
 
-  const carImages = useMemo(
-    () =>
-      car?.images.map((image, index) => (
-        <CarouselItem key={index} className="mx-auto">
-          <div>
-            <Card className="w-full h-[300px] md:h-[600px] flex justify-center items-center">
-              <Image
-                src={
-                  urlForImage(image).width(600).height(400).url() ||
-                  placeholderImage
-                }
-                alt={car.modelCar || "Imagem indisponível"}
-                width={600}
-                height={400}
-                className="w-full h-full object-cover object-center"
-                quality={100}
-                loading="lazy"
-              />
-            </Card>
-          </div>
-        </CarouselItem>
-      )) ?? [],
-    [car]
-  );
+  const carImages = useMemo(() => {
+    return car && car.images && car.images.length > 0
+      ? car.images.map((image, index) => (
+          <CarouselItem key={index} className="mx-auto">
+            <div>
+              <Card className="w-full h-[300px] md:h-[600px] flex justify-center items-center">
+                <Image
+                  src={
+                    urlForImage(image).width(600).height(400).url() ||
+                    placeholderImage
+                  }
+                  alt={car.modelCar || "Imagem indisponível"}
+                  width={600}
+                  height={400}
+                  className="w-full h-full object-cover object-center"
+                  quality={100}
+                  loading="lazy"
+                />
+              </Card>
+            </div>
+          </CarouselItem>
+        ))
+      : [];
+  }, [car]);
 
   if (!car)
     return (
