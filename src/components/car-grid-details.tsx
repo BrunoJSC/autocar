@@ -27,7 +27,7 @@ const CarDetailsGrid = ({ car }: CarProps) => {
         </CardContent>
       </Card>
 
-      <Card className="bg-red-500 shadow-sm hover:shadow-md transition-shadow duration-300">
+      <Card className="shadow-sm hover:shadow-md transition-shadow duration-300">
         <CardContent className="p-4">
           <p className="text-sm font-medium text-gray-500">Modelo</p>
           <p className="text-lg font-semibold text-black mt-1">
@@ -36,7 +36,7 @@ const CarDetailsGrid = ({ car }: CarProps) => {
         </CardContent>
       </Card>
 
-      <Card className="bg-red-500 shadow-sm hover:shadow-md transition-shadow duration-300">
+      <Card className="shadow-sm hover:shadow-md transition-shadow duration-300">
         <CardContent className="p-4">
           <p className="text-sm font-medium text-gray-500">Placa</p>
           <p className="text-lg font-semibold text-black mt-1">
@@ -47,7 +47,7 @@ const CarDetailsGrid = ({ car }: CarProps) => {
         </CardContent>
       </Card>
 
-      <Card className="bg-red-500 shadow-sm hover:shadow-md transition-shadow duration-300">
+      <Card className="shadow-sm hover:shadow-md transition-shadow duration-300">
         <CardContent className="p-4">
           <p className="text-sm font-medium text-gray-500">KM</p>
           <p className="text-lg font-semibold text-black mt-1">
@@ -56,14 +56,14 @@ const CarDetailsGrid = ({ car }: CarProps) => {
         </CardContent>
       </Card>
 
-      <Card className="bg-red-500 shadow-sm hover:shadow-md transition-shadow duration-300">
+      <Card className="shadow-sm hover:shadow-md transition-shadow duration-300">
         <CardContent className="p-4">
           <p className="text-sm font-medium text-gray-500">Cor</p>
           <p className="text-lg font-semibold text-black mt-1">{car.color}</p>
         </CardContent>
       </Card>
 
-      <Card className="bg-red-500 shadow-sm hover:shadow-md transition-shadow duration-300">
+      <Card className="shadow-sm hover:shadow-md transition-shadow duration-300">
         <CardContent className="p-4">
           <p className="text-sm font-medium text-gray-500">Marca</p>
           <p className="text-lg font-semibold text-black mt-1">
@@ -72,14 +72,14 @@ const CarDetailsGrid = ({ car }: CarProps) => {
         </CardContent>
       </Card>
 
-      <Card className="bg-red-500 shadow-sm hover:shadow-md transition-shadow duration-300">
+      <Card className="shadow-sm hover:shadow-md transition-shadow duration-300">
         <CardContent className="p-4">
           <p className="text-sm font-medium text-gray-500">Portas</p>
           <p className="text-lg font-semibold text-black mt-1">{car.doors}</p>
         </CardContent>
       </Card>
 
-      <Card className="bg-red-500 shadow-sm hover:shadow-md transition-shadow duration-300">
+      <Card className="shadow-sm hover:shadow-md transition-shadow duration-300">
         <CardContent className="p-4">
           <p className="text-sm font-medium text-gray-500">Combustível</p>
           <p className="text-lg font-semibold text-black mt-1">{car.fuel}</p>
