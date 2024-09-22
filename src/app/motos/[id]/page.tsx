@@ -143,32 +143,32 @@ const Page = () => {
     window.open(whatsappUrl, "_blank");
   }, [motorbike, downPayment, installments, monthlyPayment]);
 
-  const motorbikeImages = useMemo(
-    () =>
-      motorbike?.images.map((image, index) => (
-        <CarouselItem key={index}>
-          <div>
-            <Card className="w-full h-[300px] md:h-[600px] flex justify-center items-center">
-              <Image
-                src={urlForImage(image).width(600).height(400).url()}
-                alt={motorbike.motorbikeModel}
-                width={600}
-                height={400}
-                className="w-full h-full object-cover"
-                quality={100}
-                loading="lazy"
-                style={{
-                  objectFit: "cover",
-                  objectPosition: "center",
-                  aspectRatio: "16 / 9",
-                }}
-              />
-            </Card>
-          </div>
-        </CarouselItem>
-      )),
-    [motorbike]
-  );
+  const motorbikeImages = useMemo(() => {
+    return motorbike && motorbike.images && motorbike.images.length > 0
+      ? motorbike.images.map((image, index) => (
+          <CarouselItem key={index}>
+            <div>
+              <Card className="w-full h-[300px] md:h-[600px] flex justify-center items-center">
+                <Image
+                  src={urlForImage(image).width(600).height(400).url()}
+                  alt={motorbike.motorbikeModel || "Imagem indisponível"}
+                  width={600}
+                  height={400}
+                  className="w-full h-full object-cover"
+                  quality={100}
+                  loading="lazy"
+                  style={{
+                    objectFit: "cover",
+                    objectPosition: "center",
+                    aspectRatio: "16 / 9",
+                  }}
+                />
+              </Card>
+            </div>
+          </CarouselItem>
+        ))
+      : [];
+  }, [motorbike]);
 
   if (!motorbike)
     return (
