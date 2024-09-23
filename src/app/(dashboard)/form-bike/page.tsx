@@ -1,9 +1,9 @@
 "use client";
+import { useEffect, useState } from "react";
 
 import { MaxWrapper } from "@/components/max-wrapper";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db, storage } from "@/utils/firebase";

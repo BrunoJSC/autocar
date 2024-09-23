@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 import { MaxWrapper } from "@/components/max-wrapper";
 import {
   Form,
@@ -22,7 +24,6 @@ import {
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
 
 const calculateInstallments = (
   totalValue: number,

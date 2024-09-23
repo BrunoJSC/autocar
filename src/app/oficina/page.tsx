@@ -1,12 +1,13 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import { MaxWrapper } from "@/components/max-wrapper";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchBlogData } from "@/fetch/fetch-blog";
 import { Blog } from "@/interface/blog";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 export default function Page() {
   const [blog, setBlog] = useState<Blog[]>([]);

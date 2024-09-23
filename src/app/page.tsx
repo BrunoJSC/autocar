@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect, useCallback, memo } from "react";
+
 import { MaxWrapper } from "@/components/max-wrapper";
 import { services } from "@/constants/services";
 import Link from "next/link";
@@ -19,7 +21,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useState, useEffect, useCallback, memo } from "react";
 import { client, urlForImage } from "@/lib/sanity";
 import { CircleMessage } from "@/components/circleMessage";
 import Image from "next/image";

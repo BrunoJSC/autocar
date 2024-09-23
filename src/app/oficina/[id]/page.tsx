@@ -1,10 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import { MaxWrapper } from "@/components/max-wrapper";
 import { Blog } from "@/interface/blog";
 import { client, urlForImage } from "@/lib/sanity";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import { PortableText } from "@portabletext/react";
 import { Skeleton } from "@/components/ui/skeleton";

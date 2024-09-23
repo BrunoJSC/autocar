@@ -1,8 +1,9 @@
+import React, { useState, useEffect } from "react";
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Car {

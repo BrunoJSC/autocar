@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 
 import { MaxWrapper } from "@/components/max-wrapper";
 import {
@@ -10,7 +11,6 @@ import {
 import { client } from "@/lib/sanity";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 interface Store {
   _id: string;
