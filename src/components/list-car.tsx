@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+"use client";
 
+import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -30,23 +31,24 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
   const carsPerPage = 9;
 
   const searchParams = useSearchParams();
-  const getQuery = searchParams.get("search") || "";
+  const searchQuery = searchParams.get("model");
 
   useEffect(() => {
     loadMoreCars();
-  }, []);
+  }, [searchQuery]);
 
   const loadMoreCars = () => {
     setIsLoading(true);
     setTimeout(() => {
       const indexOfLastCar = currentPage * carsPerPage;
-      const newCars = cars.slice(0, indexOfLastCar);
 
-      const filteredCars = cars
-        .filter((car) => car.modelCar.toLowerCase().includes(getQuery)) // Filtra os carros com base na busca
-        .slice(0, indexOfLastCar);
+      const filteredCars = searchQuery
+        ? cars.filter((car) => car.modelCar.includes(searchQuery))
+        : cars;
 
-      setDisplayedCars(newCars ?? filteredCars);
+      const newCars = filteredCars.slice(0, indexOfLastCar);
+
+      setDisplayedCars(newCars);
       setCurrentPage(currentPage + 1);
       setIsLoading(false);
     }, 1000);

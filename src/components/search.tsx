@@ -71,7 +71,7 @@ export function Search() {
   }
 
   return (
-    <form className="w-full relative flex md:flex-row p-4 bg-black md:items-center">
+    <div className="w-full relative flex md:flex-row p-4 bg-black md:items-center">
       <div className="relative w-full md:w-full">
         <SearchComponent
           size={25}
@@ -99,9 +99,12 @@ export function Search() {
               >
                 <Link
                   href={{
-                    pathname: `/${vehicle.category}/${vehicle._id}`,
+                    pathname: `/${vehicle.category}`,
                     query: {
-                      model: vehicle.modelCar ?? vehicle.motorbikeModel,
+                      model:
+                        vehicle.modelCar?.toLowerCase() ||
+                        vehicle.motorbikeModel?.toLowerCase() ||
+                        "",
                     },
                   }}
                 >
@@ -112,6 +115,6 @@ export function Search() {
           </ul>
         )}
       </div>
-    </form>
+    </div>
   );
 }
