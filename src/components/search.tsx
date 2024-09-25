@@ -97,7 +97,14 @@ export function Search() {
                 key={vehicle._id}
                 className="p-2 hover:bg-gray-100 cursor-pointer"
               >
-                <Link href={`/${vehicle.category}/${vehicle._id}`}>
+                <Link
+                  href={{
+                    pathname: `/${vehicle.category}/${vehicle._id}`,
+                    query: {
+                      model: vehicle.modelCar ?? vehicle.motorbikeModel,
+                    },
+                  }}
+                >
                   {vehicle.modelCar ?? vehicle.motorbikeModel}
                 </Link>
               </li>

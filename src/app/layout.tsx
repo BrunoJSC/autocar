@@ -5,6 +5,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
+import GoogleAnalytics from "@/components/analytics/google-analytics";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "700"] });
 
@@ -42,11 +43,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <GoogleAnalytics />
       <body className={cn("min-h-screen", poppins.className)}>
         <Header />
         {children}
         <Footer />
         <Toaster />
+
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-9C3EF7H9PF"
+        ></script>
       </body>
     </html>
   );

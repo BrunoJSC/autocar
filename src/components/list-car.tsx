@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSearchParams } from "next/navigation";
 
 interface Car {
   _id: string;
@@ -28,6 +29,9 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
   const [isLoading, setIsLoading] = useState(false);
   const carsPerPage = 9;
 
+  const searchParams = useSearchParams();
+  const getQuery = searchParams.get("search") || "";
+
   useEffect(() => {
     loadMoreCars();
   }, []);
@@ -37,7 +41,12 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
     setTimeout(() => {
       const indexOfLastCar = currentPage * carsPerPage;
       const newCars = cars.slice(0, indexOfLastCar);
-      setDisplayedCars(newCars);
+
+      const filteredCars = cars
+        .filter((car) => car.modelCar.toLowerCase().includes(getQuery)) // Filtra os carros com base na busca
+        .slice(0, indexOfLastCar);
+
+      setDisplayedCars(newCars ?? filteredCars);
       setCurrentPage(currentPage + 1);
       setIsLoading(false);
     }, 1000);
