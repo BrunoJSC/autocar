@@ -43,7 +43,7 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
       const indexOfLastCar = currentPage * carsPerPage;
 
       const filteredCars = searchQuery
-        ? cars.filter((car) => car.modelCar.includes(searchQuery))
+        ? cars.filter((car) => car.modelCar?.toLowerCase().includes(searchQuery))
         : cars;
 
       const newCars = filteredCars.slice(0, indexOfLastCar);
@@ -92,9 +92,9 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
           <p className="text-xl font-bold text-primary">
             {car.price
               ? Intl.NumberFormat("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(car.price)
+                style: "currency",
+                currency: "BRL",
+              }).format(car.price)
               : "Preço não disponível"}
           </p>
         </div>

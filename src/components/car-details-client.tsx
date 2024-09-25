@@ -23,7 +23,7 @@ import {
 import { ContactForm } from "@/components/contact-form";
 import CarDetailsCard from "@/components/car-card-details";
 import { urlForImage } from "@/lib/sanity";
-
+import { Button } from "@/components/ui/button";
 const formSchema = z.object({
   name: z
     .string()
@@ -111,7 +111,7 @@ const CarDetailsClient: React.FC<CarDetailsClientProps> = ({
       Valor da Entrada: R$ ${downPayment}
       Valor Financiado: R$ ${financedAmount.toFixed(2)}
       Número de Parcelas: ${installments}
-      Valor da Parcela: R$ ${monthlyPayment.toFixed(2)}`
+      Valor da Parcela: R$ ${monthlyPayment.toFixed(2)}`,
     );
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
     window.open(whatsappUrl, "_blank");
@@ -123,6 +123,7 @@ const CarDetailsClient: React.FC<CarDetailsClientProps> = ({
           <CarouselItem key={index} className="mx-auto">
             <div>
               <Card className="w-full h-[300px] md:h-[600px] flex justify-center items-center">
+                <Button></Button>
                 <Image
                   src={
                     urlForImage(image).width(600).height(400).url() ||
