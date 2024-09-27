@@ -27,7 +27,7 @@ import Image from "next/image";
 import { CalendarIcon, CircleGauge, FuelIcon, MapPinIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Search } from "@/components/search";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { fetchBlogData } from "@/fetch/fetch-blog";
 import { Blog } from "@/interface/blog";
@@ -198,6 +198,12 @@ export default function Home() {
                         announcement={announcement}
                       />
                     ))}
+              </div>
+
+              <div className="w-full flex align-center justify-center">
+                <Button className="text-center mt-4" asChild>
+                  <Link href="/carros">Ver mais</Link>
+                </Button>
               </div>
             </div>
 
