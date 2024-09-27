@@ -107,6 +107,8 @@ export const motorbikeType = defineType({
           {title: '100cc', value: 100},
           {title: '110cc', value: 110},
           {title: '125cc', value: 125},
+          {title: '150cc', value: 150},
+          {title: '160cc', value: 160},
           {title: '250cc', value: 250},
           {title: '300cc', value: 300},
           {title: '350cc', value: 350},
