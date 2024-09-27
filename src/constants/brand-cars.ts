@@ -49,4 +49,5 @@ export const brandCars = [
   { id: 48, title: "Smart", value: "Smart" },
   { id: 49, title: "Ssangyong", value: "Ssangyong" },
   { id: 50, title: "Ram", value: "Ram" },
+  { id: 51, title: "Honda", value: "Honda" },
 ];

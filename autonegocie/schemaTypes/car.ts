@@ -62,6 +62,7 @@ export const carType = defineType({
           {title: 'Smart', value: 'Smart'},
           {title: 'Ssangyong', value: 'Ssangyong'},
           {title: 'Ram', value: 'Ram'},
+          {title: 'Honda', value: 'Honda'},
         ],
       },
       validation: (Rule) => Rule.required(),
