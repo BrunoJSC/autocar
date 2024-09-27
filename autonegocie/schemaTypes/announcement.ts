@@ -87,16 +87,6 @@ export const announcementType = defineType({
           {title: 'Smart', value: 'Smart'},
           {title: 'Ssangyong', value: 'Ssangyong'},
           {title: 'Ram', value: 'Ram'},
-        ],
-      },
-    }),
-    defineField({
-      name: 'motorbikeBrand',
-      title: 'Marca',
-      type: 'string',
-      validation: (Rule) => Rule.required(),
-      options: {
-        list: [
           {title: 'Honda', value: 'Honda'},
           {title: 'Yamaha', value: 'Yamaha'},
           {title: 'Kawasaki', value: 'Kawasaki'},
@@ -118,6 +108,7 @@ export const announcementType = defineType({
         ],
       },
     }),
+
     defineField({
       name: 'model',
       title: 'Model',
