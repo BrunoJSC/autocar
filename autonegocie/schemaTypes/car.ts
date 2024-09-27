@@ -188,6 +188,7 @@ export const carType = defineType({
           {title: 'Amarelo', value: 'amarelo'},
           {title: 'Marrom', value: 'marrom'},
           {title: 'Prata', value: 'prata'},
+          {title: 'Vinho', value: 'vinho'},
         ],
       },
     }),
