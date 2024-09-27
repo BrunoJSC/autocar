@@ -99,6 +99,10 @@ export const carType = defineType({
       options: {
         list: [
           {title: 'São Paulo', value: 'São paulo'},
+          {title: 'São Paulo zona sul', value: 'São paulo zona sul'},
+          {title: 'São Paulo zona oeste', value: 'São paulo zona oeste'},
+          {title: 'São Paulo zona leste', value: 'São paulo zona leste'},
+          {title: 'São Paulo zona norte', value: 'São paulo zona norte'},
           {title: 'São Bernardo do Campo', value: 'São bernardo do campo'},
           {title: 'São Caetano', value: 'São caetano'},
           {title: 'Santo Andre', value: 'Santo andre'},
