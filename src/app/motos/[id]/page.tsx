@@ -209,7 +209,7 @@ const Page = () => {
         </div>
 
         <MotorbikeDetailsCard
-          motorbike={motorbike}
+          moto={motorbike}
           key={motorbike._id}
           downPayment={downPayment}
           installments={installments}

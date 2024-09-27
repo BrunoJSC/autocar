@@ -20,6 +20,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import MotoDetailsGrid from "./moto-grid-details";
 
 interface Motorbike {
   motorbikeBrand: string;
@@ -42,8 +43,8 @@ interface Motorbike {
   date: Date;
 }
 
-interface MotorbikeDetailsCardProps {
-  motorbike: Motorbike;
+interface MotoDetailsCardProps {
+  moto: Motorbike;
   downPayment: string;
   setDownPayment: (value: string) => void;
   installments: number;
@@ -52,8 +53,8 @@ interface MotorbikeDetailsCardProps {
   sendSimulator: () => void;
 }
 
-const MotorbikeDetailsCard: React.FC<MotorbikeDetailsCardProps> = ({
-  motorbike,
+const MotoDetailsCard: React.FC<MotoDetailsCardProps> = ({
+  moto,
   downPayment,
   setDownPayment,
   installments,
@@ -61,96 +62,69 @@ const MotorbikeDetailsCard: React.FC<MotorbikeDetailsCardProps> = ({
   monthlyPayment,
   sendSimulator,
 }) => {
+  const {
+    motorbikeBrand = "Marca Desconhecida",
+    motorbikeModel = "Modelo Desconhecido",
+    price = 0,
+    date = null,
+    description = "Nenhuma descrição disponível",
+    accessories = [],
+  } = moto || {};
+
+  const formattedDate = date
+    ? format(new Date(date), "dd/MM/yyyy", { locale: ptBR })
+    : "Data indisponível";
+
+  const formattedPrice = Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(price);
+
+  const formattedDownPayment = parseFloat(
+    downPayment.replace(/[^\d.-]/g, "") || "0"
+  );
+
   return (
     <Card className="mt-5 w-full md:max-w-7xl mx-auto p-2 gap-4 items-center">
       <div>
         <CardHeader>
           <CardTitle>
-            <span className="text-primary">{motorbike.motorbikeBrand}</span>{" "}
-            {motorbike.motorbikeModel}
+            <span className="text-primary">{motorbikeBrand}</span>{" "}
+            {motorbikeModel}
           </CardTitle>
-          <h3 className="font-bold text-3xl">
-            {Intl.NumberFormat("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            }).format(motorbike.price)}
-          </h3>
+          <h3 className="font-bold text-3xl">{formattedPrice}</h3>
 
           <div>
             <h2 className="text-gray-500">
               <span className="text-black">Anúncio criado em </span>
-              {motorbike.date
-                ? format(new Date(motorbike.date), "dd/MM/yyyy", {
-                    locale: ptBR,
-                  })
-                : ""}
+              {formattedDate}
             </h2>
           </div>
         </CardHeader>
 
         <CardContent>
-          <div className="grid md:grid-cols-4 gap-4 grid-cols-1">
-            <div className="w-[100px] h-[100px]">
-              <p className="text-gray-500">Ano</p>
-              <p className="text-black">{motorbike.yearFabrication}</p>
-            </div>
-            <div>
-              <p className="text-gray-500">Modelo</p>
-              <p className="text-black">{motorbike.yearModification}</p>
-            </div>
-
-            <div>
-              <p className="text-gray-500">Placa</p>
-              <p className="text-black">
-                {motorbike.plate
-                  ? motorbike.plate.slice(0, -1).replace(/./g, "*") +
-                    motorbike.plate.slice(-1)
-                  : "0000"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-gray-500">KM</p>
-              <p className="text-black">
-                {Intl.NumberFormat("pt-BR").format(motorbike.km)}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-gray-500">Cor</p>
-              <p className="text-black">{motorbike.color}</p>
-            </div>
-
-            <div>
-              <p className="text-gray-500">Marca</p>
-              <p className="text-black">{motorbike.motorbikeBrand}</p>
-            </div>
-
-            <div>
-              <p className="text-gray-500">Combustível</p>
-              <p className="text-black">{motorbike.fuel}</p>
-            </div>
-          </div>
-
-          <Separator className="my-8" />
-
+          <MotoDetailsGrid moto={moto as any} /> <Separator className="my-8" />
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2">
             <div>
               <p className="text-gray-500">Acessórios</p>
               <div className="grid gap-2 grid-cols-2 md:grid-cols-3">
-                {motorbike.accessories.map((accessory) => (
-                  <div key={accessory} className="text-black">
-                    {accessory}
-                  </div>
-                ))}
+                {accessories.length > 0 ? (
+                  accessories.map((accessory) => (
+                    <div key={accessory} className="text-black">
+                      {accessory}
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-black">Nenhum acessório informado</div>
+                )}
               </div>
 
               <CardDescription className="text-gray-500  mt-4 text-sm leading-normal md:max-w-md">
-                {motorbike.description}
+                {description}
               </CardDescription>
             </div>
 
-            {/* Simulador de Financiamento */}
+            {/* Financiamento */}
             <Card className="mt-5 max-w-5xl md:h-[420px] h-auto w-full p-2 flex flex-col md:flex-row items-center justify-between gap-8">
               <div>
                 <CardHeader>
@@ -209,13 +183,8 @@ const MotorbikeDetailsCard: React.FC<MotorbikeDetailsCardProps> = ({
                 <CardContent>
                   <div className="text-primary-foreground space-y-2">
                     <div className="flex justify-between">
-                      <span>Valor do veículo:</span>
-                      <span>
-                        {Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(motorbike.price)}
-                      </span>
+                      <span>Valor da moto:</span>
+                      <span>{formattedPrice}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Entrada:</span>
@@ -223,9 +192,7 @@ const MotorbikeDetailsCard: React.FC<MotorbikeDetailsCardProps> = ({
                         {Intl.NumberFormat("pt-BR", {
                           style: "currency",
                           currency: "BRL",
-                        }).format(
-                          parseFloat(downPayment.replace(/[^\d.-]/g, ""))
-                        )}
+                        }).format(formattedDownPayment)}
                       </span>
                     </div>
                     <div className="flex justify-between">
@@ -234,10 +201,7 @@ const MotorbikeDetailsCard: React.FC<MotorbikeDetailsCardProps> = ({
                         {Intl.NumberFormat("pt-BR", {
                           style: "currency",
                           currency: "BRL",
-                        }).format(
-                          motorbike.price -
-                            parseFloat(downPayment.replace(/[^\d.-]/g, ""))
-                        )}
+                        }).format(price - formattedDownPayment)}
                       </span>
                     </div>
                     <div className="flex justify-between">
@@ -264,4 +228,4 @@ const MotorbikeDetailsCard: React.FC<MotorbikeDetailsCardProps> = ({
   );
 };
 
-export default MotorbikeDetailsCard;
+export default MotoDetailsCard;
