@@ -252,7 +252,8 @@ export const carType = defineType({
       type: 'number',
       options: {
         list: [
-          {title: '1.0', value: 1.0},
+          {title: '1.0', value: 1.0}
+          {title: "1.2", value: 1.2}
           {title: '1.3', value: 1.3},
           {title: '1.4', value: 1.4},
           {title: '1.5', value: 1.5},
