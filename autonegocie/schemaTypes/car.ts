@@ -135,7 +135,7 @@ export const carType = defineType({
           return {title: year.toString(), value: year}
         }),
       },
-      validation: (Rule) => Rule.required().greaterThan(Rule.valueOfField('yearFabrication')),
+      validation: (Rule) => Rule.required().min(Rule.valueOfField('yearFabrication')),
     }),
 
     defineField({
