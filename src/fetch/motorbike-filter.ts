@@ -1,8 +1,8 @@
 import { client } from "@/lib/sanity";
 
 interface FilterParams {
-  motorbikeBrand?: string; // Mantido como motorbikeBrand
-  motorbikeModel?: string; // Mantido como motorbikeModel
+  motorbikeBrand?: string;
+  motorbikeModel?: string;
   location?: string;
   minPrice?: number;
   maxPrice?: number;
@@ -15,8 +15,8 @@ interface FilterParams {
 }
 
 export const fetchFilterMotorbike = async ({
-  motorbikeBrand, // Mantido como motorbikeBrand
-  motorbikeModel, // Mantido como motorbikeModel
+  motorbikeBrand,
+  motorbikeModel,
   location,
   minPrice,
   maxPrice,
@@ -27,7 +27,7 @@ export const fetchFilterMotorbike = async ({
   startYear,
   endYear,
 }: FilterParams) => {
-  let query = `*[_type == "motorbike"`; // Mantido como motorbike
+  let query = `*[_type == "motorbike"`;
   const params: any = {};
 
   if (motorbikeBrand) {
@@ -98,6 +98,6 @@ export const fetchFilterMotorbike = async ({
     }`;
   }
 
-  const motorbikes = await client.fetch(query, params); // Mantido como motorbikes
-  return motorbikes; // Mantido como motorbikes
+  const motorbikes = await client.fetch(query, params);
+  return motorbikes;
 };

@@ -72,28 +72,28 @@ export const FilterBike: React.FC<FilterProps> = ({
   const handleBrandChange = useCallback(
     (value: string) =>
       setFilters((prev) => ({ ...prev, motorbikeBrand: value })),
-    [setFilters]
+    [setFilters],
   );
 
   const handleModelChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
       setFilters((prev) => ({ ...prev, motorbikeModel: e.target.value || "" })),
-    [setFilters]
+    [setFilters],
   );
 
   const handleLocationChange = useCallback(
     (value: string) => setFilters((prev) => ({ ...prev, location: value })),
-    [setFilters]
+    [setFilters],
   );
 
   const handleFuelChange = useCallback(
     (value: string) => setFilters((prev) => ({ ...prev, fuel: value })),
-    [setFilters]
+    [setFilters],
   );
 
   const handleExchangeChange = useCallback(
     (value: string) => setFilters((prev) => ({ ...prev, exchange: value })),
-    [setFilters]
+    [setFilters],
   );
 
   const handleMinPriceChange = useCallback(
@@ -102,7 +102,7 @@ export const FilterBike: React.FC<FilterProps> = ({
         ...prev,
         minPrice: value ? Number(value) : undefined,
       })),
-    [setFilters]
+    [setFilters],
   );
 
   const handleMaxPriceChange = useCallback(
@@ -111,7 +111,7 @@ export const FilterBike: React.FC<FilterProps> = ({
         ...prev,
         maxPrice: value ? Number(value) : undefined,
       })),
-    [setFilters]
+    [setFilters],
   );
 
   const handleKmChange = useCallback(
@@ -120,39 +120,40 @@ export const FilterBike: React.FC<FilterProps> = ({
         ...prev,
         km: value ? Number(value) : undefined,
       })),
-    [setFilters]
+    [setFilters],
   );
 
   const handleCylindersChange = useCallback(
     (value: string) =>
       setFilters((prev) => ({ ...prev, cylinders: Number(value) })),
-    [setFilters]
+    [setFilters],
   );
 
   const handleAnnounceChange = useCallback(
     (value: string) => setFilters((prev) => ({ ...prev, announce: value })),
-    [setFilters]
+    [setFilters],
   );
 
   const handleAccessoriesChange = useCallback(
     (selected: string[]) =>
       setFilters((prev) => ({ ...prev, accessories: selected })),
-    [setFilters]
+    [setFilters],
   );
 
   const handleColorChange = useCallback(
     (value: string) => setFilters((prev) => ({ ...prev, color: value })),
-    [setFilters]
+    [setFilters],
   );
 
   const handleStartYearChange = useCallback(
     (year: number) => setFilters((prev) => ({ ...prev, startYear: year })),
-    [setFilters]
+    [setFilters],
   );
 
   const handleEndYearChange = useCallback(
-    (year: number) => setFilters((prev) => ({ ...prev, endYear: year })),
-    [setFilters]
+    (year: number | undefined) =>
+      setFilters((prev) => ({ ...prev, endYear: year })),
+    [setFilters],
   );
 
   // Memoizing options to avoid unnecessary re-renders
@@ -163,7 +164,7 @@ export const FilterBike: React.FC<FilterProps> = ({
         id: bike.id.toString(),
         value: bike.value.toString(),
       })),
-    []
+    [],
   );
 
   const locationOptions = useMemo(
@@ -173,7 +174,7 @@ export const FilterBike: React.FC<FilterProps> = ({
         id: loc.id.toString(),
         value: loc.value.toString(),
       })),
-    []
+    [],
   );
 
   const fuelOptions = useMemo(
@@ -183,7 +184,7 @@ export const FilterBike: React.FC<FilterProps> = ({
         id: f.id.toString(),
         value: f.value.toString(),
       })),
-    []
+    [],
   );
 
   const exchangeOptions = useMemo(
@@ -193,7 +194,7 @@ export const FilterBike: React.FC<FilterProps> = ({
         id: ex.id.toString(),
         value: ex.value.toString(),
       })),
-    []
+    [],
   );
 
   const colorOptions = useMemo(
@@ -203,7 +204,7 @@ export const FilterBike: React.FC<FilterProps> = ({
         id: color.id.toString(),
         value: color.value.toString(),
       })),
-    []
+    [],
   );
 
   const announceOptions = useMemo(
@@ -213,7 +214,7 @@ export const FilterBike: React.FC<FilterProps> = ({
         id: announce.id.toString(),
         value: announce.value.toString(),
       })),
-    []
+    [],
   );
 
   const cylindersOptions = useMemo(
@@ -223,7 +224,7 @@ export const FilterBike: React.FC<FilterProps> = ({
         id: cylinder.id.toString(),
         value: cylinder.value.toString(),
       })),
-    []
+    [],
   );
 
   const kmOptions = useMemo(
@@ -233,7 +234,7 @@ export const FilterBike: React.FC<FilterProps> = ({
         id: km.id.toString(),
         value: km.value.toString(),
       })),
-    []
+    [],
   );
 
   return (

@@ -38,7 +38,6 @@ export const fetchFilterCars = async ({
   let query = `*[_type == "car"`;
   const params: any = {};
 
-  // Condições de filtragem
   if (brandCar) {
     query += ` && brandCar == $brandCar`;
     params.brandCar = brandCar;
@@ -80,7 +79,6 @@ export const fetchFilterCars = async ({
     params.maxPrice = maxPrice;
   }
 
-  // Filtrando pelo intervalo de anos (YearModification)
   if (startYear !== undefined && endYear !== undefined) {
     query += ` && yearModification >= $startYear && yearModification <= $endYear`;
     params.startYear = startYear;
@@ -107,7 +105,6 @@ export const fetchFilterCars = async ({
     params.accessories = accessories;
   }
 
-  // Ordenar por YearModification e preço (múltiplos critérios de ordenação)
   query += `] | order(yearModification asc) | order(price asc) {
     _id,
     brandCar,
