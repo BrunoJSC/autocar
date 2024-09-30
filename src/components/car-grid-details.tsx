@@ -9,6 +9,8 @@ type Car = {
   color: string;
   doors: number;
   fuel: string;
+  exchange: string;
+  motors: string;
 };
 
 interface CarProps {
@@ -83,6 +85,22 @@ const CarDetailsGrid = ({ car }: CarProps) => {
         <CardContent className="p-4">
           <p className="text-sm font-medium text-gray-500">Combustível</p>
           <p className="text-lg font-semibold text-black mt-1">{car.fuel}</p>
+        </CardContent>
+      </Card>
+
+      <Card className="shadow-sm hover:shadow-md transition-shadow duration-300">
+        <CardContent className="p-4">
+          <p className="text-sm font-medium text-gray-500">Cambio</p>
+          <p className="text-lg font-semibold text-black mt-1">
+            {car.exchange}
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card className="shadow-sm hover:shadow-md transition-shadow duration-300">
+        <CardContent className="p-4">
+          <p className="text-sm font-medium text-gray-500">Motor</p>
+          <p className="text-lg font-semibold text-black mt-1">{car.motors}</p>
         </CardContent>
       </Card>
     </div>

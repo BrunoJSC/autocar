@@ -9,4 +9,6 @@ export const colors = [
   { id: 8, title: "Marrom", value: "marrom" },
   { id: 9, title: "Prata", value: "prata" },
   { id: 10, title: "Vinho", value: "vinho" },
+  { id: 11, title: "Laranja", value: "laranja" },
+  { id: 12, title: "Bege", value: "bege" },
 ];

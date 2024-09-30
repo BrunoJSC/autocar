@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import { Label } from "@/components/ui/label";
 import {
@@ -9,12 +8,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { years } from "@/constants/years";
 
 interface YearFilterProps {
   startYear: number;
-  endYear: number;
+  endYear: number | undefined;
   onStartYearChange: (year: number) => void;
-  onEndYearChange: (year: number) => void;
+  onEndYearChange: (year: number | undefined) => void;
 }
 
 const YearFilter: React.FC<YearFilterProps> = ({
@@ -23,12 +23,6 @@ const YearFilter: React.FC<YearFilterProps> = ({
   onStartYearChange,
   onEndYearChange,
 }) => {
-  const currentYear = new Date().getFullYear();
-  const years = Array.from(
-    { length: currentYear - 1990 + 1 },
-    (_, i) => 1990 + i
-  );
-
   return (
     <div className="flex space-x-4 items-center">
       <div className="w-1/2">
@@ -42,8 +36,8 @@ const YearFilter: React.FC<YearFilterProps> = ({
           </SelectTrigger>
           <SelectContent>
             {years.map((year) => (
-              <SelectItem key={year} value={year.toString()}>
-                {year}
+              <SelectItem key={year.id} value={year.value.toString()}>
+                {year.title}
               </SelectItem>
             ))}
           </SelectContent>
@@ -52,18 +46,26 @@ const YearFilter: React.FC<YearFilterProps> = ({
       <div className="w-1/2">
         <Label>Ano Final</Label>
         <Select
-          value={endYear.toString()}
-          onValueChange={(value) => onEndYearChange(Number(value))}
+          value={endYear?.toString() ?? ""}
+          onValueChange={(value) => {
+            const selectedYear = value ? Number(value) : undefined;
+            if (selectedYear && selectedYear < startYear) {
+              onStartYearChange(selectedYear);
+            }
+            onEndYearChange(selectedYear);
+          }}
         >
           <SelectTrigger>
             <SelectValue placeholder="Selecione o ano final" />
           </SelectTrigger>
           <SelectContent>
-            {years.map((year) => (
-              <SelectItem key={year} value={year.toString()}>
-                {year}
-              </SelectItem>
-            ))}
+            {years
+              .filter((year) => year.value >= startYear)
+              .map((year) => (
+                <SelectItem key={year.id} value={year.value.toString()}>
+                  {year.title}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
       </div>

@@ -9,4 +9,5 @@ export const locations = [
   { id: 8, title: "Santo Andre", value: "Santo andre" },
   { id: 9, title: "Ribeirão Pires", value: "Ribeirão pires" },
   { id: 10, title: "Mauá", value: "Mauá" },
+  { id: 11, title: "Diadema", value: "Diadema" },
 ];

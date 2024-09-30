@@ -108,10 +108,11 @@ const CarDetailsClient: React.FC<CarDetailsClientProps> = ({
       `Simulação de Financiamento:
       
       Veículo: ${car?.brandCar} - ${car?.modelCar}
+      Ano: ${car.yearModification}
       Valor da Entrada: R$ ${downPayment}
       Valor Financiado: R$ ${financedAmount.toFixed(2)}
       Número de Parcelas: ${installments}
-      Valor da Parcela: R$ ${monthlyPayment.toFixed(2)}`,
+      Valor da Parcela: R$ ${monthlyPayment.toFixed(2)}`
     );
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
     window.open(whatsappUrl, "_blank");
@@ -120,26 +121,23 @@ const CarDetailsClient: React.FC<CarDetailsClientProps> = ({
   const carImages = useMemo(() => {
     return car && car.images && car.images.length > 0
       ? car.images.map((image, index) => (
-          <CarouselItem key={index} className="mx-auto">
-            <div>
-              <Card className="w-full h-[300px] md:h-[600px] flex justify-center items-center">
-                <Button></Button>
-                <Image
-                  src={
-                    urlForImage(image).width(600).height(400).url() ||
-                    placeholderImage
-                  }
-                  alt={car.modelCar || "Imagem indisponível"}
-                  width={600}
-                  height={400}
-                  className="w-full h-full object-cover object-center"
-                  quality={100}
-                  loading="eager"
-                />
-              </Card>
-            </div>
-          </CarouselItem>
-        ))
+        <CarouselItem key={index} className="mx-auto">
+          <Card className="w-full h-[300px] md:h-[600px] flex justify-center items-center">
+            <Image
+              src={
+                urlForImage(image)?.width(600)?.height(400)?.url() ||
+                placeholderImage
+              }
+              alt={car.modelCar || "Imagem indisponível"}
+              width={600}
+              height={400}
+              className="w-full h-full object-cover object-center"
+              quality={100}
+              loading="eager"
+            />
+          </Card>
+        </CarouselItem>
+      ))
       : [];
   }, [car, placeholderImage]);
 

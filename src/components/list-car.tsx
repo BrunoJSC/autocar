@@ -17,7 +17,7 @@ interface Car {
   km: number;
   motors: number;
   price: number;
-  yearFabrication: number;
+  yearModification: number;
 }
 
 interface CarListProps {
@@ -86,7 +86,7 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
           </div>
           <div className="text-gray-600 text-sm mb-4">
             <p>{car.location || "Localização não informada"}</p>
-            <p>Ano {car.yearFabrication || "N/A"}</p>
+            <p>Ano {car.yearModification || "N/A"}</p>
             <p>Motor {car.motors ? car.motors.toFixed(1) : "N/A"}</p>
           </div>
           <p className="text-xl font-bold text-primary">

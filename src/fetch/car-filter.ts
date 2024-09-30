@@ -15,6 +15,7 @@ interface FilterParams {
   startYear?: number;
   endYear?: number;
   motors?: number;
+  exchange?: string;
 }
 
 export const fetchFilterCars = async ({
@@ -32,10 +33,12 @@ export const fetchFilterCars = async ({
   startYear,
   endYear,
   motors,
+  exchange,
 }: FilterParams) => {
   let query = `*[_type == "car"`;
   const params: any = {};
 
+  // Condições de filtragem
   if (brandCar) {
     query += ` && brandCar == $brandCar`;
     params.brandCar = brandCar;
@@ -49,6 +52,11 @@ export const fetchFilterCars = async ({
   if (location) {
     query += ` && location match $location`;
     params.location = `${location}*`;
+  }
+
+  if (exchange) {
+    query += ` && exchange match $exchange`;
+    params.exchange = exchange;
   }
 
   if (doors) {
@@ -66,18 +74,15 @@ export const fetchFilterCars = async ({
     params.color = color;
   }
 
-  if (minPrice !== undefined) {
-    query += ` && price >= $minPrice`;
+  if (minPrice !== undefined && maxPrice !== undefined) {
+    query += ` && price >= $minPrice && price <= $maxPrice`;
     params.minPrice = minPrice;
-  }
-
-  if (maxPrice !== undefined) {
-    query += ` && price <= $maxPrice`;
     params.maxPrice = maxPrice;
   }
 
+  // Filtrando pelo intervalo de anos (YearModification)
   if (startYear !== undefined && endYear !== undefined) {
-    query += ` && yearFabrication >= $startYear && yearFabrication <= $endYear`;
+    query += ` && yearModification >= $startYear && yearModification <= $endYear`;
     params.startYear = startYear;
     params.endYear = endYear;
   }
@@ -102,39 +107,32 @@ export const fetchFilterCars = async ({
     params.accessories = accessories;
   }
 
-  if (minPrice !== undefined && maxPrice !== undefined) {
-    query += `] | order(price asc) {
-      _id,
-      brandCar,
-      modelCar,
-      announce,
-      location,
-      "imageUrl": images[0].asset->url,
-      color,
-      price,
-      km,
-      bodyType,
-      accessories,
-      yearFabrication
-    }`;
-  } else {
-    query += `] {
-      _id,
-      brandCar,
-      modelCar,
-      location,
-      announce,
-      "imageUrl": images[0].asset->url,
-      price,
-      color,
-      km,
-      bodyType,
-      accessories,
-      yearFabrication,
-      motors
-    }`;
-  }
+  // Ordenar por YearModification e preço (múltiplos critérios de ordenação)
+  query += `] | order(yearModification asc, price asc) {
+    _id,
+    brandCar,
+    modelCar,
+    announce,
+    location,
+    "imageUrl": images[1].asset->url,
+    color,
+    price,
+    km,
+    bodyType,
+    accessories,
+    yearModification,
+    motors,
+    exchange
+  }`;
 
-  const cars = await client.fetch(query, params);
-  return cars;
+  console.log("Query gerada:", query);
+  console.log("Parâmetros usados:", params);
+
+  try {
+    const cars = await client.fetch(query, params);
+    return cars;
+  } catch (error) {
+    console.error("Erro ao buscar os carros:", error);
+    return [];
+  }
 };
