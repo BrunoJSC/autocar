@@ -1,8 +1,8 @@
 import { client } from "@/lib/sanity";
 
 interface FilterParams {
-  motorbikeBrand?: string;
-  motorbikeModel?: string;
+  motorbikeBrand?: string; // Mantido como motorbikeBrand
+  motorbikeModel?: string; // Mantido como motorbikeModel
   location?: string;
   minPrice?: number;
   maxPrice?: number;
@@ -15,8 +15,8 @@ interface FilterParams {
 }
 
 export const fetchFilterMotorbike = async ({
-  motorbikeBrand,
-  motorbikeModel,
+  motorbikeBrand, // Mantido como motorbikeBrand
+  motorbikeModel, // Mantido como motorbikeModel
   location,
   minPrice,
   maxPrice,
@@ -27,62 +27,52 @@ export const fetchFilterMotorbike = async ({
   startYear,
   endYear,
 }: FilterParams) => {
-  let query = `*[_type == "motorbike"`;
+  let query = `*[_type == "motorbike"`; // Mantido como motorbike
   const params: any = {};
 
   if (motorbikeBrand) {
     query += ` && motorbikeBrand == $motorbikeBrand`;
     params.motorbikeBrand = motorbikeBrand;
   }
-
   if (motorbikeModel) {
     query += ` && motorbikeModel match $motorbikeModel`;
     params.motorbikeModel = `${motorbikeModel}*`;
   }
-
   if (location) {
     query += ` && location match $location`;
     params.location = `${location}*`;
   }
-
   if (minPrice !== undefined) {
     query += ` && price >= $minPrice`;
     params.minPrice = minPrice;
   }
-
   if (announce) {
     query += ` && announce == $announce`;
     params.announce = announce;
   }
-
   if (maxPrice !== undefined) {
     query += ` && price <= $maxPrice`;
     params.maxPrice = maxPrice;
   }
-
   if (startYear !== undefined && endYear !== undefined) {
     query += ` && yearFabrication >= $startYear && yearFabrication <= $endYear`;
     params.startYear = startYear;
     params.endYear = endYear;
   }
-
   if (cylinders !== undefined) {
     query += ` && cylinders == $cylinders`;
     params.cylinders = cylinders;
   }
-
   if (km !== undefined) {
     query += ` && km == $km`;
     params.km = km;
   }
-
   if (accessories) {
     query += ` && accessories match $accessories`;
     params.accessories = accessories;
   }
 
   query += `]`;
-
   if (minPrice !== undefined || maxPrice !== undefined) {
     query += ` | order(price asc) {
       _id,
@@ -108,6 +98,6 @@ export const fetchFilterMotorbike = async ({
     }`;
   }
 
-  const motorbikes = await client.fetch(query, params);
-  return motorbikes;
+  const motorbikes = await client.fetch(query, params); // Mantido como motorbikes
+  return motorbikes; // Mantido como motorbikes
 };
