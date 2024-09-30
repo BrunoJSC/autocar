@@ -108,7 +108,7 @@ export const fetchFilterCars = async ({
   }
 
   // Ordenar por YearModification e preço (múltiplos critérios de ordenação)
-  query += `] | order(yearModification asc, price asc) {
+  query += `] | order(yearModification asc) | order(price asc) {
     _id,
     brandCar,
     modelCar,

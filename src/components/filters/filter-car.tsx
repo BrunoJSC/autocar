@@ -169,7 +169,8 @@ export const FilterCar: React.FC<FilterProps> = ({
   );
 
   const handleEndYearChange = useCallback(
-    (year: number) => setFilters((prev) => ({ ...prev, endYear: year })),
+    (year: number | undefined) =>
+      setFilters((prev) => ({ ...prev, endYear: year })),
     [setFilters],
   );
 
