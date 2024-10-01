@@ -16,6 +16,8 @@ interface FilterParams {
   endYear?: number;
   motors?: number;
   exchange?: string;
+  sortField?: string; // Campo para ordenação (price, yearModification)
+  sortOrder?: "asc"; // Ordem de ordenação (ascendente ou descendente)
 }
 
 export const fetchFilterCars = async ({
@@ -34,78 +36,39 @@ export const fetchFilterCars = async ({
   endYear,
   motors,
   exchange,
+  sortField,
+  sortOrder,
 }: FilterParams) => {
-  let query = `*[_type == "car"`;
-  const params: any = {};
+  // Start the base query
+  let query = `*[_type == "car" 
+    ${brandCar ? `&& brandCar == $brandCar` : ""}
+    ${modelCar ? `&& modelCar match $modelCar` : ""}
+    ${location ? `&& location match $location` : ""}
+    ${color ? `&& color == $color` : ""}
+    ${doors ? `&& doors == $doors` : ""}
+    ${announce ? `&& announce == $announce` : ""}
+    ${minPrice !== undefined && maxPrice !== undefined ? `&& price >= $minPrice && price <= $maxPrice` : ""}
+    ${startYear !== undefined && endYear !== undefined ? `&& yearModification >= $startYear && yearModification <= $endYear` : ""}
+    ${motors ? `&& motors == $motors` : ""}
+    ${bodyType ? `&& bodyType == $bodyType` : ""}
+    ${km ? `&& km == $km` : ""}
+    ${
+      accessories && accessories.length > 0
+        ? accessories
+            .map(
+              (acc, index) => `&& accessories[$index] match $accessory${index}`,
+            )
+            .join(" ")
+        : ""
+    }
+  ]`;
 
-  if (brandCar) {
-    query += ` && brandCar == $brandCar`;
-    params.brandCar = brandCar;
+  // Só incluir a ordenação se `sortField` e `sortOrder` forem fornecidos
+  if (sortField && sortOrder) {
+    query += ` | order(${sortField} ${sortOrder})`;
   }
 
-  if (modelCar) {
-    query += ` && modelCar match $modelCar`;
-    params.modelCar = `${modelCar}*`;
-  }
-
-  if (location) {
-    query += ` && location match $location`;
-    params.location = `${location}*`;
-  }
-
-  if (exchange) {
-    query += ` && exchange match $exchange`;
-    params.exchange = exchange;
-  }
-
-  if (doors) {
-    query += ` && doors == $doors`;
-    params.doors = doors;
-  }
-
-  if (announce) {
-    query += ` && announce == $announce`;
-    params.announce = announce;
-  }
-
-  if (color) {
-    query += ` && color == $color`;
-    params.color = color;
-  }
-
-  if (minPrice !== undefined && maxPrice !== undefined) {
-    query += ` && price >= $minPrice && price <= $maxPrice`;
-    params.minPrice = minPrice;
-    params.maxPrice = maxPrice;
-  }
-
-  if (startYear !== undefined && endYear !== undefined) {
-    query += ` && yearModification >= $startYear && yearModification <= $endYear`;
-    params.startYear = startYear;
-    params.endYear = endYear;
-  }
-
-  if (motors) {
-    query += ` && motors == $motors`;
-    params.motors = motors;
-  }
-
-  if (bodyType) {
-    query += ` && bodyType == $bodyType`;
-    params.bodyType = bodyType;
-  }
-
-  if (km) {
-    query += ` && km == $km`;
-    params.km = km;
-  }
-
-  if (accessories) {
-    query += ` && accessories match $accessories`;
-    params.accessories = accessories;
-  }
-
-  query += `] | order(yearModification asc) | order(price asc) {
+  query += `{
     _id,
     brandCar,
     modelCar,
@@ -122,14 +85,37 @@ export const fetchFilterCars = async ({
     exchange
   }`;
 
-  console.log("Query gerada:", query);
-  console.log("Parâmetros usados:", params);
+  // Create the params object dynamically
+  const params: any = {};
+
+  if (brandCar) params.brandCar = brandCar;
+  if (modelCar) params.modelCar = `${modelCar}*`;
+  if (location) params.location = `${location}*`;
+  if (color) params.color = color;
+  if (doors) params.doors = doors;
+  if (announce) params.announce = announce;
+  if (minPrice !== undefined) params.minPrice = minPrice;
+  if (maxPrice !== undefined) params.maxPrice = maxPrice;
+  if (startYear !== undefined) params.startYear = startYear;
+  if (endYear !== undefined) params.endYear = endYear;
+  if (motors) params.motors = motors;
+  if (bodyType) params.bodyType = bodyType;
+  if (km) params.km = km;
+
+  if (accessories && accessories.length > 0) {
+    accessories.forEach((accessory, index) => {
+      params[`accessory${index}`] = accessory;
+    });
+  }
+
+  console.log("Generated query:", query);
+  console.log("Query parameters:", params);
 
   try {
     const cars = await client.fetch(query, params);
     return cars;
   } catch (error) {
-    console.error("Erro ao buscar os carros:", error);
+    console.error("Error fetching cars:", error);
     return [];
   }
 };

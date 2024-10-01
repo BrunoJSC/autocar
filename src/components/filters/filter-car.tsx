@@ -351,7 +351,7 @@ export const FilterCar: React.FC<FilterProps> = ({
                   startYear={filters.startYear || 1990}
                   endYear={filters.endYear}
                   onStartYearChange={handleStartYearChange}
-                  onEndYearChange={handleEndYearChange}
+                  onEndYearChange={handleEndYearChange ?? 2024}
                 />
 
                 <div className="flex items-center gap-2">

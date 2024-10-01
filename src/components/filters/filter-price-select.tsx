@@ -24,25 +24,30 @@ const FilterPriceSelect: React.FC<FilterPriceSelectProps> = ({
   onValueChange,
   options,
   placeholder,
-}) => (
-  <div className="w-full">
-    <Label>{label}</Label>
-    <Select value={value ? value.toString() : ""} onValueChange={onValueChange}>
-      <SelectTrigger>
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {options.map((option) => (
-          <SelectItem
-            key={option.id.toString()}
-            value={option.value.toString()}
-          >
-            {option.title}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  </div>
-);
+}) => {
+  return (
+    <div className="w-full">
+      <Label>{label}</Label>
+      <Select
+        value={value ? value.toString() : ""}
+        onValueChange={onValueChange}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem
+              key={option.id.toString()}
+              value={option.value.toString()}
+            >
+              {option.title}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+};
 
 export default FilterPriceSelect;

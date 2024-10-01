@@ -25,6 +25,7 @@ const YearFilter: React.FC<YearFilterProps> = ({
 }) => {
   return (
     <div className="flex space-x-4 items-center">
+      {/* Ano Inicial */}
       <div className="w-1/2">
         <Label>Ano Inicial</Label>
         <Select
@@ -43,15 +44,14 @@ const YearFilter: React.FC<YearFilterProps> = ({
           </SelectContent>
         </Select>
       </div>
+
+      {/* Ano Final */}
       <div className="w-1/2">
         <Label>Ano Final</Label>
         <Select
           value={endYear?.toString() ?? ""}
           onValueChange={(value) => {
             const selectedYear = value ? Number(value) : undefined;
-            if (selectedYear && selectedYear < startYear) {
-              onStartYearChange(selectedYear);
-            }
             onEndYearChange(selectedYear);
           }}
         >
@@ -60,7 +60,7 @@ const YearFilter: React.FC<YearFilterProps> = ({
           </SelectTrigger>
           <SelectContent>
             {years
-              .filter((year) => year.value >= startYear)
+              .filter((year) => year.value >= startYear) // Filtro para anos finais >= ao ano inicial
               .map((year) => (
                 <SelectItem key={year.id} value={year.value.toString()}>
                   {year.title}
