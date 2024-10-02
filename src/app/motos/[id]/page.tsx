@@ -34,6 +34,10 @@ import { CalendarIcon, CircleGauge, FuelIcon, MapPinIcon } from "lucide-react";
 import { ContactForm } from "@/components/contact-form";
 import MotorbikeDetailsCard from "@/components/motorbike-card-details";
 
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { ZoomIn } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
 const formSchema = z.object({
   name: z
     .string()
@@ -67,13 +71,16 @@ const Page = () => {
   const [monthlyPayment, setMonthlyPayment] = useState(0);
   const [motorbikes, setMotorbikes] = useState<Motorbike[]>([]);
 
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const placeholderImage = "/icons/icon.svg";
+
   const fetchMotorbike = useCallback(async () => {
     if (id) {
       const data = await client.fetch(
         `*[_type == "motorbike" && _id == $id][0]`,
         {
           id,
-        }
+        },
       );
       setMotorbike(data);
     }
@@ -138,7 +145,7 @@ const Page = () => {
       Valor da Entrada: R$ ${downPayment}
       Valor Financiado: R$ ${financedAmount.toFixed(2)}
       Número de Parcelas: ${installments}
-      Valor da Parcela: R$ ${monthlyPayment.toFixed(2)}`
+      Valor da Parcela: R$ ${monthlyPayment.toFixed(2)}`,
     );
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
     window.open(whatsappUrl, "_blank");
@@ -147,29 +154,58 @@ const Page = () => {
   const motorbikeImages = useMemo(() => {
     return motorbike && motorbike.images && motorbike.images.length > 0
       ? motorbike.images.map((image, index) => (
-          <CarouselItem key={index}>
-            <div>
-              <Card className="w-full h-[300px] md:h-[600px] flex justify-center items-center">
-                <Image
-                  src={urlForImage(image).width(600).height(400).url()}
-                  alt={motorbike.motorbikeModel || "Imagem indisponível"}
-                  width={600}
-                  height={400}
-                  className="w-full h-full object-cover"
-                  quality={100}
-                  loading="lazy"
-                  style={{
-                    objectFit: "cover",
-                    objectPosition: "center",
-                    aspectRatio: "16 / 9",
-                  }}
-                />
-              </Card>
-            </div>
+          <CarouselItem key={index} className="mx-auto relative">
+            <Card className="w-full h-[300px] md:h-[600px] flex justify-center items-center">
+              <Image
+                src={
+                  urlForImage(image)?.width(600)?.height(400)?.url() ||
+                  placeholderImage
+                }
+                alt={motorbike.motorbikeModel || "Imagem indisponível"}
+                width={600}
+                height={400}
+                className="w-full h-full object-cover object-center"
+                quality={100}
+                loading="eager"
+              />
+
+              {/* Certifique-se de que o botão de zoom é renderizado para cada imagem */}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="absolute bottom-4 right-4 bg-white/80 hover:bg-white"
+                    onClick={() =>
+                      setSelectedImage(
+                        urlForImage(image)?.url() || placeholderImage,
+                      )
+                    }
+                  >
+                    <ZoomIn className="h-4 w-4" />
+                  </Button>
+                </DialogTrigger>
+
+                <DialogContent className="max-w-[90vw] max-h-[90vh] p-0">
+                  {selectedImage && (
+                    <div className="relative w-full h-full max-w-[1200px] max-h-[800px]">
+                      <Image
+                        src={selectedImage}
+                        alt={motorbike.motorbikeModel || "Imagem ampliada"}
+                        width={1200}
+                        height={800}
+                        className="object-cover"
+                        quality={100}
+                      />
+                    </div>
+                  )}
+                </DialogContent>
+              </Dialog>
+            </Card>
           </CarouselItem>
         ))
       : [];
-  }, [motorbike]);
+  }, [motorbike, placeholderImage, selectedImage]);
 
   if (!motorbike)
     return (

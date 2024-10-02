@@ -16,8 +16,6 @@ interface FilterParams {
   endYear?: number;
   motors?: number;
   exchange?: string;
-  sortField?: string; // Campo para ordenação (price, yearModification)
-  sortOrder?: "asc"; // Ordem de ordenação (ascendente ou descendente)
 }
 
 export const fetchFilterCars = async ({
@@ -36,10 +34,7 @@ export const fetchFilterCars = async ({
   endYear,
   motors,
   exchange,
-  sortField,
-  sortOrder,
 }: FilterParams) => {
-  // Start the base query
   let query = `*[_type == "car" 
     ${brandCar ? `&& brandCar == $brandCar` : ""}
     ${modelCar ? `&& modelCar match $modelCar` : ""}
@@ -47,8 +42,10 @@ export const fetchFilterCars = async ({
     ${color ? `&& color == $color` : ""}
     ${doors ? `&& doors == $doors` : ""}
     ${announce ? `&& announce == $announce` : ""}
-    ${minPrice !== undefined && maxPrice !== undefined ? `&& price >= $minPrice && price <= $maxPrice` : ""}
-    ${startYear !== undefined && endYear !== undefined ? `&& yearModification >= $startYear && yearModification <= $endYear` : ""}
+    ${minPrice !== undefined ? `&& price >= $minPrice` : ""}
+    ${maxPrice !== undefined ? `&& price <= $maxPrice` : ""}
+    ${startYear !== undefined ? `&& yearModification >= $startYear` : ""}
+    ${endYear !== undefined ? `&& yearModification <= $endYear` : ""}
     ${motors ? `&& motors == $motors` : ""}
     ${bodyType ? `&& bodyType == $bodyType` : ""}
     ${km ? `&& km == $km` : ""}
@@ -63,11 +60,7 @@ export const fetchFilterCars = async ({
     }
   ]`;
 
-  // Só incluir a ordenação se `sortField` e `sortOrder` forem fornecidos
-  if (sortField && sortOrder) {
-    query += ` | order(${sortField} ${sortOrder})`;
-  }
-
+  // Adicionando a ordenação separada para preço e ano
   query += `{
     _id,
     brandCar,
@@ -83,11 +76,11 @@ export const fetchFilterCars = async ({
     yearModification,
     motors,
     exchange
-  }`;
+  } | order(yearModification asc, price asc)`; // Ordenação correta
 
-  // Create the params object dynamically
   const params: any = {};
 
+  // Passando os parâmetros se eles estiverem definidos
   if (brandCar) params.brandCar = brandCar;
   if (modelCar) params.modelCar = `${modelCar}*`;
   if (location) params.location = `${location}*`;
@@ -102,6 +95,7 @@ export const fetchFilterCars = async ({
   if (bodyType) params.bodyType = bodyType;
   if (km) params.km = km;
 
+  // Passando os acessórios como parâmetros individuais
   if (accessories && accessories.length > 0) {
     accessories.forEach((accessory, index) => {
       params[`accessory${index}`] = accessory;
