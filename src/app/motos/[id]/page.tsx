@@ -186,15 +186,14 @@ const Page = () => {
                   </Button>
                 </DialogTrigger>
 
-                <DialogContent className="max-w-[90vw] max-h-[90vh] p-0">
+                <DialogContent className="max-w-[90vw] max-h-[90vh] w-full h-96 p-0">
                   {selectedImage && (
                     <div className="relative w-full h-full max-w-[1200px] max-h-[800px]">
                       <Image
                         src={selectedImage}
                         alt={motorbike.motorbikeModel || "Imagem ampliada"}
-                        width={1200}
-                        height={800}
-                        className="object-cover"
+                        fill
+                        className="object-contain"
                         quality={100}
                       />
                     </div>
