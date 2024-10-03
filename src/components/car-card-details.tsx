@@ -83,7 +83,7 @@ const CarDetailsCard: React.FC<CarDetailsCardProps> = ({
   }).format(price);
 
   const formattedDownPayment = parseFloat(
-    downPayment.replace(/[^\d.-]/g, "") || "0"
+    downPayment.replace(/[^\d.-]/g, "") || "0",
   );
 
   return (
@@ -129,7 +129,7 @@ const CarDetailsCard: React.FC<CarDetailsCardProps> = ({
             </div>
 
             {/* Financiamento */}
-            <Card className="mt-5 max-w-5xl md:h-[420px] h-auto w-full p-2 flex flex-col md:flex-row items-center justify-between gap-8">
+            <Card className="mt-5 max-w-3xl md:h-[420px] h-auto w-full p-2 flex flex-col md:flex-row items-center justify-between gap-8">
               <div>
                 <CardHeader>
                   <CardTitle className="text-primary">
