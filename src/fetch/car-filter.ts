@@ -15,7 +15,8 @@ interface FilterParams {
   startYear?: number;
   endYear?: number;
   motors?: number;
-  exchange?: string;
+  yearModification: number;
+  exchange: string;
 }
 
 export const fetchFilterCars = async ({
@@ -33,77 +34,98 @@ export const fetchFilterCars = async ({
   startYear,
   endYear,
   motors,
+  yearModification,
   exchange,
 }: FilterParams) => {
-  let query = `*[_type == "car" 
-    ${brandCar ? `&& brandCar == $brandCar` : ""}
-    ${modelCar ? `&& modelCar match $modelCar` : ""}
-    ${location ? `&& location match $location` : ""}
-    ${color ? `&& color == $color` : ""}
-    ${doors ? `&& doors == $doors` : ""}
-    ${announce ? `&& announce == $announce` : ""}
-    ${minPrice !== undefined ? `&& price >= $minPrice` : ""}
-    ${maxPrice !== undefined ? `&& price <= $maxPrice` : ""}
-    ${startYear !== undefined ? `&& yearModification >= $startYear` : ""}
-    ${endYear !== undefined ? `&& yearModification <= $endYear` : ""}
-    ${motors ? `&& motors == $motors` : ""}
-    ${bodyType ? `&& bodyType == $bodyType` : ""}
-    ${km ? `&& km == $km` : ""}
-    ${
-      accessories && accessories.length > 0
-        ? accessories
-            .map(
-              (acc, index) => `&& accessories[$index] match $accessory${index}`,
-            )
-            .join(" ")
-        : ""
-    }
-  ]`;
+  let query = `*[_type == "car"`;
+  const params: any = {};
 
-  // Adicionando a ordenação separada para preço e ano
-  query += `{
+  if (brandCar) {
+    query += ` && brandCar == $brandCar`;
+    params.brandCar = brandCar;
+  }
+  if (modelCar) {
+    query += ` && modelCar match $modelCar`;
+    params.modelCar = `${modelCar}*`;
+  }
+  if (location) {
+    query += ` && location match $location`;
+    params.location = `${location}*`;
+  }
+  if (doors) {
+    query += ` && doors == $doors`;
+    params.doors = doors;
+  }
+  if (announce) {
+    query += ` && announce == $announce`;
+    params.announce = announce;
+  }
+  if (color) {
+    query += ` && color == $color`;
+    params.color = color;
+  }
+
+  if (exchange) {
+    query += ` && exchange == $exchange`;
+    params.exchange = exchange;
+  }
+
+  if (minPrice !== undefined) {
+    query += ` && price >= $minPrice`;
+    params.minPrice = minPrice;
+  }
+  if (maxPrice !== undefined) {
+    query += ` && price <= $maxPrice`;
+    params.maxPrice = maxPrice;
+  }
+  if (startYear !== undefined && endYear !== undefined) {
+    query += ` && yearModification >= $startYear && yearModification <= $endYear`;
+    params.startYear = startYear;
+    params.endYear = endYear;
+  }
+  if (motors) {
+    query += ` && motors == $motors`;
+    params.motors = motors;
+  }
+  if (bodyType) {
+    query += ` && bodyType == $bodyType`;
+    params.bodyType = bodyType;
+  }
+  if (km) {
+    query += ` && km == $km`;
+    params.km = km;
+  }
+  if (accessories && accessories.length > 0) {
+    query += ` && accessories[] match $accessories`;
+    params.accessories = accessories.join(" ");
+  }
+
+  query += `]`;
+
+  if (minPrice !== undefined && maxPrice !== undefined) {
+    query += ` | order(price asc)`;
+  } else if (startYear !== undefined && endYear !== undefined) {
+    query += ` | order(yearModification desc)`;
+  }
+
+  query += ` {
     _id,
     brandCar,
     modelCar,
     announce,
     location,
-    "imageUrl": images[1].asset->url,
+    "imageUrl": images[0].asset->url,
     color,
     price,
     km,
     bodyType,
     accessories,
-    yearModification,
-    motors,
-    exchange
-  } | order(yearModification asc, price asc)`; // Ordenação correta
-
-  const params: any = {};
-
-  // Passando os parâmetros se eles estiverem definidos
-  if (brandCar) params.brandCar = brandCar;
-  if (modelCar) params.modelCar = `${modelCar}*`;
-  if (location) params.location = `${location}*`;
-  if (color) params.color = color;
-  if (doors) params.doors = doors;
-  if (announce) params.announce = announce;
-  if (minPrice !== undefined) params.minPrice = minPrice;
-  if (maxPrice !== undefined) params.maxPrice = maxPrice;
-  if (startYear !== undefined) params.startYear = startYear;
-  if (endYear !== undefined) params.endYear = endYear;
-  if (motors) params.motors = motors;
-  if (bodyType) params.bodyType = bodyType;
-  if (km) params.km = km;
-
-  // Passando os acessórios como parâmetros individuais
-  if (accessories && accessories.length > 0) {
-    accessories.forEach((accessory, index) => {
-      params[`accessory${index}`] = accessory;
-    });
-  }
-
-  console.log("Generated query:", query);
-  console.log("Query parameters:", params);
+    yearModification, 
+    description,
+    fuel,
+    exchange,
+    motors 
+  }`;
 
   try {
     const cars = await client.fetch(query, params);
