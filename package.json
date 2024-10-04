@@ -52,6 +52,7 @@
     "resend": "^4.0.0",
     "sanity-plugin-media": "^2.3.2",
     "sanity-plugin-media-library": "^2.1.2",
+    "sanity-plugin-mux-input": "^2.3.6",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.1",

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MaxWrapper } from "@/components/max-wrapper";
 import { ListCar } from "@/components/list-car";
 import { fetchFilterCars } from "@/fetch/car-filter";
@@ -40,6 +40,18 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
 
+  useEffect(() => {
+    const tokenExpiryTime = Date.now() + 60 * 60 * 1000;
+    const interval = setInterval(() => {
+      const timeLeft = tokenExpiryTime - Date.now();
+      if (timeLeft < 5 * 60 * 1000) {
+        console.log("Renovando token...");
+      }
+    }, 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const fetchData = async (filters: Filters) => {
     setLoading(true);
     try {
@@ -62,6 +74,7 @@ export default function Page() {
     fetchData(clearedFilters);
   };
 
+  // Atualiza filtros com base nos parâmetros da URL
   useEffect(() => {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
@@ -75,6 +88,17 @@ export default function Page() {
     setFilters(updatedFilters);
     fetchData(updatedFilters);
   }, [searchParams]);
+
+  // Atualiza estado ao retomar foco da aba
+  useEffect(() => {
+    const handleFocus = () => {
+      console.log("Aplicação em foco novamente. Atualizando dados...");
+      fetchData(filters);
+    };
+
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [filters]);
 
   return (
     <MaxWrapper>

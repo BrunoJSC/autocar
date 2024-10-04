@@ -39,13 +39,27 @@ export default function Page() {
   const [motorbikes, setMotorbikes] = useState<Motorbike[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // Simulação de renovação de token
+  useEffect(() => {
+    const tokenExpiryTime = Date.now() + 60 * 60 * 1000; // Expiração em 1 hora
+    const interval = setInterval(() => {
+      const timeLeft = tokenExpiryTime - Date.now();
+      if (timeLeft < 5 * 60 * 1000) {
+        console.log("Renovando token...");
+        // Lógica para renovação do token
+      }
+    }, 60 * 1000); // Checa a cada minuto
+
+    return () => clearInterval(interval);
+  }, []);
+
   const fetchData = async (filters: Filters) => {
     setLoading(true);
     try {
       const data = await fetchFilterMotorbike(filters);
       setMotorbikes(data);
     } catch (error) {
-      console.error("Erro ao buscar carros:", error);
+      console.error("Erro ao buscar motos:", error);
     } finally {
       setLoading(false);
     }
@@ -64,6 +78,17 @@ export default function Page() {
   useEffect(() => {
     fetchData(initialFilters);
   }, []);
+
+  // Atualização ao focar a aba
+  useEffect(() => {
+    const handleFocus = () => {
+      console.log("Aplicação em foco novamente. Atualizando dados...");
+      fetchData(filters);
+    };
+
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [filters]);
 
   return (
     <MaxWrapper>

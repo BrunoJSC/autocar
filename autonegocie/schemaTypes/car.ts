@@ -92,6 +92,11 @@ export const carType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'video',
+      title: 'Video',
+      type: 'mux.video',
+    }),
+    defineField({
       name: 'location',
       title: 'Localização',
       type: 'string',
@@ -266,7 +271,7 @@ export const carType = defineType({
           {title: '1.4', value: 1.4},
           {title: '1.5', value: 1.5},
           {title: '1.6', value: 1.6},
-          {title: "1.7", value: 1.7},
+          {title: '1.7', value: 1.7},
           {title: '1.8', value: 1.8},
           {title: '2.0', value: 2.0},
           {title: '2.2', value: 2.2},
