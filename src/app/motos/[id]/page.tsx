@@ -155,7 +155,7 @@ const Page = () => {
     return motorbike && motorbike.images && motorbike.images.length > 0
       ? motorbike.images.map((image, index) => (
           <CarouselItem key={index} className="mx-auto relative">
-            <Card className="w-full h-[300px] md:h-[600px] flex justify-center items-center">
+            <Card className="w-full h-[300px] md:h-[500px] flex justify-center items-center">
               <Image
                 src={
                   urlForImage(image)?.width(600)?.height(400)?.url() ||
@@ -169,7 +169,6 @@ const Page = () => {
                 loading="eager"
               />
 
-              {/* Certifique-se de que o botão de zoom é renderizado para cada imagem */}
               <Dialog>
                 <DialogTrigger asChild>
                   <Button
@@ -216,14 +215,14 @@ const Page = () => {
   return (
     <MaxWrapper>
       <section className="p-8 mt-5">
-        <div className="md:h-[600px] flex flex-col md:flex-row gap-4">
-          <Carousel className="w-full max-w-4xl mx-auto">
+        <div className="md:h-[500px] flex flex-col md:flex-row gap-4">
+          <Carousel className="w-full max-w-2xl mx-auto">
             <CarouselContent>{motorbikeImages}</CarouselContent>
             <CarouselPrevious className="absolute top-1/2 left-4 -translate-y-1/2" />
             <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2" />
           </Carousel>
 
-          <Card className="flex-grow md:overflow-y-auto h-[720px] md:h-auto bg-black">
+          <Card className="flex-grow md:overflow-y-auto h-[720px] md:h-auto max-w-[400px] bg-black">
             <CardHeader>
               <CardTitle className="text-primary">
                 Entre em contato com nossa equipe!
