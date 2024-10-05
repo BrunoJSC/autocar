@@ -15,8 +15,8 @@ interface FilterParams {
   startYear?: number;
   endYear?: number;
   motors?: number;
-  yearModification: number;
-  exchange: string;
+  yearModification?: number;
+  exchange?: string;
 }
 
 export const fetchFilterCars = async ({
