@@ -1,32 +1,40 @@
 import { client } from "@/lib/sanity";
 
-interface FilterParams {
+interface MotorbikeFilterParams {
   motorbikeBrand?: string;
   motorbikeModel?: string;
   location?: string;
+  color?: string;
   minPrice?: number;
   maxPrice?: number;
+  bodyType?: string;
   km?: number;
-  cylinders?: number;
-  announce?: string;
-  accessories?: string[];
   startYear?: number;
   endYear?: number;
+  motors?: number;
+  condition?: string;
+  announce?: string;
+  fuel?: string;
+  cylinders?: string;
 }
 
-export const fetchFilterMotorbike = async ({
+export const fetchFilterMotorbikes = async ({
   motorbikeBrand,
   motorbikeModel,
   location,
+  color,
   minPrice,
   maxPrice,
+  bodyType,
   km,
-  cylinders,
-  announce,
-  accessories,
   startYear,
   endYear,
-}: FilterParams) => {
+  motors,
+  condition,
+  announce,
+  fuel,
+  cylinders,
+}: MotorbikeFilterParams) => {
   let query = `*[_type == "motorbike"`;
   const params: any = {};
 
@@ -42,13 +50,13 @@ export const fetchFilterMotorbike = async ({
     query += ` && location match $location`;
     params.location = `${location}*`;
   }
+  if (color) {
+    query += ` && color == $color`;
+    params.color = color;
+  }
   if (minPrice !== undefined) {
     query += ` && price >= $minPrice`;
     params.minPrice = minPrice;
-  }
-  if (announce) {
-    query += ` && announce == $announce`;
-    params.announce = announce;
   }
   if (maxPrice !== undefined) {
     query += ` && price <= $maxPrice`;
@@ -59,45 +67,71 @@ export const fetchFilterMotorbike = async ({
     params.startYear = startYear;
     params.endYear = endYear;
   }
-  if (cylinders !== undefined) {
-    query += ` && cylinders == $cylinders`;
-    params.cylinders = cylinders;
+  if (motors) {
+    query += ` && motors == $motors`;
+    params.motors = motors;
   }
-  if (km !== undefined) {
+  if (bodyType) {
+    query += ` && bodyType == $bodyType`;
+    params.bodyType = bodyType;
+  }
+  if (km) {
     query += ` && km == $km`;
     params.km = km;
   }
-  if (accessories) {
-    query += ` && accessories match $accessories`;
-    params.accessories = accessories;
+  if (condition) {
+    query += ` && condition == $condition`;
+    params.condition = condition;
+  }
+  if (announce) {
+    query += ` && announce == $announce`;
+    params.announce = announce;
+  }
+  if (fuel) {
+    query += ` && fuel == $fuel`;
+    params.fuel = fuel;
+  }
+  if (cylinders) {
+    query += ` && cylinders == $cylinders`;
+    params.exchange = cylinders;
   }
 
   query += `]`;
-  if (minPrice !== undefined || maxPrice !== undefined) {
-    query += ` | order(price asc) {
-      _id,
-      motorbikeBrand,
-      motorbikeModel,
-      location,
-      "imageUrl": images[0].asset->url,
-      price,
-      km,
-      cylinders
-    }`;
-  } else {
-    query += ` {
-      _id,
-      motorbikeBrand,
-      motorbikeModel,
-      location,
-      "imageUrl": images[0].asset->url,
-      price,
-      km,
-      cylinders,
-      yearFabrication
-    }`;
+
+  if (minPrice !== undefined && maxPrice !== undefined) {
+    query += ` | order(price asc)`;
+  } else if (startYear !== undefined && endYear !== undefined) {
+    query += ` | order(yearFabrication desc)`;
   }
 
-  const motorbikes = await client.fetch(query, params);
-  return motorbikes;
+  query += ` {
+    _id,
+    motorbikeBrand,
+    motorbikeModel,
+    images[] {
+      "url": asset->url
+    },
+    location,
+    yearFabrication,
+    fuel,
+    km,
+    exchange,
+    color,
+    description,
+    price,
+    bodyType,
+    motors,
+    condition,
+    announce,
+    plate,
+    "imageUrl": images[0].asset->url
+  }`;
+
+  try {
+    const motorbikes = await client.fetch(query, params);
+    return motorbikes;
+  } catch (error) {
+    console.error("Error fetching motorbikes:", error);
+    return [];
+  }
 };
