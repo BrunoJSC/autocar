@@ -3,21 +3,19 @@ import { client } from "@/lib/sanity";
 export const getData = async () => {
   try {
     const query = `*[_type == "motorbike"] {
-       _id,
+      _id,
       motorbikeBrand,
       motorbikeModel,
       images[] {
-       "url": asset->url
+        "url": asset->url
       },
       location,
-      yearModificatio,
+      yearModification,
       fuel,
       km,
-      
       color,
       description,
       price,
-     
       motors,
       condition,
       announce,

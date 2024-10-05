@@ -6,13 +6,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { fetchFilterMotorbikes } from "@/fetch/motorbike-filter";
 import FilterBike from "@/components/filters/filter-motorbike";
 import { ListMotorbike } from "@/components/list-bikes";
+import { useSearchParams, useRouter } from "next/navigation";
 
 type Filters = {
   motorbikeBrand: string;
   motorbikeModel: string;
   location: string;
   fuel: string;
-
   color: string;
   minPrice?: number;
   maxPrice?: number;
@@ -41,20 +41,8 @@ export default function Page() {
   const [filters, setFilters] = useState<Filters>(initialFilters);
   const [motorbikes, setMotorbikes] = useState<Motorbike[]>([]);
   const [loading, setLoading] = useState(false);
-
-  // Simulação de renovação de token
-  useEffect(() => {
-    const tokenExpiryTime = Date.now() + 60 * 60 * 1000; // Expiração em 1 hora
-    const interval = setInterval(() => {
-      const timeLeft = tokenExpiryTime - Date.now();
-      if (timeLeft < 5 * 60 * 1000) {
-        console.log("Renovando token...");
-        // Lógica para renovação do token
-      }
-    }, 60 * 1000); // Checa a cada minuto
-
-    return () => clearInterval(interval);
-  }, []);
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const fetchData = async (filters: Filters) => {
     setLoading(true);
@@ -68,21 +56,54 @@ export default function Page() {
     }
   };
 
+  const updateUrlWithFilters = (updatedFilters: Filters) => {
+    const params = new URLSearchParams();
+    Object.entries(updatedFilters).forEach(([key, value]) => {
+      if (value !== undefined && value !== "") {
+        params.set(key, value.toString());
+      }
+    });
+    router.push(`?${params.toString()}`);
+  };
+
   const handleSearch = () => {
+    updateUrlWithFilters(filters);
     fetchData(filters);
   };
 
   const handleClearFilters = () => {
-    const clearedFilters = { ...initialFilters };
-    setFilters(clearedFilters);
-    fetchData(clearedFilters);
+    setFilters(initialFilters);
+    updateUrlWithFilters(initialFilters);
+    fetchData(initialFilters);
   };
 
   useEffect(() => {
-    fetchData(initialFilters);
-  }, []);
+    const filtersFromUrl: Filters = {
+      ...initialFilters,
+      motorbikeBrand: searchParams.get("motorbikeBrand") || "",
+      motorbikeModel: searchParams.get("motorbikeModel") || "",
+      location: searchParams.get("location") || "",
+      fuel: searchParams.get("fuel") || "",
+      color: searchParams.get("color") || "",
+      minPrice: searchParams.get("minPrice")
+        ? parseFloat(searchParams.get("minPrice")!)
+        : undefined,
+      maxPrice: searchParams.get("maxPrice")
+        ? parseFloat(searchParams.get("maxPrice")!)
+        : undefined,
+      km: searchParams.get("km")
+        ? parseFloat(searchParams.get("km")!)
+        : undefined,
+      cylinders: searchParams.get("cylinders")
+        ? parseInt(searchParams.get("cylinders")!)
+        : 0,
+      announce: searchParams.get("announce") || "",
+    };
 
-  // Atualização ao focar a aba
+    setFilters(filtersFromUrl);
+    fetchData(filtersFromUrl);
+  }, [searchParams]);
+
   useEffect(() => {
     const handleFocus = () => {
       console.log("Aplicação em foco novamente. Atualizando dados...");

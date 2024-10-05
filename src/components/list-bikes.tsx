@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSearchParams } from "next/navigation";
 
 interface Motorbike {
   _id: string;
@@ -29,6 +30,8 @@ export const ListMotorbike: React.FC<MotorbikeListProps> = ({ motorbikes }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const motorbikesPerPage = 9;
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("model");
 
   useEffect(() => {
     loadMoreMotorbikes();
@@ -38,11 +41,20 @@ export const ListMotorbike: React.FC<MotorbikeListProps> = ({ motorbikes }) => {
     setIsLoading(true);
     setTimeout(() => {
       const indexOfLastMotorbike = currentPage * motorbikesPerPage;
-      const newMotorbikes = motorbikes.slice(0, indexOfLastMotorbike);
+
+      const filteredMotorbikes = searchQuery
+        ? motorbikes.filter((motorbike) =>
+            motorbike.motorbikeModel
+              ?.toLowerCase()
+              .includes(searchQuery.toLowerCase())
+          )
+        : motorbikes;
+
+      const newMotorbikes = filteredMotorbikes.slice(0, indexOfLastMotorbike);
       setDisplayedMotorbikes(newMotorbikes);
       setCurrentPage(currentPage + 1);
       setIsLoading(false);
-    }, 1000); // Simula um delay de carregamento
+    }, 1000);
   };
 
   const MotorbikeCard: React.FC<{ motorbike: Motorbike }> = ({ motorbike }) => (

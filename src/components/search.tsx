@@ -3,12 +3,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { Search as SearchComponent } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "./ui/button";
 import Link from "next/link";
 import { fetchFilterCars } from "@/fetch/car-filter";
-import { fetchFilterMotorbike } from "@/fetch/motorbike-filter";
+import { fetchFilterMotorbikes } from "@/fetch/motorbike-filter";
 import debounce from "lodash/debounce";
-import { useRouter } from "next/navigation";
 
 interface Vehicle {
   _id: string;
@@ -23,14 +21,13 @@ export function Search() {
   const [search, setSearch] = useState<string>("");
   const [suggestions, setSuggestions] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const router = useRouter();
 
   const fetchVehiclesData = useCallback(async (searchTerm: string) => {
     setIsLoading(true);
     try {
       const [cars, motorbikes] = await Promise.all([
         fetchFilterCars({ modelCar: searchTerm }),
-        fetchFilterMotorbike({ motorbikeModel: searchTerm }),
+        fetchFilterMotorbikes({ motorbikeModel: searchTerm }),
       ]);
 
       const combinedResults = [
@@ -109,6 +106,8 @@ export function Search() {
                   }}
                 >
                   {vehicle.modelCar ?? vehicle.motorbikeModel}
+                  {" - "}
+                  {vehicle.category === "carros" ? "Carro" : "Moto"}
                 </Link>
               </li>
             ))}
