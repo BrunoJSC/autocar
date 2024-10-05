@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { MaxWrapper } from "@/components/max-wrapper";
 import { Skeleton } from "@/components/ui/skeleton";
-import { fetchFilterMotorbike } from "@/fetch/motorbike-filter";
+import { fetchFilterMotorbikes } from "@/fetch/motorbike-filter";
 import FilterBike from "@/components/filters/filter-motorbike";
 import { ListMotorbike } from "@/components/list-bikes";
 
@@ -12,13 +12,16 @@ type Filters = {
   motorbikeModel: string;
   location: string;
   fuel: string;
-  exchange: string;
+
   color: string;
   minPrice?: number;
   maxPrice?: number;
   km?: number;
   cylinders?: number;
   announce?: string;
+  accessories?: string[];
+  startYear?: number;
+  endYear?: number;
 };
 
 const initialFilters: Filters = {
@@ -26,12 +29,12 @@ const initialFilters: Filters = {
   motorbikeModel: "",
   location: "",
   fuel: "",
-  exchange: "",
   minPrice: undefined,
   maxPrice: undefined,
   color: "",
   km: undefined,
   announce: "",
+  cylinders: 0,
 };
 
 export default function Page() {
@@ -56,7 +59,7 @@ export default function Page() {
   const fetchData = async (filters: Filters) => {
     setLoading(true);
     try {
-      const data = await fetchFilterMotorbike(filters);
+      const data = await fetchFilterMotorbikes(filters);
       setMotorbikes(data);
     } catch (error) {
       console.error("Erro ao buscar motos:", error);

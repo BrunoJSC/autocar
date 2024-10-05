@@ -15,7 +15,7 @@ interface Motorbike {
   km: number;
   cylinders: number;
   price: number;
-  yearFabrication: number;
+  yearModification: number;
 }
 
 interface MotorbikeListProps {
@@ -79,7 +79,7 @@ export const ListMotorbike: React.FC<MotorbikeListProps> = ({ motorbikes }) => {
           </div>
           <div className="text-gray-600 text-sm mb-4">
             <p>{motorbike.location || "Localização não informada"}</p>
-            <p>Ano: {motorbike.yearFabrication || "N/A"}</p>
+            <p>Ano: {motorbike.yearModification || "N/A"}</p>
             <p>
               Cilindradas: {motorbike.cylinders ? motorbike.cylinders : "N/A"}
             </p>

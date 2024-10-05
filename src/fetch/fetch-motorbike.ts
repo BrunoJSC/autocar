@@ -10,14 +10,14 @@ export const getData = async () => {
        "url": asset->url
       },
       location,
-      yearFabrication,
+      yearModificatio,
       fuel,
       km,
-      exchange,
+      
       color,
       description,
       price,
-      bodyType,
+     
       motors,
       condition,
       announce,

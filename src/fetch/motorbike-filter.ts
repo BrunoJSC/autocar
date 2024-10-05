@@ -7,15 +7,12 @@ interface MotorbikeFilterParams {
   color?: string;
   minPrice?: number;
   maxPrice?: number;
-  bodyType?: string;
   km?: number;
   startYear?: number;
   endYear?: number;
-  motors?: number;
-  condition?: string;
   announce?: string;
   fuel?: string;
-  cylinders?: string;
+  cylinders?: number;
 }
 
 export const fetchFilterMotorbikes = async ({
@@ -25,12 +22,9 @@ export const fetchFilterMotorbikes = async ({
   color,
   minPrice,
   maxPrice,
-  bodyType,
   km,
   startYear,
   endYear,
-  motors,
-  condition,
   announce,
   fuel,
   cylinders,
@@ -63,26 +57,16 @@ export const fetchFilterMotorbikes = async ({
     params.maxPrice = maxPrice;
   }
   if (startYear !== undefined && endYear !== undefined) {
-    query += ` && yearFabrication >= $startYear && yearFabrication <= $endYear`;
+    query += ` && yearModification >= $startYear && yearModification <= $endYear`;
     params.startYear = startYear;
     params.endYear = endYear;
   }
-  if (motors) {
-    query += ` && motors == $motors`;
-    params.motors = motors;
-  }
-  if (bodyType) {
-    query += ` && bodyType == $bodyType`;
-    params.bodyType = bodyType;
-  }
+
   if (km) {
     query += ` && km == $km`;
     params.km = km;
   }
-  if (condition) {
-    query += ` && condition == $condition`;
-    params.condition = condition;
-  }
+
   if (announce) {
     query += ` && announce == $announce`;
     params.announce = announce;
@@ -101,7 +85,7 @@ export const fetchFilterMotorbikes = async ({
   if (minPrice !== undefined && maxPrice !== undefined) {
     query += ` | order(price asc)`;
   } else if (startYear !== undefined && endYear !== undefined) {
-    query += ` | order(yearFabrication desc)`;
+    query += ` | order(yearModification desc)`;
   }
 
   query += ` {
@@ -112,14 +96,14 @@ export const fetchFilterMotorbikes = async ({
       "url": asset->url
     },
     location,
-    yearFabrication,
+    yearModification,
     fuel,
     km,
-    exchange,
+    cylinders, 
     color,
     description,
     price,
-    bodyType,
+  
     motors,
     condition,
     announce,

@@ -43,7 +43,7 @@ type Filters = {
   motorbikeModel: string;
   location: string;
   fuel: string;
-  exchange: string;
+
   color: string;
   minPrice?: number;
   maxPrice?: number;
@@ -366,14 +366,6 @@ export const FilterBike: React.FC<FilterProps> = ({
                 />
 
                 <FilterSelect
-                  label="Tipo de câmbio"
-                  value={filters.exchange || ""}
-                  onValueChange={handleExchangeChange}
-                  options={exchangeOptions}
-                  placeholder="Selecione o câmbio"
-                />
-
-                <FilterSelect
                   label="Anunciante"
                   value={filters.announce || ""}
                   onValueChange={handleAnnounceChange}
@@ -507,14 +499,6 @@ export const FilterBike: React.FC<FilterProps> = ({
               onValueChange={handleColorChange}
               options={colorOptions}
               placeholder="Selecione a cor"
-            />
-
-            <FilterSelect
-              label="Tipo de câmbio"
-              value={filters.exchange || ""}
-              onValueChange={handleExchangeChange}
-              options={exchangeOptions}
-              placeholder="Selecione o câmbio"
             />
 
             <FilterSelect
