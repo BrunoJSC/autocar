@@ -11,7 +11,7 @@ interface Motorbike {
   _id: string;
   motorbikeBrand: string;
   motorbikeModel: string;
-  Url: string;
+  Url?: string;
   location: string;
   km: number;
   cylinders: number;
