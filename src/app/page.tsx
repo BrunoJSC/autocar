@@ -40,8 +40,6 @@ import {
 } from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
 
-
-
 export interface Announcement {
   title: string;
   imageUrl: string;
@@ -99,6 +97,7 @@ export default function Home() {
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 quality={90}
                 loading="lazy"
+                unoptimized
               />
             </CardHeader>
             <CardContent>
@@ -190,16 +189,16 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {isLoading
                   ? Array(6)
-                    .fill(0)
-                    .map((_, index) => (
-                      <AnnouncementCardSkeleton key={index} />
-                    ))
+                      .fill(0)
+                      .map((_, index) => (
+                        <AnnouncementCardSkeleton key={index} />
+                      ))
                   : announcements.map((announcement, index) => (
-                    <MemoizedAnnouncementCard
-                      key={index}
-                      announcement={announcement}
-                    />
-                  ))}
+                      <MemoizedAnnouncementCard
+                        key={index}
+                        announcement={announcement}
+                      />
+                    ))}
               </div>
 
               <div className="w-full flex align-center justify-center">
@@ -229,35 +228,36 @@ export default function Home() {
                 <CarouselContent>
                   {isLoading
                     ? Array(3)
-                      .fill(0)
-                      .map((_, index) => (
-                        <CarouselItem key={index} className="w-full">
-                          <BlogCardSkeleton />
-                        </CarouselItem>
-                      ))
+                        .fill(0)
+                        .map((_, index) => (
+                          <CarouselItem key={index} className="w-full">
+                            <BlogCardSkeleton />
+                          </CarouselItem>
+                        ))
                     : blog.map((item) => (
-                      <CarouselItem key={item.title} className="w-full">
-                        <Link href={`/oficina/${item._id}`}>
-                          <Card className="w-full md:h-[400px] mx-auto shadow-lg rounded-lg overflow-hidden">
-                            <div className="relative w-full h-64">
-                              {item.mainImageUrl && (
-                                <Image
-                                  src={item.mainImageUrl}
-                                  alt={item.title}
-                                  fill
-                                  className="object-cover"
-                                />
-                              )}
-                            </div>
-                            <CardHeader className="p-4 space-y-2 text-center bg-white">
-                              <CardTitle className="text-xl font-semibold text-gray-800">
-                                {item.title}
-                              </CardTitle>
-                            </CardHeader>
-                          </Card>
-                        </Link>
-                      </CarouselItem>
-                    ))}
+                        <CarouselItem key={item.title} className="w-full">
+                          <Link href={`/oficina/${item._id}`}>
+                            <Card className="w-full md:h-[400px] mx-auto shadow-lg rounded-lg overflow-hidden">
+                              <div className="relative w-full h-64">
+                                {item.mainImageUrl && (
+                                  <Image
+                                    src={item.mainImageUrl}
+                                    alt={item.title}
+                                    fill
+                                    className="object-cover"
+                                    unoptimized
+                                  />
+                                )}
+                              </div>
+                              <CardHeader className="p-4 space-y-2 text-center bg-white">
+                                <CardTitle className="text-xl font-semibold text-gray-800">
+                                  {item.title}
+                                </CardTitle>
+                              </CardHeader>
+                            </Card>
+                          </Link>
+                        </CarouselItem>
+                      ))}
                 </CarouselContent>
               </Carousel>
             </div>

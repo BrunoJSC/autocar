@@ -1,12 +1,18 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { MaxWrapper } from "@/components/max-wrapper";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchFilterMotorbikes } from "@/fetch/motorbike-filter";
 import FilterBike from "@/components/filters/filter-motorbike";
 import { ListMotorbike } from "@/components/list-bikes";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useDebounce } from "use-debounce";
 
 type Filters = {
   motorbikeBrand: string;
@@ -41,78 +47,73 @@ export default function Page() {
   const [filters, setFilters] = useState<Filters>(initialFilters);
   const [motorbikes, setMotorbikes] = useState<Motorbike[]>([]);
   const [loading, setLoading] = useState(false);
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  const previousFilters = useRef<Filters>(initialFilters);
+  const cache = useRef<{ [key: string]: Motorbike[] }>({});
+  const [debouncedFilters] = useDebounce(filters, 500);
+  // useMemo para calcular o cacheKey com base nos filtros atuais
+  const cacheKey = useMemo(
+    () => JSON.stringify(debouncedFilters),
+    [debouncedFilters]
+  );
 
-  const fetchData = async (filters: Filters) => {
-    setLoading(true);
-    try {
-      const data = await fetchFilterMotorbikes(filters);
-      setMotorbikes(data);
-    } catch (error) {
-      console.error("Erro ao buscar motos:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchData = useCallback(
+    async (filters: Filters) => {
+      if (cache.current[cacheKey]) {
+        setMotorbikes(cache.current[cacheKey]);
+        return;
+      }
 
-  const updateUrlWithFilters = (updatedFilters: Filters) => {
+      setLoading(true);
+      try {
+        const data = await fetchFilterMotorbikes(filters);
+        setMotorbikes(data);
+        cache.current[cacheKey] = data; // Cacheia os resultados
+      } catch (error) {
+        console.error("Erro ao buscar motos:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [cacheKey]
+  );
+
+  const updateUrlWithFilters = useCallback((updatedFilters: Filters) => {
     const params = new URLSearchParams();
     Object.entries(updatedFilters).forEach(([key, value]) => {
       if (value !== undefined && value !== "") {
         params.set(key, value.toString());
       }
     });
-    router.push(`?${params.toString()}`);
-  };
+    window.history.replaceState(null, "", `?${params.toString()}`);
+  }, []);
 
-  const handleSearch = () => {
-    updateUrlWithFilters(filters);
-    fetchData(filters);
-  };
+  const handleSearch = useCallback(() => {
+    updateUrlWithFilters(debouncedFilters);
+    fetchData(debouncedFilters);
+  }, [debouncedFilters, fetchData, updateUrlWithFilters]);
 
-  const handleClearFilters = () => {
-    setFilters(initialFilters);
-    updateUrlWithFilters(initialFilters);
-    fetchData(initialFilters);
-  };
-
-  useEffect(() => {
-    const filtersFromUrl: Filters = {
-      ...initialFilters,
-      motorbikeBrand: searchParams.get("motorbikeBrand") || "",
-      motorbikeModel: searchParams.get("motorbikeModel") || "",
-      location: searchParams.get("location") || "",
-      fuel: searchParams.get("fuel") || "",
-      color: searchParams.get("color") || "",
-      minPrice: searchParams.get("minPrice")
-        ? parseFloat(searchParams.get("minPrice")!)
-        : undefined,
-      maxPrice: searchParams.get("maxPrice")
-        ? parseFloat(searchParams.get("maxPrice")!)
-        : undefined,
-      km: searchParams.get("km")
-        ? parseFloat(searchParams.get("km")!)
-        : undefined,
-      cylinders: searchParams.get("cylinders")
-        ? parseInt(searchParams.get("cylinders")!)
-        : 0,
-      announce: searchParams.get("announce") || "",
-    };
-
-    setFilters(filtersFromUrl);
-    fetchData(filtersFromUrl);
-  }, [searchParams]);
+  const handleClearFilters = useCallback(() => {
+    const clearedFilters = { ...initialFilters };
+    setFilters(clearedFilters);
+    updateUrlWithFilters(clearedFilters);
+    fetchData(clearedFilters);
+  }, [fetchData, updateUrlWithFilters]);
 
   useEffect(() => {
     const handleFocus = () => {
-      console.log("Aplicação em foco novamente. Atualizando dados...");
-      fetchData(filters);
+      if (
+        JSON.stringify(debouncedFilters) !==
+        JSON.stringify(previousFilters.current)
+      ) {
+        console.log("Filtros mudaram. Atualizando dados...");
+        fetchData(debouncedFilters);
+        previousFilters.current = debouncedFilters;
+      }
     };
 
     window.addEventListener("focus", handleFocus);
     return () => window.removeEventListener("focus", handleFocus);
-  }, [filters]);
+  }, [debouncedFilters, fetchData]);
 
   return (
     <MaxWrapper>

@@ -11,7 +11,7 @@ interface Motorbike {
   _id: string;
   motorbikeBrand: string;
   motorbikeModel: string;
-  imageUrl: string;
+  Url: string;
   location: string;
   km: number;
   cylinders: number;
@@ -61,22 +61,23 @@ export const ListMotorbike: React.FC<MotorbikeListProps> = ({ motorbikes }) => {
     <Link href={`/motos/${motorbike._id}`}>
       <Card className="w-full h-full shadow-md transition-transform transform hover:scale-105 hover:shadow-lg">
         <div className="overflow-hidden rounded-t-lg">
-          {motorbike.imageUrl ? (
+          {motorbike.Url ? (
             <Image
-              src={motorbike.imageUrl}
+              src={motorbike.Url}
               alt={`${motorbike.motorbikeBrand || "Marca desconhecida"} - ${
                 motorbike.motorbikeModel || "Modelo desconhecido"
               }`}
               width={400}
               height={250}
               className="w-full h-60 object-cover object-center"
-              quality={90}
+              quality={70}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               loading="lazy"
+              unoptimized
             />
           ) : (
             <div className="w-full h-60 bg-gray-200 flex items-center justify-center">
-              <span>Imagem indisponível</span>
+              <span>m indisponível</span>
             </div>
           )}
         </div>

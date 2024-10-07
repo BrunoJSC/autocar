@@ -1,12 +1,19 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 import { MaxWrapper } from "@/components/max-wrapper";
 import { ListCar } from "@/components/list-car";
 import { fetchFilterCars } from "@/fetch/car-filter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams } from "next/navigation";
 import FilterCar from "@/components/filters/filter-car";
+import { useDebounce } from "use-debounce";
 
 type Filters = {
   brandCar: string;
@@ -39,42 +46,40 @@ export default function Page() {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
+  const previousFilters = useRef<Filters>(initialFilters);
+  const cache = useRef<{ [key: string]: Car[] }>({});
+  const [debouncedFilters] = useDebounce(filters, 500);
 
-  useEffect(() => {
-    const tokenExpiryTime = Date.now() + 60 * 60 * 1000;
-    const interval = setInterval(() => {
-      const timeLeft = tokenExpiryTime - Date.now();
-      if (timeLeft < 5 * 60 * 1000) {
-        console.log("Renovando token...");
-      }
-    }, 60 * 1000);
+  const fetchData = useCallback(async (filters: Filters) => {
+    const cacheKey = JSON.stringify(filters);
 
-    return () => clearInterval(interval);
-  }, []);
+    if (cache.current[cacheKey]) {
+      setCars(cache.current[cacheKey]);
+      return;
+    }
 
-  const fetchData = async (filters: Filters) => {
     setLoading(true);
     try {
       const data = await fetchFilterCars(filters);
       setCars(data);
+      cache.current[cacheKey] = data; // Cacheia o resultado para esses filtros
     } catch (error) {
       console.error("Erro ao buscar carros:", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const handleSearch = () => {
-    fetchData(filters);
-  };
+  const handleSearch = useCallback(() => {
+    fetchData(debouncedFilters); // Usa os filtros com debounce para evitar requisições constantes
+  }, [debouncedFilters, fetchData]);
 
-  const handleClearFilters = () => {
+  const handleClearFilters = useCallback(() => {
     const clearedFilters = { ...initialFilters };
     setFilters(clearedFilters);
     fetchData(clearedFilters);
-  };
+  }, [fetchData]);
 
-  // Atualiza filtros com base nos parâmetros da URL
   useEffect(() => {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
@@ -87,18 +92,23 @@ export default function Page() {
 
     setFilters(updatedFilters);
     fetchData(updatedFilters);
-  }, [searchParams]);
+  }, [searchParams, fetchData]);
 
-  // Atualiza estado ao retomar foco da aba
   useEffect(() => {
     const handleFocus = () => {
-      console.log("Aplicação em foco novamente. Atualizando dados...");
-      fetchData(filters);
+      if (
+        JSON.stringify(debouncedFilters) !==
+        JSON.stringify(previousFilters.current)
+      ) {
+        console.log("Filtros mudaram. Atualizando dados...");
+        fetchData(debouncedFilters);
+        previousFilters.current = debouncedFilters; // Atualiza a referência dos filtros antigos
+      }
     };
 
     window.addEventListener("focus", handleFocus);
     return () => window.removeEventListener("focus", handleFocus);
-  }, [filters]);
+  }, [debouncedFilters, fetchData]);
 
   return (
     <MaxWrapper>

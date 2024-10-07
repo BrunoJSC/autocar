@@ -4,6 +4,7 @@ const nextConfig = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  unoptimized: true,
   images: {
     remotePatterns: [
       {

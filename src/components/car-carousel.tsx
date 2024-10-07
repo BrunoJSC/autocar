@@ -59,6 +59,7 @@ const CarCarousel: React.FC<CarCarouselProps> = ({
                         height={400}
                         className="w-full h-48 object-cover rounded-t-lg"
                         priority
+                        unoptimized
                       />
                     ) : (
                       <Image
@@ -68,6 +69,7 @@ const CarCarousel: React.FC<CarCarouselProps> = ({
                         height={400}
                         className="w-full h-48 object-cover rounded-t-lg"
                         priority
+                        unoptimized
                       />
                     )}
                   </CardHeader>

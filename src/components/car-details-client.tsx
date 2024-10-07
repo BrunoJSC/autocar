@@ -116,7 +116,7 @@ const CarDetailsClient: React.FC<CarDetailsClientProps> = ({
       Valor da Entrada: R$ ${downPayment}
       Valor Financiado: R$ ${financedAmount.toFixed(2)}
       Número de Parcelas: ${installments}
-      Valor da Parcela: R$ ${monthlyPayment.toFixed(2)}`,
+      Valor da Parcela: R$ ${monthlyPayment.toFixed(2)}`
     );
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
     window.open(whatsappUrl, "_blank");
@@ -136,8 +136,9 @@ const CarDetailsClient: React.FC<CarDetailsClientProps> = ({
                 width={600}
                 height={400}
                 className="w-full h-full object-cover object-center"
-                quality={100}
+                quality={70}
                 loading="eager"
+                unoptimized
               />
 
               <Dialog>
@@ -148,7 +149,7 @@ const CarDetailsClient: React.FC<CarDetailsClientProps> = ({
                     className="absolute bottom-4 right-4 bg-white/80 hover:bg-white"
                     onClick={() =>
                       setSelectedImage(
-                        urlForImage(image)?.url() || placeholderImage,
+                        urlForImage(image)?.url() || placeholderImage
                       )
                     }
                   >
@@ -164,7 +165,8 @@ const CarDetailsClient: React.FC<CarDetailsClientProps> = ({
                         alt={car.modelCar || "Imagem ampliada"}
                         fill
                         className="object-contain"
-                        quality={100}
+                        quality={70}
+                        unoptimized
                       />
                     </div>
                   )}

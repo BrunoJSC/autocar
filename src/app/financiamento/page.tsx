@@ -50,6 +50,7 @@ const Page: FC = () => (
               width={400}
               height={400}
               priority
+              unoptimized
             />
           </div>
         </div>

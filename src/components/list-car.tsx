@@ -43,7 +43,9 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
       const indexOfLastCar = currentPage * carsPerPage;
 
       const filteredCars = searchQuery
-        ? cars.filter((car) => car.modelCar?.toLowerCase().includes(searchQuery))
+        ? cars.filter((car) =>
+            car.modelCar?.toLowerCase().includes(searchQuery)
+          )
         : cars;
 
       const newCars = filteredCars.slice(0, indexOfLastCar);
@@ -65,9 +67,10 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
               width={400}
               height={250}
               className="w-full h-60 object-cover object-center"
-              quality={90}
+              quality={70}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               loading="lazy"
+              unoptimized
             />
           ) : (
             <div className="w-full h-60 bg-gray-200 flex items-center justify-center">
@@ -92,9 +95,9 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
           <p className="text-xl font-bold text-primary">
             {car.price
               ? Intl.NumberFormat("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              }).format(car.price)
+                  style: "currency",
+                  currency: "BRL",
+                }).format(car.price)
               : "Preço não disponível"}
           </p>
         </div>

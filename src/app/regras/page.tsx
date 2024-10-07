@@ -13,6 +13,7 @@ export default function Page() {
               width={400}
               height={400}
               className="object-contain"
+              unoptimized
             />
           </div>
           <div className="w-full md:w-2/3 space-y-4">

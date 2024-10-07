@@ -69,6 +69,7 @@ export default function Page() {
             width={64}
             height={64}
             className="rounded-full"
+            unoptimized
           />
         )}
         <div className="w-full max-w-5xl rounded-lg my-6 mx-auto p-4 gap-4 space-y-4">

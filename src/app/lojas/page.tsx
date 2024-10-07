@@ -57,6 +57,7 @@ export default function Page() {
                     height={240}
                     className="object-cover h-48 w-full"
                     priority
+                    unoptimized
                   />
                 ) : (
                   <div className="h-48 w-full flex items-center justify-center bg-gray-200">

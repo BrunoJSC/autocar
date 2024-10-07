@@ -133,6 +133,7 @@ export default function Page() {
                       alt={`Image ${index + 1}`}
                       width={500}
                       height={500}
+                      unoptimized
                     />
                     <Button
                       onClick={() => handleDownload(imageUrl)}

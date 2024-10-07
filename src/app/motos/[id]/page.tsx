@@ -80,7 +80,7 @@ const Page = () => {
         `*[_type == "motorbike" && _id == $id][0]`,
         {
           id,
-        },
+        }
       );
       setMotorbike(data);
     }
@@ -145,7 +145,7 @@ const Page = () => {
       Valor da Entrada: R$ ${downPayment}
       Valor Financiado: R$ ${financedAmount.toFixed(2)}
       Número de Parcelas: ${installments}
-      Valor da Parcela: R$ ${monthlyPayment.toFixed(2)}`,
+      Valor da Parcela: R$ ${monthlyPayment.toFixed(2)}`
     );
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodedMessage}`;
     window.open(whatsappUrl, "_blank");
@@ -167,6 +167,7 @@ const Page = () => {
                 className="w-full h-full object-cover object-center"
                 quality={100}
                 loading="eager"
+                unoptimized
               />
 
               <Dialog>
@@ -177,7 +178,7 @@ const Page = () => {
                     className="absolute bottom-4 right-4 bg-white/80 hover:bg-white"
                     onClick={() =>
                       setSelectedImage(
-                        urlForImage(image)?.url() || placeholderImage,
+                        urlForImage(image)?.url() || placeholderImage
                       )
                     }
                   >

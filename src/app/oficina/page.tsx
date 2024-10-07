@@ -43,6 +43,7 @@ export default function Page() {
                       alt={item.title}
                       fill
                       className="object-cover"
+                      unoptimized
                     />
                   )}
                 </div>
