@@ -42,7 +42,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="notranslate" translate="no">
+      <head>
+        <meta name="google" content="notranslate" />
+      </head>
       <GoogleAnalytics />
       <body className={cn("min-h-screen", poppins.className)}>
         <Header />

@@ -5,4 +5,5 @@ export const bodyTypes = [
   { id: 4, title: "Pickup", value: "pickup" },
   { id: 5, title: "Caminhão", value: "caminhão" },
   { id: 6, title: "Mini Van", value: "mini van" },
+  { id: 7, title: "Utilirário", value: "utilirário" },
 ];

@@ -43,6 +43,7 @@ import { accessoriesType } from "@/constants/accessories";
 import YearFilter from "@/constants/year-filter";
 import { motorsType } from "@/constants/motors";
 import { mechanics } from "@/constants/mechanic";
+import MobileFilter from "../mobile-filter";
 
 type Filters = {
   brandCar: string;
@@ -174,6 +175,11 @@ export const FilterCar: React.FC<FilterProps> = ({
     [setFilters]
   );
 
+  const handleMechanicChange = useCallback(
+    (value: string) => setFilters((prev) => ({ ...prev, mechanic: value })),
+    [setFilters]
+  );
+
   const brandOptions = useMemo(
     () =>
       brandCars.map((car) => ({
@@ -277,210 +283,30 @@ export const FilterCar: React.FC<FilterProps> = ({
   return (
     <div className="space-y-4 md:space-y-0 sticky">
       <div className="md:hidden h-auto">
-        <Sheet>
-          <SheetTrigger asChild>
-            <div className="w-full flex items-center justify-between">
-              <h2 className="text-lg font-bold">Filtro</h2>
-              <Button variant="outline">
-                <Filter className="mr-2 h-4 w-4" />
-              </Button>
-            </div>
-          </SheetTrigger>
-          <SheetContent>
-            <CardHeader>
-              <CardTitle>Carros</CardTitle>
-            </CardHeader>
-            <ScrollArea className="h-full w-full mb-[100px]">
-              <CardContent className="space-y-4">
-                <FilterSelect
-                  label="Marca"
-                  value={filters.brandCar || ""}
-                  onValueChange={handleBrandChange}
-                  options={brandOptions}
-                  placeholder="Selecione uma marca"
-                  id={brandCars[0]?.id.toString()}
-                />
-                <div>
-                  <Label>Modelo</Label>
-                  <Input
-                    placeholder="Digite o modelo"
-                    value={filters.modelCar}
-                    onChange={handleModelChange}
-                  />
-                </div>
-
-                <div>
-                  <Label>Motor</Label>
-                  <Select
-                    value={Number(filters.motors).toString()}
-                    onValueChange={handleMotorsChange}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione o tipo de motor" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {motorsOptions.map((motor) => (
-                        <SelectItem key={motor.id} value={motor.value}>
-                          {motor.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label>Tipo de carroceria</Label>
-                  <Select
-                    value={filters.bodyType || ""}
-                    onValueChange={handleBodyTypeChange}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione o tipo de carroceria" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {bodyTypes.map((bodyType) => (
-                        <SelectItem key={bodyType.id} value={bodyType.value}>
-                          {bodyType.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <YearFilter
-                  startYear={filters.startYear || 1990}
-                  endYear={filters.endYear}
-                  onStartYearChange={handleStartYearChange}
-                  onEndYearChange={handleEndYearChange || 2024}
-                />
-
-                <div className="flex items-center gap-2">
-                  <FilterPriceSelect
-                    label="Preço minimo"
-                    value={filters.minPrice}
-                    onValueChange={handleMinPriceChange}
-                    options={minPrice.map((price) => ({
-                      ...price,
-                      id: price.id.toString(),
-                      value: price.value.toString(),
-                    }))}
-                    placeholder="Selecione o preço inicial"
-                  />
-                  <FilterPriceSelect
-                    label="Preço maximo"
-                    value={filters.maxPrice}
-                    onValueChange={handleMaxPriceChange}
-                    options={maxPrice.map((price) => ({
-                      ...price,
-                      id: price.id.toString(),
-                      value: price.value.toString(),
-                    }))}
-                    placeholder="Selecione o preço maximo"
-                  />
-                </div>
-
-                <FilterSelect
-                  label="Tipo de câmbio"
-                  value={filters.exchange || ""}
-                  onValueChange={handleExchangeChange}
-                  options={exchangeOptions}
-                  placeholder="Selecione o tipo de troca"
-                  id={exchange[0]?.id.toString()}
-                />
-
-                <div>
-                  <Label>Quilometragem</Label>
-                  <Select
-                    value={Number(filters.km).toString()}
-                    onValueChange={handleKmChange}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione a quilometragem" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {kmOptions.map((km) => (
-                        <SelectItem key={km.id} value={km.value}>
-                          {km.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <FilterSelect
-                  label="Tipo de Combustível"
-                  value={filters.fuel || ""}
-                  onValueChange={handleFuelChange}
-                  options={fuelOptions}
-                  placeholder="Selecione o combustível"
-                  id={fuel[0]?.id.toString()}
-                />
-
-                <FilterSelect
-                  label="Localidade"
-                  value={filters.location || ""}
-                  onValueChange={handleLocationChange}
-                  options={locationOptions}
-                  placeholder="Selecione a localidade"
-                  id={locations[0]?.id.toString()}
-                />
-
-                <div>
-                  <Label>Portas</Label>
-                  <Select
-                    value={Number(filters.doors).toString()}
-                    onValueChange={handleDoorsChange}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione o número de portas" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {doorsOptions.map((door) => (
-                        <SelectItem key={door.id} value={door.value}>
-                          {door.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <FilterSelect
-                  label="Cor do carro"
-                  value={filters.color || ""}
-                  onValueChange={handleColorChange}
-                  options={colorOptions}
-                  placeholder="Selecione o tipo de troca"
-                  id={colors[0]?.id.toString()}
-                />
-
-                <FilterSelect
-                  label="Parte mecânica"
-                  value={filters.mechanic || ""}
-                  onValueChange={handleColorChange}
-                  options={mechanicOptions}
-                  placeholder="Selecione o tipo de troca"
-                  id={colors[0]?.id.toString()}
-                />
-
-                <FilterSelect
-                  label="Anunciante"
-                  value={filters.announce || ""}
-                  onValueChange={handleAnnounceChange}
-                  options={announceOptions}
-                  placeholder="Selecione o anunciante"
-                  id={announceType[0]?.id.toString()}
-                />
-
-                <AccessoriesFilter
-                  accessories={accessoriesType}
-                  selectedAccessories={filters.accessories || []}
-                  onChange={handleAccessoriesChange}
-                />
-                <FilterButtons onSearch={onSearch} clearSearch={clearSearch} />
-              </CardContent>
-            </ScrollArea>
-          </SheetContent>
-        </Sheet>
+        <MobileFilter
+          filters={filters}
+          setFilters={setFilters}
+          onSearch={onSearch}
+          clearSearch={clearSearch}
+          handleBrandChange={handleBrandChange}
+          handleModelChange={handleModelChange}
+          handleLocationChange={handleLocationChange}
+          handleFuelChange={handleFuelChange}
+          handleExchangeChange={handleExchangeChange}
+          handleMinPriceChange={handleMinPriceChange}
+          handleMaxPriceChange={handleMaxPriceChange}
+          handleKmChange={handleKmChange}
+          handleBodyTypeChange={handleBodyTypeChange}
+          handleColorChange={handleColorChange}
+          handleDoorsChange={handleDoorsChange}
+          handleMotorsChange={handleMotorsChange}
+          handleAnnounceChange={handleAnnounceChange}
+          handleAccessoriesChange={handleAccessoriesChange}
+          handleStartYearChange={handleStartYearChange}
+          handleEndYearChange={handleEndYearChange}
+          handleMechanicChange={handleMechanicChange}
+          i18nIsDynamicList
+        />
       </div>
 
       <div className="hidden md:block space-y-4 md:space-y-0">

@@ -26,6 +26,8 @@ type Filters = {
   color: string;
   doors: number;
   announce: string;
+  startYear?: number;
+  endYear?: number;
 };
 
 const initialFilters: Filters = {
@@ -39,6 +41,8 @@ const initialFilters: Filters = {
   color: "",
   doors: 0,
   announce: "",
+  startYear: undefined,
+  endYear: undefined,
 };
 
 export default function Page() {
@@ -103,11 +107,11 @@ export default function Page() {
   }, [debouncedFilters, fetchData]);
 
   const handleClearFilters = useCallback(() => {
+    // Resetando todos os filtros, incluindo 'startYear' e 'endYear'
     setFilters(initialFilters);
     fetchData(initialFilters);
   }, [fetchData]);
 
-  // Atualiza filtros a partir da URL
   useEffect(() => {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
