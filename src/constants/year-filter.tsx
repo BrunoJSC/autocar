@@ -11,7 +11,7 @@ import {
 import { years } from "@/constants/years";
 
 interface YearFilterProps {
-  startYear: number;
+  startYear: number | undefined;
   endYear: number | undefined;
   onStartYearChange: (year: number) => void;
   onEndYearChange: (year: number | undefined) => void;
@@ -29,7 +29,7 @@ const YearFilter: React.FC<YearFilterProps> = ({
       <div className="w-1/2">
         <Label>Ano Inicial</Label>
         <Select
-          value={startYear.toString()}
+          value={startYear?.toString()}
           onValueChange={(value) => onStartYearChange(Number(value))}
         >
           <SelectTrigger>
@@ -60,7 +60,9 @@ const YearFilter: React.FC<YearFilterProps> = ({
           </SelectTrigger>
           <SelectContent>
             {years
-              .filter((year) => year.value >= startYear) // Filtro para anos finais >= ao ano inicial
+              ?.filter(
+                (year) => startYear !== undefined && year.value >= startYear
+              )
               .map((year) => (
                 <SelectItem key={year.id} value={year.value.toString()}>
                   {year.title}

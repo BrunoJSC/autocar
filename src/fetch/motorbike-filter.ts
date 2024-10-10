@@ -38,11 +38,11 @@ export const fetchFilterMotorbikes = async ({
   }
   if (motorbikeModel) {
     query += ` && motorbikeModel match $motorbikeModel`;
-    params.motorbikeModel = `${motorbikeModel}*`;
+    params.motorbikeModel = motorbikeModel; // Removido o `*` desnecessário
   }
   if (location) {
     query += ` && location match $location`;
-    params.location = `${location}*`;
+    params.location = location; // Removido o `*` desnecessário
   }
   if (color) {
     query += ` && color == $color`;
@@ -76,8 +76,8 @@ export const fetchFilterMotorbikes = async ({
     params.fuel = fuel;
   }
   if (cylinders) {
-    query += ` && cylinders == $cylinders`;
-    params.exchange = cylinders;
+    query += ` && cylinders == $cylinders`; // Corrigido o nome do parâmetro
+    params.cylinders = cylinders;
   }
 
   query += `]`;
@@ -85,7 +85,7 @@ export const fetchFilterMotorbikes = async ({
   if (minPrice !== undefined && maxPrice !== undefined) {
     query += ` | order(price asc)`;
   } else if (startYear !== undefined && endYear !== undefined) {
-    query += ` | order(yearModification desc)`;
+    query += ` | order(yearModification asc)`;
   }
 
   query += ` {
@@ -103,7 +103,6 @@ export const fetchFilterMotorbikes = async ({
     color,
     description,
     price,
-  
     motors,
     condition,
     announce,
@@ -113,6 +112,7 @@ export const fetchFilterMotorbikes = async ({
 
   try {
     const motorbikes = await client.fetch(query, params);
+
     return motorbikes;
   } catch (error) {
     console.error("Error fetching motorbikes:", error);

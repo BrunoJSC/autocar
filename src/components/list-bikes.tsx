@@ -7,16 +7,29 @@ import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams } from "next/navigation";
 
+// Interface unificada para Motorbike
 interface Motorbike {
   _id: string;
   motorbikeBrand: string;
   motorbikeModel: string;
-  Url?: string;
+  images: { url: string }[];
   location: string;
-  km: number;
-  cylinders: number;
-  price: number;
+  yearFabrication?: number; // Opcional, se for possível que não esteja disponível
   yearModification: number;
+  fuel: string;
+  km?: number;
+  exchange?: string; // Para compatibilidade com `cylinders` se necessário
+  color?: string;
+  description?: string;
+  accessories?: string[];
+  price: number;
+  cylinders?: number;
+  condition?: string;
+  announce?: string;
+  fairing?: string;
+  plate?: string;
+  imageUrl: string;
+  date?: Date;
 }
 
 interface MotorbikeListProps {
@@ -33,15 +46,9 @@ export const ListMotorbike: React.FC<MotorbikeListProps> = ({ motorbikes }) => {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("model");
 
+  // Atualiza a lista de motos com base na busca e paginação
   useEffect(() => {
-    loadMoreMotorbikes();
-  }, []);
-
-  const loadMoreMotorbikes = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      const indexOfLastMotorbike = currentPage * motorbikesPerPage;
-
+    const loadMotorbikes = () => {
       const filteredMotorbikes = searchQuery
         ? motorbikes.filter((motorbike) =>
             motorbike.motorbikeModel
@@ -50,20 +57,31 @@ export const ListMotorbike: React.FC<MotorbikeListProps> = ({ motorbikes }) => {
           )
         : motorbikes;
 
+      // Calcula a nova página e as motos a serem exibidas
+      const indexOfLastMotorbike = currentPage * motorbikesPerPage;
       const newMotorbikes = filteredMotorbikes.slice(0, indexOfLastMotorbike);
       setDisplayedMotorbikes(newMotorbikes);
-      setCurrentPage(currentPage + 1);
+    };
+
+    loadMotorbikes();
+  }, [motorbikes, currentPage, searchQuery]);
+
+  // Carrega mais motos ao clicar no botão
+  const loadMoreMotorbikes = () => {
+    if (!isLoading) {
+      setIsLoading(true);
+      setCurrentPage((prevPage) => prevPage + 1); // Incrementa a página
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const MotorbikeCard: React.FC<{ motorbike: Motorbike }> = ({ motorbike }) => (
     <Link href={`/motos/${motorbike._id}`}>
       <Card className="w-full h-full shadow-md transition-transform transform hover:scale-105 hover:shadow-lg">
         <div className="overflow-hidden rounded-t-lg">
-          {motorbike.Url ? (
+          {motorbike.imageUrl ? (
             <Image
-              src={motorbike.Url}
+              src={motorbike.imageUrl}
               alt={`${motorbike.motorbikeBrand || "Marca desconhecida"} - ${
                 motorbike.motorbikeModel || "Modelo desconhecido"
               }`}
@@ -77,7 +95,7 @@ export const ListMotorbike: React.FC<MotorbikeListProps> = ({ motorbikes }) => {
             />
           ) : (
             <div className="w-full h-60 bg-gray-200 flex items-center justify-center">
-              <span>m indisponível</span>
+              <span>moto indisponível</span>
             </div>
           )}
         </div>

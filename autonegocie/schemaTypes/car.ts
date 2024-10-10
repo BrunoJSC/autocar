@@ -256,6 +256,7 @@ export const carType = defineType({
           {title: 'Pickup', value: 'pickup'},
           {title: 'Caminhão', value: 'caminhão'},
           {title: 'Mini Van', value: 'mini van'},
+          {title: 'Utilirário', value: 'utilirário'},
         ],
       },
     }),

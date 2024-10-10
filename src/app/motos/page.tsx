@@ -1,17 +1,12 @@
 "use client";
 
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-  useCallback,
-} from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { MaxWrapper } from "@/components/max-wrapper";
-import { Skeleton } from "@/components/ui/skeleton";
-import { fetchFilterMotorbikes } from "@/fetch/motorbike-filter";
-import FilterBike from "@/components/filters/filter-motorbike";
 import { ListMotorbike } from "@/components/list-bikes";
+import { fetchFilterMotorbikes } from "@/fetch/motorbike-filter";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useSearchParams } from "next/navigation";
+import FilterMotorbike from "@/components/filters/filter-motorbike";
 import { useDebounce } from "use-debounce";
 
 type Filters = {
@@ -19,15 +14,11 @@ type Filters = {
   motorbikeModel: string;
   location: string;
   fuel: string;
-  color: string;
+  cylinders: number;
   minPrice?: number;
   maxPrice?: number;
-  km?: number;
-  cylinders?: number;
-  announce?: string;
-  accessories?: string[];
-  startYear?: number;
-  endYear?: number;
+  color: string;
+  announce: string;
 };
 
 const initialFilters: Filters = {
@@ -35,80 +26,98 @@ const initialFilters: Filters = {
   motorbikeModel: "",
   location: "",
   fuel: "",
+  cylinders: 0,
   minPrice: undefined,
   maxPrice: undefined,
   color: "",
-  km: undefined,
   announce: "",
-  cylinders: 0,
 };
 
 export default function Page() {
   const [filters, setFilters] = useState<Filters>(initialFilters);
   const [motorbikes, setMotorbikes] = useState<Motorbike[]>([]);
   const [loading, setLoading] = useState(false);
-  const previousFilters = useRef<Filters>(initialFilters);
-  const cache = useRef<{ [key: string]: Motorbike[] }>({});
+  const searchParams = useSearchParams();
   const [debouncedFilters] = useDebounce(filters, 500);
-  // useMemo para calcular o cacheKey com base nos filtros atuais
-  const cacheKey = useMemo(
-    () => JSON.stringify(debouncedFilters),
-    [debouncedFilters]
-  );
+  const CACHE_EXPIRATION_TIME = 600000; // Cache expires in 10 minutes
 
-  const fetchData = useCallback(
-    async (filters: Filters) => {
-      if (cache.current[cacheKey]) {
-        setMotorbikes(cache.current[cacheKey]);
-        return;
-      }
+  const saveToCache = (key: string, data: Motorbike[]) => {
+    const cacheData = {
+      timestamp: new Date().getTime(),
+      data,
+    };
+    localStorage.setItem(key, JSON.stringify(cacheData));
+  };
 
-      setLoading(true);
-      try {
-        const data = await fetchFilterMotorbikes(filters);
+  const getFromCache = (key: string): Motorbike[] | null => {
+    const cacheData = localStorage.getItem(key);
+    if (!cacheData) return null;
+
+    const parsedCache = JSON.parse(cacheData);
+    const currentTime = new Date().getTime();
+
+    if (currentTime - parsedCache.timestamp > CACHE_EXPIRATION_TIME) {
+      localStorage.removeItem(key);
+      return null;
+    }
+
+    return parsedCache.data;
+  };
+
+  const fetchData = useCallback(async (filters: Filters) => {
+    const cacheKey = JSON.stringify(filters);
+    const cachedMotorbikes = getFromCache(cacheKey);
+
+    if (cachedMotorbikes) {
+      setMotorbikes(cachedMotorbikes);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const data = await fetchFilterMotorbikes(filters);
+      if (data && data.length > 0) {
         setMotorbikes(data);
-        cache.current[cacheKey] = data; // Cacheia os resultados
-      } catch (error) {
-        console.error("Erro ao buscar motos:", error);
-      } finally {
-        setLoading(false);
+        saveToCache(cacheKey, data);
+      } else {
+        setMotorbikes([]);
       }
-    },
-    [cacheKey]
-  );
-
-  const updateUrlWithFilters = useCallback((updatedFilters: Filters) => {
-    const params = new URLSearchParams();
-    Object.entries(updatedFilters).forEach(([key, value]) => {
-      if (value !== undefined && value !== "") {
-        params.set(key, value.toString());
-      }
-    });
-    window.history.replaceState(null, "", `?${params.toString()}`);
+    } catch (error) {
+      console.error("Erro ao buscar motos:", error);
+      setMotorbikes([]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const handleSearch = useCallback(() => {
-    updateUrlWithFilters(debouncedFilters);
-    fetchData(debouncedFilters);
-  }, [debouncedFilters, fetchData, updateUrlWithFilters]);
+    fetchData(debouncedFilters); // Use debounced filters to avoid frequent requests
+  }, [debouncedFilters, fetchData]);
 
   const handleClearFilters = useCallback(() => {
-    const clearedFilters = { ...initialFilters };
-    setFilters(clearedFilters);
-    updateUrlWithFilters(clearedFilters);
-    fetchData(clearedFilters);
-  }, [fetchData, updateUrlWithFilters]);
+    setFilters(initialFilters);
+    fetchData(initialFilters);
+  }, [fetchData]);
 
+  // Update filters from URL search parameters
+  useEffect(() => {
+    const minPrice = searchParams.get("minPrice");
+    const maxPrice = searchParams.get("maxPrice");
+
+    const updatedFilters: Filters = {
+      ...initialFilters,
+      minPrice: minPrice ? parseFloat(minPrice) : undefined,
+      maxPrice: maxPrice ? parseFloat(maxPrice) : undefined,
+    };
+
+    setFilters(updatedFilters);
+    fetchData(updatedFilters);
+  }, [searchParams, fetchData]);
+
+  // Refetch data when the window gains focus
   useEffect(() => {
     const handleFocus = () => {
-      if (
-        JSON.stringify(debouncedFilters) !==
-        JSON.stringify(previousFilters.current)
-      ) {
-        console.log("Filtros mudaram. Atualizando dados...");
-        fetchData(debouncedFilters);
-        previousFilters.current = debouncedFilters;
-      }
+      fetchData(debouncedFilters);
     };
 
     window.addEventListener("focus", handleFocus);
@@ -119,9 +128,9 @@ export default function Page() {
     <MaxWrapper>
       <section className="flex flex-col md:flex-row gap-4 mt-5 p-4 min-h-screen">
         <div>
-          <FilterBike
+          <FilterMotorbike
             filters={filters}
-            setFilters={setFilters}
+            setFilters={setFilters as any}
             onSearch={handleSearch}
             clearSearch={handleClearFilters}
           />

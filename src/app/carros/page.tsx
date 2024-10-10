@@ -46,25 +46,53 @@ export default function Page() {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
-  const previousFilters = useRef<Filters>(initialFilters);
-  const cache = useRef<{ [key: string]: Car[] }>({});
   const [debouncedFilters] = useDebounce(filters, 500);
+  const CACHE_EXPIRATION_TIME = 600000;
+
+  const saveToCache = (key: string, data: Car[]) => {
+    const cacheData = {
+      timestamp: new Date().getTime(),
+      data,
+    };
+    localStorage.setItem(key, JSON.stringify(cacheData));
+  };
+
+  const getFromCache = (key: string): Car[] | null => {
+    const cacheData = localStorage.getItem(key);
+    if (!cacheData) return null;
+
+    const parsedCache = JSON.parse(cacheData);
+    const currentTime = new Date().getTime();
+
+    if (currentTime - parsedCache.timestamp > CACHE_EXPIRATION_TIME) {
+      localStorage.removeItem(key);
+      return null;
+    }
+
+    return parsedCache.data;
+  };
 
   const fetchData = useCallback(async (filters: Filters) => {
     const cacheKey = JSON.stringify(filters);
+    const cachedCars = getFromCache(cacheKey);
 
-    if (cache.current[cacheKey]) {
-      setCars(cache.current[cacheKey]);
+    if (cachedCars) {
+      setCars(cachedCars);
       return;
     }
 
     setLoading(true);
     try {
       const data = await fetchFilterCars(filters);
-      setCars(data);
-      cache.current[cacheKey] = data; // Cacheia o resultado para esses filtros
+      if (data && data.length > 0) {
+        setCars(data);
+        saveToCache(cacheKey, data);
+      } else {
+        setCars([]);
+      }
     } catch (error) {
       console.error("Erro ao buscar carros:", error);
+      setCars([]);
     } finally {
       setLoading(false);
     }
@@ -75,11 +103,11 @@ export default function Page() {
   }, [debouncedFilters, fetchData]);
 
   const handleClearFilters = useCallback(() => {
-    const clearedFilters = { ...initialFilters };
-    setFilters(clearedFilters);
-    fetchData(clearedFilters);
+    setFilters(initialFilters);
+    fetchData(initialFilters);
   }, [fetchData]);
 
+  // Atualiza filtros a partir da URL
   useEffect(() => {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
@@ -96,14 +124,7 @@ export default function Page() {
 
   useEffect(() => {
     const handleFocus = () => {
-      if (
-        JSON.stringify(debouncedFilters) !==
-        JSON.stringify(previousFilters.current)
-      ) {
-        console.log("Filtros mudaram. Atualizando dados...");
-        fetchData(debouncedFilters);
-        previousFilters.current = debouncedFilters; // Atualiza a referência dos filtros antigos
-      }
+      fetchData(debouncedFilters);
     };
 
     window.addEventListener("focus", handleFocus);

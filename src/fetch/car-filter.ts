@@ -105,7 +105,7 @@ export const fetchFilterCars = async ({
   if (minPrice !== undefined && maxPrice !== undefined) {
     query += ` | order(price asc)`;
   } else if (startYear !== undefined && endYear !== undefined) {
-    query += ` | order(yearModification desc)`;
+    query += ` | order(yearModification asc)`;
   }
 
   query += ` {
