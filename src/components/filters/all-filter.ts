@@ -17,3 +17,19 @@ type FiltersCar = {
   motors?: number;
   mechanic?: string;
 };
+
+type FiltersMotorbike = {
+  motorbikeBrand: string;
+  motorbikeModel: string;
+  location: string;
+  fuel: string;
+  cylinders: number;
+  minPrice?: number | undefined;
+  maxPrice?: number | undefined;
+  color: string;
+  announce: string;
+  km?: number;
+  accessories?: string[];
+  startYear?: number;
+  endYear?: number;
+};
