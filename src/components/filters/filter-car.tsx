@@ -35,8 +35,8 @@ import {
 } from "@/constants";
 
 interface FilterProps {
-  filters: Filters;
-  setFilters: Dispatch<SetStateAction<Filters>>;
+  filters: FiltersCar;
+  setFilters: Dispatch<SetStateAction<FiltersCar>>;
   onSearch: () => void;
   clearSearch: () => void;
 }
@@ -48,7 +48,7 @@ export const FilterCar: React.FC<FilterProps> = ({
   clearSearch,
 }) => {
   const handleChange = useCallback(
-    (field: keyof Filters, value: any) => {
+    (field: keyof FiltersCar, value: any) => {
       setFilters((prev) => ({ ...prev, [field]: value }));
     },
     [setFilters]

@@ -36,12 +36,12 @@ import FilterPriceSelect from "./filters/filter-price-select";
 import YearFilter from "@/constants/year-filter";
 
 interface MobileFilterProps {
-  filters: Filters;
-  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
+  filters: FiltersCar;
+  setFilters: React.Dispatch<React.SetStateAction<FiltersCar>>;
   onSearch: () => void;
   clearSearch: () => void;
   handleClearFilters: () => void;
-  handleChange: (key: keyof Filters, value: any) => void; // Atualizado
+  handleChange: (key: keyof FiltersCar, value: any) => void;
 }
 
 const MobileFilter: React.FC<MobileFilterProps> = ({
