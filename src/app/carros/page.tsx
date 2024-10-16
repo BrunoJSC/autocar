@@ -26,6 +26,9 @@ const initialFilters: FiltersCar = {
   bodyType: "",
   accessories: [],
   motors: 0,
+  mechanic: "",
+  kmStart: undefined,
+  kmEnd: undefined,
 };
 
 export default function Page() {
@@ -91,19 +94,16 @@ export default function Page() {
     []
   );
 
-  // Search with the debounced filters
   const handleSearch = useCallback(() => {
     fetchData(debouncedFilters);
   }, [debouncedFilters, fetchData]);
 
-  // Clear filters and return to original car state
   const handleClearFilters = useCallback(() => {
     setFilters(initialFilters);
     fetchData(initialFilters, true); // Bypass cache when clearing filters
     console.log("Clear filters");
   }, [fetchData]);
 
-  // Initialize filters from URL search params on mount
   useEffect(() => {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
@@ -118,7 +118,6 @@ export default function Page() {
     fetchData(updatedFilters); // Fetch cars based on URL params
   }, [searchParams, fetchData]);
 
-  // Re-fetch data when the window regains focus (e.g., when returning to the tab)
   useEffect(() => {
     const handleFocus = () => {
       fetchData(debouncedFilters);
@@ -136,7 +135,7 @@ export default function Page() {
             filters={filters}
             setFilters={setFilters}
             onSearch={handleSearch}
-            clearSearch={handleClearFilters} // Clear filters handler
+            clearSearch={handleClearFilters}
           />
         </div>
         <div className="flex-1">

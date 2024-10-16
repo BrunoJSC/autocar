@@ -19,6 +19,8 @@ interface FilterParams {
   exchange?: string;
   limit?: number;
   offset?: number;
+  kmStart?: number;
+  kmEnd?: number;
 }
 
 export const fetchFilterCars = async ({
@@ -40,18 +42,17 @@ export const fetchFilterCars = async ({
   exchange,
   limit = 10,
   offset = 0,
+  kmStart,
+  kmEnd,
 }: FilterParams) => {
-  // Start of the query string for fetching cars
   let query = `*[_type == "car" && defined(yearModification) && defined(price)`;
   const params: Record<string, any> = {};
 
-  // Helper to add conditionally
   const addCondition = (condition: string, paramName: string, value: any) => {
     query += ` && ${condition}`;
     params[paramName] = value;
   };
 
-  // Check if any filters are applied
   const isAnyFilterApplied =
     brandCar ||
     modelCar ||
@@ -94,6 +95,10 @@ export const fetchFilterCars = async ({
       );
       params.endYear = endYear;
     }
+
+    if (kmStart) addCondition(`km >= $kmStart`, "kmStart", kmStart);
+    if (kmEnd) addCondition(`km <= $kmEnd`, "kmEnd", kmEnd);
+
     if (motors) addCondition(`motors == $motors`, "motors", motors);
     if (bodyType) addCondition(`bodyType == $bodyType`, "bodyType", bodyType);
     if (km) addCondition(`km == $km`, "km", km);
@@ -107,10 +112,8 @@ export const fetchFilterCars = async ({
       );
     }
 
-    // Close query filtering
     query += `]`;
 
-    // Determine sorting logic
     if (minPrice !== undefined || maxPrice !== undefined) {
       // If price filter is present, prioritize sorting by price
       query += ` | order(price asc)`;

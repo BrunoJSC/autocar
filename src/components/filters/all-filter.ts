@@ -16,6 +16,8 @@ type FiltersCar = {
   endYear?: number;
   motors?: number;
   mechanic?: string;
+  kmStart?: number;
+  kmEnd?: number;
 };
 
 type FiltersMotorbike = {
@@ -32,4 +34,6 @@ type FiltersMotorbike = {
   accessories?: string[];
   startYear?: number;
   endYear?: number;
+  kmStart?: number | undefined;
+  kmEnd?: number | undefined;
 };
