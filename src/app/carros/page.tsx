@@ -1,12 +1,6 @@
 "use client";
 
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useMemo,
-  useCallback,
-} from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { MaxWrapper } from "@/components/max-wrapper";
 import { ListCar } from "@/components/list-car";
 import { fetchFilterCars } from "@/fetch/car-filter";
@@ -15,22 +9,7 @@ import { useSearchParams } from "next/navigation";
 import FilterCar from "@/components/filters/filter-car";
 import { useDebounce } from "use-debounce";
 
-type Filters = {
-  brandCar: string;
-  modelCar: string;
-  location: string;
-  fuel: string;
-  exchange: string;
-  minPrice?: number;
-  maxPrice?: number;
-  color: string;
-  doors: number;
-  announce: string;
-  startYear?: number;
-  endYear?: number;
-};
-
-const initialFilters: Filters = {
+const initialFilters: FiltersCar = {
   brandCar: "",
   modelCar: "",
   location: "",
@@ -43,16 +22,21 @@ const initialFilters: Filters = {
   announce: "",
   startYear: undefined,
   endYear: undefined,
+  km: 0,
+  bodyType: "",
+  accessories: [],
+  motors: 0,
 };
 
 export default function Page() {
-  const [filters, setFilters] = useState<Filters>(initialFilters);
+  const [filters, setFilters] = useState<FiltersCar>(initialFilters);
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const [debouncedFilters] = useDebounce(filters, 500);
-  const CACHE_EXPIRATION_TIME = 600000;
+  const CACHE_EXPIRATION_TIME = 600000; // Cache expiration time
 
+  // Save fetched data in localStorage cache
   const saveToCache = (key: string, data: Car[]) => {
     const cacheData = {
       timestamp: new Date().getTime(),
@@ -61,6 +45,7 @@ export default function Page() {
     localStorage.setItem(key, JSON.stringify(cacheData));
   };
 
+  // Retrieve data from localStorage cache
   const getFromCache = (key: string): Car[] | null => {
     const cacheData = localStorage.getItem(key);
     if (!cacheData) return null;
@@ -76,56 +61,64 @@ export default function Page() {
     return parsedCache.data;
   };
 
-  const fetchData = useCallback(async (filters: Filters) => {
-    const cacheKey = JSON.stringify(filters);
-    const cachedCars = getFromCache(cacheKey);
+  // Fetch data based on filters (either cached or from API)
+  const fetchData = useCallback(
+    async (filters: FiltersCar, bypassCache: boolean = false) => {
+      const cacheKey = JSON.stringify(filters);
+      const cachedCars = bypassCache ? null : getFromCache(cacheKey);
 
-    if (cachedCars) {
-      setCars(cachedCars);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const data = await fetchFilterCars(filters);
-      if (data && data.length > 0) {
-        setCars(data);
-        saveToCache(cacheKey, data);
-      } else {
-        setCars([]);
+      if (cachedCars) {
+        setCars(cachedCars);
+        return;
       }
-    } catch (error) {
-      console.error("Erro ao buscar carros:", error);
-      setCars([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
+      setLoading(true);
+      try {
+        const data = await fetchFilterCars(filters);
+        if (data && data.length > 0) {
+          setCars(data);
+          saveToCache(cacheKey, data);
+        } else {
+          setCars([]);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar carros:", error);
+        setCars([]);
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
+
+  // Search with the debounced filters
   const handleSearch = useCallback(() => {
-    fetchData(debouncedFilters); // Usa os filtros com debounce para evitar requisições constantes
+    fetchData(debouncedFilters);
   }, [debouncedFilters, fetchData]);
 
+  // Clear filters and return to original car state
   const handleClearFilters = useCallback(() => {
-    // Resetando todos os filtros, incluindo 'startYear' e 'endYear'
     setFilters(initialFilters);
-    fetchData(initialFilters);
+    fetchData(initialFilters, true); // Bypass cache when clearing filters
+    console.log("Clear filters");
   }, [fetchData]);
 
+  // Initialize filters from URL search params on mount
   useEffect(() => {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
 
-    const updatedFilters: Filters = {
+    const updatedFilters: FiltersCar = {
       ...initialFilters,
       minPrice: minPrice ? parseFloat(minPrice) : undefined,
       maxPrice: maxPrice ? parseFloat(maxPrice) : undefined,
     };
 
     setFilters(updatedFilters);
-    fetchData(updatedFilters);
+    fetchData(updatedFilters); // Fetch cars based on URL params
   }, [searchParams, fetchData]);
 
+  // Re-fetch data when the window regains focus (e.g., when returning to the tab)
   useEffect(() => {
     const handleFocus = () => {
       fetchData(debouncedFilters);
@@ -143,7 +136,7 @@ export default function Page() {
             filters={filters}
             setFilters={setFilters}
             onSearch={handleSearch}
-            clearSearch={handleClearFilters}
+            clearSearch={handleClearFilters} // Clear filters handler
           />
         </div>
         <div className="flex-1">
@@ -157,7 +150,7 @@ export default function Page() {
               <p className="text-gray-500">Nenhum carro encontrado.</p>
             </div>
           ) : (
-            <ListCar cars={cars as Car[]} />
+            <ListCar cars={cars} />
           )}
         </div>
       </section>

@@ -1,5 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  webpack(config, { dev }) {
+    if (dev) {
+      config.devtool = "source-map"; // Garantir que mapas de origem estejam habilitados
+    }
+    return config;
+  },
   i18n: {
     locales: ["pt"],
     defaultLocale: "pt",

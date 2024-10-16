@@ -5,65 +5,34 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-
-import { Button } from "@/components/ui/button";
-import { Filter, SortAsc } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-
-import { locations } from "@/constants/location";
-import { brandCars } from "@/constants/brand-cars";
-import { fuel } from "@/constants/fuel";
-import { exchange } from "@/constants/exchange";
-import { maxPrice, minPrice } from "@/constants/prices";
-import { colors } from "@/constants/colors";
-import { doorsQty } from "@/constants/doors-qty";
-import { announceType } from "@/constants/announce-type";
-import { kms } from "@/constants/kms";
-import { bodyTypes } from "@/constants/body-type";
-
-import FilterSelect from "./FilterSelect";
-import FilterPriceSelect from "./filter-price-select";
-import FilterButtons from "./filter-buttons";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import FilterSelect from "./FilterSelect";
+import FilterPriceSelect from "./filter-price-select";
+import FilterButtons from "./filter-buttons";
 import AccessoriesFilter from "./accessories-filter";
-import { accessoriesType } from "@/constants/accessories";
 import YearFilter from "@/constants/year-filter";
-import { motorsType } from "@/constants/motors";
-import { mechanics } from "@/constants/mechanic";
 import MobileFilter from "../mobile-filter";
-
-type Filters = {
-  brandCar: string;
-  modelCar: string;
-  location: string;
-  fuel: string;
-  exchange: string;
-  doors: number;
-  color: string;
-  minPrice?: number;
-  maxPrice?: number;
-  announce: string;
-  km?: number;
-  bodyType?: string;
-  accessories?: string[];
-  startYear?: number;
-  endYear?: number;
-  motors?: number;
-  mechanic?: string;
-};
+import {
+  locations,
+  brandCars,
+  fuel,
+  exchange,
+  maxPrice,
+  minPrice,
+  colors,
+  doorsQty,
+  announceType,
+  kms,
+  bodyTypes,
+  accessoriesType,
+  motorsType,
+  mechanics,
+} from "@/constants";
 
 interface FilterProps {
   filters: Filters;
@@ -78,107 +47,37 @@ export const FilterCar: React.FC<FilterProps> = ({
   onSearch,
   clearSearch,
 }) => {
-  const handleBrandChange = useCallback(
-    (value: string) => setFilters((prev) => ({ ...prev, brandCar: value })),
+  const handleChange = useCallback(
+    (field: keyof Filters, value: any) => {
+      setFilters((prev) => ({ ...prev, [field]: value }));
+    },
     [setFilters]
   );
 
-  const handleModelChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) =>
-      setFilters((prev) => ({ ...prev, modelCar: e.target.value || "" })),
-    [setFilters]
-  );
+  const handleClearFilters = useCallback(() => {
+    setFilters({
+      brandCar: "",
+      modelCar: "",
+      motors: 0,
+      bodyType: "",
+      startYear: 0,
+      endYear: 0,
+      minPrice: 0,
+      maxPrice: 0,
+      exchange: "",
+      km: 0,
+      fuel: "",
+      location: "",
+      doors: 0,
+      color: "",
+      announce: "",
+      accessories: [],
+    });
 
-  const handleLocationChange = useCallback(
-    (value: string) => setFilters((prev) => ({ ...prev, location: value })),
-    [setFilters]
-  );
+    clearSearch();
 
-  const handleFuelChange = useCallback(
-    (value: string) => setFilters((prev) => ({ ...prev, fuel: value })),
-    [setFilters]
-  );
-
-  const handleExchangeChange = useCallback(
-    (value: string) => setFilters((prev) => ({ ...prev, exchange: value })),
-    [setFilters]
-  );
-
-  const handleMinPriceChange = useCallback(
-    (value: string) =>
-      setFilters((prev) => ({
-        ...prev,
-        minPrice: value ? Number(value) : undefined,
-      })),
-    [setFilters]
-  );
-
-  const handleMaxPriceChange = useCallback(
-    (value: string) =>
-      setFilters((prev) => ({
-        ...prev,
-        maxPrice: value ? Number(value) : undefined,
-      })),
-    [setFilters]
-  );
-
-  const handleKmChange = useCallback(
-    (value: string) =>
-      setFilters((prev) => ({
-        ...prev,
-        km: value ? Number(value) : undefined,
-      })),
-    [setFilters]
-  );
-
-  const handleBodyTypeChange = useCallback(
-    (value: string) => setFilters((prev) => ({ ...prev, bodyType: value })),
-    [setFilters]
-  );
-
-  const handleColorChange = useCallback(
-    (value: string) => setFilters((prev) => ({ ...prev, color: value })),
-    [setFilters]
-  );
-
-  const handleDoorsChange = useCallback(
-    (value: string) =>
-      setFilters((prev) => ({ ...prev, doors: Number(value) })),
-    [setFilters]
-  );
-
-  const handleMotorsChange = useCallback(
-    (value: string) =>
-      setFilters((prev) => ({ ...prev, motors: Number(value) })),
-    [setFilters]
-  );
-
-  const handleAnnounceChange = useCallback(
-    (value: string) => setFilters((prev) => ({ ...prev, announce: value })),
-    [setFilters]
-  );
-
-  const handleAccessoriesChange = useCallback(
-    (selected: string[]) =>
-      setFilters((prev) => ({ ...prev, accessories: selected })),
-    [setFilters]
-  );
-
-  const handleStartYearChange = useCallback(
-    (year: number) => setFilters((prev) => ({ ...prev, startYear: year })),
-    [setFilters]
-  );
-
-  const handleEndYearChange = useCallback(
-    (year: number | undefined) =>
-      setFilters((prev) => ({ ...prev, endYear: year })),
-    [setFilters]
-  );
-
-  const handleMechanicChange = useCallback(
-    (value: string) => setFilters((prev) => ({ ...prev, mechanic: value })),
-    [setFilters]
-  );
+    onSearch();
+  }, [setFilters, clearSearch, onSearch]);
 
   const brandOptions = useMemo(
     () =>
@@ -280,6 +179,7 @@ export const FilterCar: React.FC<FilterProps> = ({
       })),
     []
   );
+
   return (
     <div className="space-y-4 md:space-y-0 sticky">
       <div className="md:hidden h-auto">
@@ -288,27 +188,13 @@ export const FilterCar: React.FC<FilterProps> = ({
           setFilters={setFilters}
           onSearch={onSearch}
           clearSearch={clearSearch}
-          handleBrandChange={handleBrandChange}
-          handleModelChange={handleModelChange}
-          handleLocationChange={handleLocationChange}
-          handleFuelChange={handleFuelChange}
-          handleExchangeChange={handleExchangeChange}
-          handleMinPriceChange={handleMinPriceChange}
-          handleMaxPriceChange={handleMaxPriceChange}
-          handleKmChange={handleKmChange}
-          handleBodyTypeChange={handleBodyTypeChange}
-          handleColorChange={handleColorChange}
-          handleDoorsChange={handleDoorsChange}
-          handleMotorsChange={handleMotorsChange}
-          handleAnnounceChange={handleAnnounceChange}
-          handleAccessoriesChange={handleAccessoriesChange}
-          handleStartYearChange={handleStartYearChange}
-          handleEndYearChange={handleEndYearChange}
-          handleMechanicChange={handleMechanicChange}
+          handleChange={handleChange}
+          handleClearFilters={handleClearFilters}
           i18nIsDynamicList
         />
       </div>
 
+      {/* Filtro Desktop */}
       <div className="hidden md:block space-y-4 md:space-y-0">
         <Card className="max-w-sm sticky top-0/ overflow-scroll">
           <CardHeader>
@@ -318,25 +204,24 @@ export const FilterCar: React.FC<FilterProps> = ({
             <FilterSelect
               label="Marca"
               value={filters.brandCar || ""}
-              onValueChange={handleBrandChange}
+              onValueChange={(value) => handleChange("brandCar", value)}
               options={brandOptions}
               placeholder="Selecione uma marca"
-              id={brandCars[0]?.id.toString()}
             />
             <div>
               <Label>Modelo</Label>
               <Input
                 placeholder="Digite o modelo"
                 value={filters.modelCar}
-                onChange={handleModelChange}
+                onChange={(e) => handleChange("modelCar", e.target.value)}
               />
             </div>
 
             <div>
               <Label>Motor</Label>
               <Select
-                value={Number(filters.motors).toString()}
-                onValueChange={handleMotorsChange}
+                value={filters.motors?.toString() || ""}
+                onValueChange={(value) => handleChange("motors", value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione o tipo de motor" />
@@ -355,7 +240,7 @@ export const FilterCar: React.FC<FilterProps> = ({
               <Label>Tipo de carroceria</Label>
               <Select
                 value={filters.bodyType || ""}
-                onValueChange={handleBodyTypeChange}
+                onValueChange={(value) => handleChange("bodyType", value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione o tipo de carroceria" />
@@ -373,49 +258,52 @@ export const FilterCar: React.FC<FilterProps> = ({
             <YearFilter
               startYear={filters.startYear}
               endYear={filters.endYear}
-              onStartYearChange={handleStartYearChange}
-              onEndYearChange={handleEndYearChange}
+              onStartYearChange={(year) =>
+                setFilters((prev) => ({ ...prev, startYear: year }))
+              }
+              onEndYearChange={(year) =>
+                setFilters((prev) => ({ ...prev, endYear: year }))
+              }
             />
 
             <div className="flex items-center gap-2">
               <FilterPriceSelect
-                label="Preço minimo"
+                label="Preço mínimo"
                 value={filters.minPrice}
-                onValueChange={handleMinPriceChange}
+                onValueChange={(value) => handleChange("minPrice", value)}
                 options={minPrice.map((price) => ({
                   ...price,
                   id: price.id.toString(),
-                  value: price.value.toString(),
+                  value: price.value,
                 }))}
                 placeholder="Selecione o preço inicial"
               />
               <FilterPriceSelect
-                label="Preço maximo"
+                label="Preço máximo"
                 value={filters.maxPrice}
-                onValueChange={handleMaxPriceChange}
+                onValueChange={(value) => handleChange("maxPrice", value)}
                 options={maxPrice.map((price) => ({
                   ...price,
                   id: price.id.toString(),
-                  value: price.value.toString(),
+                  value: price.value,
                 }))}
-                placeholder="Selecione o preço maximo"
+                placeholder="Selecione o preço máximo"
               />
             </div>
 
             <FilterSelect
               label="Tipo de câmbio"
               value={filters.exchange || ""}
-              onValueChange={handleExchangeChange}
+              onValueChange={(value) => handleChange("exchange", value)}
               options={exchangeOptions}
               placeholder="Selecione o tipo de troca"
-              id={exchange[0]?.id.toString()}
             />
 
             <div>
               <Label>Quilometragem</Label>
               <Select
-                value={Number(filters.km).toString()}
-                onValueChange={handleKmChange}
+                value={filters.km?.toString() || ""}
+                onValueChange={(value) => handleChange("km", value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione a quilometragem" />
@@ -431,28 +319,26 @@ export const FilterCar: React.FC<FilterProps> = ({
             </div>
 
             <FilterSelect
-              label="Tipo de Combustível"
+              label="Combustível"
               value={filters.fuel || ""}
-              onValueChange={handleFuelChange}
+              onValueChange={(value) => handleChange("fuel", value)}
               options={fuelOptions}
               placeholder="Selecione o combustível"
-              id={fuel[0]?.id.toString()}
             />
 
             <FilterSelect
               label="Localidade"
               value={filters.location || ""}
-              onValueChange={handleLocationChange}
+              onValueChange={(value) => handleChange("location", value)}
               options={locationOptions}
               placeholder="Selecione a localidade"
-              id={locations[0]?.id.toString()}
             />
 
             <div>
               <Label>Portas</Label>
               <Select
-                value={Number(filters.doors).toString()}
-                onValueChange={handleDoorsChange}
+                value={filters.doors?.toString() || ""}
+                onValueChange={(value) => handleChange("doors", Number(value))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione o número de portas" />
@@ -470,37 +356,29 @@ export const FilterCar: React.FC<FilterProps> = ({
             <FilterSelect
               label="Cor do carro"
               value={filters.color || ""}
-              onValueChange={handleColorChange}
+              onValueChange={(value) => handleChange("color", value)}
               options={colorOptions}
-              placeholder="Selecione o tipo de troca"
-              id={colors[0]?.id.toString()}
+              placeholder="Selecione a cor"
             />
-
-            {/* <FilterSelect
-              label="Parte mecânica"
-              value={filters.mechanic || ""}
-              onValueChange={handleColorChange}
-              options={mechanicOptions}
-              placeholder="Selecione o tipo de troca"
-              id={colors[0]?.id.toString()}
-            /> */}
 
             <FilterSelect
               label="Anunciante"
               value={filters.announce || ""}
-              onValueChange={handleAnnounceChange}
+              onValueChange={(value) => handleChange("announce", value)}
               options={announceOptions}
               placeholder="Selecione o anunciante"
-              id={announceType[0]?.id.toString()}
             />
 
             <AccessoriesFilter
               accessories={accessoriesType}
               selectedAccessories={filters.accessories || []}
-              onChange={handleAccessoriesChange}
+              onChange={(selected) => handleChange("accessories", selected)}
             />
 
-            <FilterButtons onSearch={onSearch} clearSearch={clearSearch} />
+            <FilterButtons
+              onSearch={onSearch}
+              clearSearch={handleClearFilters}
+            />
           </CardContent>
         </Card>
       </div>

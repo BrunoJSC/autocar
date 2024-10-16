@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 interface FilterPriceSelectProps {
   label: string;
   value?: number;
-  onValueChange: (value: string) => void;
+  onValueChange: (value: number) => void; // Expect a number here, not string
   options: { id: string | number; value: string | number; title: string }[];
   placeholder: string;
 }
@@ -30,7 +30,7 @@ const FilterPriceSelect: React.FC<FilterPriceSelectProps> = ({
       <Label>{label}</Label>
       <Select
         value={value ? value.toString() : ""}
-        onValueChange={onValueChange}
+        onValueChange={(selectedValue) => onValueChange(Number(selectedValue))}
       >
         <SelectTrigger>
           <SelectValue placeholder={placeholder} />
