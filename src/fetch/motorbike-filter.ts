@@ -13,6 +13,8 @@ interface MotorbikeFilterParams {
   announce?: string;
   fuel?: string;
   cylinders?: number;
+  kmStart?: number;
+  kmEnd?: number;
 }
 
 export const fetchFilterMotorbikes = async ({
@@ -28,6 +30,8 @@ export const fetchFilterMotorbikes = async ({
   announce,
   fuel,
   cylinders,
+  kmStart,
+  kmEnd,
 }: MotorbikeFilterParams) => {
   let query = `*[_type == "motorbike"`;
   const params: any = {};
@@ -60,6 +64,12 @@ export const fetchFilterMotorbikes = async ({
     query += ` && yearModification >= $startYear && yearModification <= $endYear`;
     params.startYear = startYear;
     params.endYear = endYear;
+  }
+
+  if (kmStart !== undefined && kmEnd !== undefined) {
+    query += ` && km >= $kmStart && km <= $kmEnd`;
+    params.kmStart = kmStart;
+    params.kmEnd = kmEnd;
   }
 
   if (km) {

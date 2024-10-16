@@ -31,6 +31,7 @@ import {
 import { cylindersType } from "@/constants/cylinders";
 import { brandBikes } from "@/constants/brand-bikes";
 import CylinderSelect from "./cylinder-select";
+import FilterRangeSelect from "./km-select";
 
 interface FilterProps {
   filters: FiltersMotorbike;
@@ -228,24 +229,16 @@ export const FilterMotorbike: React.FC<FilterProps> = ({
               placeholder="Selecione a localidade"
             />
 
-            <div>
-              <Label>Quilometragem</Label>
-              <Select
-                value={filters.km?.toString() || ""}
-                onValueChange={(value) => handleChange("km", Number(value))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione a quilometragem" />
-                </SelectTrigger>
-                <SelectContent>
-                  {kmOptions.map((km) => (
-                    <SelectItem key={km.id} value={km.value}>
-                      {km.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <FilterRangeSelect
+              label="Km inicial"
+              kmStart={filters.kmStart}
+              kmEnd={filters.kmEnd}
+              onStartValueChange={(value) => handleChange("kmStart", value)}
+              onEndValueChange={(value) => handleChange("kmEnd", value)}
+              options={kmOptions}
+              startPlaceholder="Selecione o km inicial"
+              endPlaceholder="Selecione o km final"
+            />
 
             <FilterSelect
               label="Cor da moto"
