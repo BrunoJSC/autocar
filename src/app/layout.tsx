@@ -6,6 +6,7 @@ import { Footer } from "@/components/footer";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import GoogleAnalytics from "@/components/analytics/google-analytics";
+import Script from "next/script";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "700"] });
 
@@ -57,6 +58,17 @@ export default function RootLayout({
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-9C3EF7H9PF"
         ></script>
+
+        <Script
+          id="Absence-banner"
+          async
+          strategy="afterInteractive"
+          onError={(e) => {
+            console.error("Script failed to load", e);
+          }}
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_GOOGLE_ADSENSE}`}
+          crossOrigin="anonymous"
+        />
       </body>
     </html>
   );
