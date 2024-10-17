@@ -1,3 +1,4 @@
+import React, { useMemo } from "react";
 import {
   accessoriesType,
   announceType,
@@ -22,7 +23,6 @@ import FilterSelect from "./filters/FilterSelect";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import FilterButtons from "./filters/filter-buttons";
-import React, { useMemo } from "react";
 import { Filter } from "lucide-react";
 import AccessoriesFilter from "./filters/accessories-filter";
 import {
@@ -37,10 +37,9 @@ import YearFilter from "@/constants/year-filter";
 
 interface MobileFilterProps {
   filters: FiltersCar;
-  setFilters: React.Dispatch<React.SetStateAction<FiltersCar>>;
+  setFilters: (field: keyof FiltersCar, value: any) => void;
   onSearch: () => void;
   clearSearch: () => void;
-  handleClearFilters: () => void;
   handleChange: (key: keyof FiltersCar, value: any) => void;
 }
 
@@ -51,12 +50,16 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
   clearSearch,
   handleChange,
 }) => {
-  const brandOptions = brandCars.map((car) => ({
-    ...car,
-    id: car.id.toString(),
-    value: car.value.toString(),
-    title: car.title.toString(),
-  }));
+  const brandOptions = useMemo(
+    () =>
+      brandCars.map((car) => ({
+        ...car,
+        id: car.id.toString(),
+        value: car.value.toString(),
+        title: car.title.toString(),
+      })),
+    []
+  );
 
   const locationOptions = useMemo(
     () =>
@@ -167,7 +170,7 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
             <FilterSelect
               label="Marca"
               value={filters.brandCar || ""}
-              onValueChange={(value) => handleChange("brandCar", value)} // Atualizado
+              onValueChange={(value) => handleChange("brandCar", value)}
               options={brandOptions}
               placeholder="Selecione uma marca"
             />
@@ -176,7 +179,7 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
               <Input
                 placeholder="Digite o modelo"
                 value={filters.modelCar}
-                onChange={(e) => handleChange("modelCar", e.target.value)} // Atualizado
+                onChange={(e) => handleChange("modelCar", e.target.value)}
               />
             </div>
 
@@ -221,12 +224,8 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
             <YearFilter
               startYear={filters.startYear}
               endYear={filters.endYear}
-              onStartYearChange={(year) =>
-                setFilters((prev) => ({ ...prev, startYear: year }))
-              }
-              onEndYearChange={(year) =>
-                setFilters((prev) => ({ ...prev, endYear: year }))
-              }
+              onStartYearChange={(year) => handleChange("startYear", year)}
+              onEndYearChange={(year) => handleChange("endYear", year)}
             />
 
             <div className="flex items-center gap-2">
@@ -345,5 +344,7 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
     </Sheet>
   );
 };
+
+MobileFilter.displayName = "MobileFilter";
 
 export default React.memo(MobileFilter);
