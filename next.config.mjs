@@ -6,6 +6,7 @@ const nextConfig = {
     }
     return config;
   },
+  staticPageGenerationTimeout: 60,
   i18n: {
     locales: ["pt"],
     defaultLocale: "pt",
