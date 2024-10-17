@@ -141,7 +141,7 @@ const Page = () => {
     const encodedMessage = encodeURIComponent(
       `Simulação de Financiamento:
       
-      Veículo: ${motorbike?.motorbikeBrand} - ${motorbike?.motorbikeModel}
+      Veículo: ${motorbike?.motorbikeBrand} - ${motorbike?.motorbikeModel} - ${motorbike?.yearModification}
       Valor da Entrada: R$ ${downPayment}
       Valor Financiado: R$ ${financedAmount.toFixed(2)}
       Número de Parcelas: ${installments}

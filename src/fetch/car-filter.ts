@@ -17,8 +17,6 @@ interface FilterParams {
   motors?: number;
   yearModification?: number;
   exchange?: string;
-  limit?: number;
-  offset?: number;
   kmStart?: number;
   kmEnd?: number;
 }
@@ -40,8 +38,6 @@ export const fetchFilterCars = async ({
   motors,
   yearModification,
   exchange,
-  limit = 10,
-  offset = 0,
   kmStart,
   kmEnd,
 }: FilterParams) => {
@@ -71,7 +67,6 @@ export const fetchFilterCars = async ({
     exchange;
 
   if (isAnyFilterApplied) {
-    // Conditionally add filters to the query only if they are present
     if (brandCar) addCondition(`brandCar == $brandCar`, "brandCar", brandCar);
     if (modelCar)
       addCondition(`modelCar match $modelCar`, "modelCar", `${modelCar}*`);
@@ -128,9 +123,6 @@ export const fetchFilterCars = async ({
     // Default query without filters: Fetch all cars ordered by yearModification and price
     query += `] | order(yearModification desc, price asc)`;
   }
-
-  // Pagination
-  query += `[${offset}...${offset + limit}]`;
 
   // Field projection
   query += `{

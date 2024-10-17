@@ -47,9 +47,10 @@ export default function RootLayout({
     <html lang="en" className="notranslate" translate="no">
       <head>
         <meta name="google" content="notranslate" />
+        <GoogleAdsense />
       </head>
       <GoogleAnalytics />
-      <GoogleAdsense />
+
       <body className={cn("min-h-screen", poppins.className)}>
         <Header />
         {children}

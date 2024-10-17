@@ -37,62 +37,24 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const [debouncedFilters] = useDebounce(filters, 500);
-  const CACHE_EXPIRATION_TIME = 600000; // Cache expiration time
 
-  // Save fetched data in localStorage cache
-  const saveToCache = (key: string, data: Car[]) => {
-    const cacheData = {
-      timestamp: new Date().getTime(),
-      data,
-    };
-    localStorage.setItem(key, JSON.stringify(cacheData));
-  };
-
-  // Retrieve data from localStorage cache
-  const getFromCache = (key: string): Car[] | null => {
-    const cacheData = localStorage.getItem(key);
-    if (!cacheData) return null;
-
-    const parsedCache = JSON.parse(cacheData);
-    const currentTime = new Date().getTime();
-
-    if (currentTime - parsedCache.timestamp > CACHE_EXPIRATION_TIME) {
-      localStorage.removeItem(key);
-      return null;
-    }
-
-    return parsedCache.data;
-  };
-
-  // Fetch data based on filters (either cached or from API)
-  const fetchData = useCallback(
-    async (filters: FiltersCar, bypassCache: boolean = false) => {
-      const cacheKey = JSON.stringify(filters);
-      const cachedCars = bypassCache ? null : getFromCache(cacheKey);
-
-      if (cachedCars) {
-        setCars(cachedCars);
-        return;
-      }
-
-      setLoading(true);
-      try {
-        const data = await fetchFilterCars(filters);
-        if (data && data.length > 0) {
-          setCars(data);
-          saveToCache(cacheKey, data);
-        } else {
-          setCars([]);
-        }
-      } catch (error) {
-        console.error("Erro ao buscar carros:", error);
+  // Fetch data based on filters directly from API
+  const fetchData = useCallback(async (filters: FiltersCar) => {
+    setLoading(true);
+    try {
+      const data = await fetchFilterCars(filters);
+      if (data && data.length > 0) {
+        setCars(data);
+      } else {
         setCars([]);
-      } finally {
-        setLoading(false);
       }
-    },
-    []
-  );
+    } catch (error) {
+      console.error("Erro ao buscar carros:", error);
+      setCars([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const handleSearch = useCallback(() => {
     fetchData(debouncedFilters);
@@ -100,7 +62,7 @@ export default function Page() {
 
   const handleClearFilters = useCallback(() => {
     setFilters(initialFilters);
-    fetchData(initialFilters, true); // Bypass cache when clearing filters
+    fetchData(initialFilters); // Fetch data with initial filters after clearing
     console.log("Clear filters");
   }, [fetchData]);
 
