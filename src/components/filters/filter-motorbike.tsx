@@ -4,13 +4,6 @@ import React, { Dispatch, SetStateAction, useCallback, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import FilterSelect from "./FilterSelect";
 import FilterPriceSelect from "./filter-price-select";
 import FilterButtons from "./filter-buttons";
@@ -20,11 +13,9 @@ import MobileFilter from "../mobile-filter";
 import {
   locations,
   fuel,
-  exchange,
   maxPrice,
   minPrice,
   colors,
-  kms,
   announceType,
   accessoriesType,
 } from "@/constants";
@@ -64,79 +55,25 @@ export const FilterMotorbike: React.FC<FilterProps> = ({
       fuel: "",
       color: "",
       announce: "",
-      km: 0,
+      kmStart: 0,
+      kmEnd: 0,
       accessories: [],
       startYear: 0,
       endYear: 0,
     });
 
     clearSearch();
-    onSearch();
-  }, [setFilters, clearSearch, onSearch]);
+  }, [setFilters, clearSearch]);
 
-  const brandOptions = useMemo(
-    () =>
-      brandBikes.map((bike) => ({
-        ...bike,
-        id: bike.id.toString(),
-        value: bike.value.toString(),
-        title: bike.title.toString(),
-      })),
-    []
-  );
-
-  const locationOptions = useMemo(
-    () =>
-      locations.map((loc) => ({
-        ...loc,
-        id: loc.id.toString(),
-        value: loc.value.toString(),
-      })),
-    []
-  );
-
-  const fuelOptions = useMemo(
-    () =>
-      fuel.map((f) => ({
-        ...f,
-        id: f.id.toString(),
-        value: f.value.toString(),
-      })),
-    []
-  );
-
-  const colorOptions = useMemo(
-    () =>
-      colors.map((color) => ({
-        ...color,
-        id: color.id.toString(),
-        value: color.value.toString(),
-      })),
-    []
-  );
-
-  const announceOptions = useMemo(
-    () =>
-      announceType.map((announce) => ({
-        ...announce,
-        id: announce.id.toString(),
-        value: announce.value.toString(),
-      })),
-    []
-  );
-
-  const kmOptions = useMemo(
-    () =>
-      kms.map((km) => ({
-        ...km,
-        id: km.id.toString(),
-        value: km.value.toString(),
-      })),
-    []
-  );
+  const brandOptions = useMemo(() => brandBikes, []);
+  const locationOptions = useMemo(() => locations, []);
+  const fuelOptions = useMemo(() => fuel, []);
+  const colorOptions = useMemo(() => colors, []);
+  const announceOptions = useMemo(() => announceType, []);
 
   return (
     <div className="space-y-4 md:space-y-0 sticky">
+      {/* Mobile Filter */}
       <div className="md:hidden h-auto">
         {/* <MobileFilter
           filters={filters}
@@ -144,13 +81,12 @@ export const FilterMotorbike: React.FC<FilterProps> = ({
           onSearch={onSearch}
           clearSearch={clearSearch}
           handleChange={handleChange}
-          handleClearFilters={handleClearFilters}
-          i18nIsDynamicList
         /> */}
       </div>
 
+      {/* Desktop Filter */}
       <div className="hidden md:block space-y-4 md:space-y-0">
-        <Card className="max-w-sm sticky top-0/ overflow-scroll">
+        <Card className="max-w-sm sticky top-0 overflow-scroll">
           <CardHeader>
             <CardTitle>Motos</CardTitle>
           </CardHeader>
@@ -162,6 +98,7 @@ export const FilterMotorbike: React.FC<FilterProps> = ({
               options={brandOptions}
               placeholder="Selecione uma marca"
             />
+
             <div>
               <Label>Modelo</Label>
               <Input
@@ -180,12 +117,8 @@ export const FilterMotorbike: React.FC<FilterProps> = ({
             <YearFilter
               startYear={filters.startYear}
               endYear={filters.endYear}
-              onStartYearChange={(year) =>
-                setFilters((prev) => ({ ...prev, startYear: year }))
-              }
-              onEndYearChange={(year) =>
-                setFilters((prev) => ({ ...prev, endYear: year }))
-              }
+              onStartYearChange={(year) => handleChange("startYear", year)}
+              onEndYearChange={(year) => handleChange("endYear", year)}
             />
 
             <div className="flex items-center gap-2">
@@ -193,22 +126,14 @@ export const FilterMotorbike: React.FC<FilterProps> = ({
                 label="Preço mínimo"
                 value={filters.minPrice}
                 onValueChange={(value) => handleChange("minPrice", value)}
-                options={minPrice.map((price) => ({
-                  ...price,
-                  id: price.id.toString(),
-                  value: price.value,
-                }))}
+                options={minPrice}
                 placeholder="Selecione o preço inicial"
               />
               <FilterPriceSelect
                 label="Preço máximo"
                 value={filters.maxPrice}
                 onValueChange={(value) => handleChange("maxPrice", value)}
-                options={maxPrice.map((price) => ({
-                  ...price,
-                  id: price.id.toString(),
-                  value: price.value,
-                }))}
+                options={maxPrice}
                 placeholder="Selecione o preço máximo"
               />
             </div>
@@ -230,12 +155,12 @@ export const FilterMotorbike: React.FC<FilterProps> = ({
             />
 
             <FilterRangeSelect
-              label="Km inicial"
+              label="Km"
               kmStart={filters.kmStart}
               kmEnd={filters.kmEnd}
               onStartValueChange={(value) => handleChange("kmStart", value)}
               onEndValueChange={(value) => handleChange("kmEnd", value)}
-              options={kmOptions}
+              options={[]} // You might want to define km options for motorcycles
               startPlaceholder="Selecione o km inicial"
               endPlaceholder="Selecione o km final"
             />
