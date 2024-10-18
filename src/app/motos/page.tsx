@@ -39,49 +39,12 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const [debouncedFilters] = useDebounce(filters, 500);
-  const CACHE_EXPIRATION_TIME = 600000; // Cache expires in 10 minutes
-
-  const saveToCache = (key: string, data: Motorbike[]) => {
-    const cacheData = {
-      timestamp: new Date().getTime(),
-      data,
-    };
-    localStorage.setItem(key, JSON.stringify(cacheData));
-  };
-
-  const getFromCache = (key: string): Motorbike[] | null => {
-    const cacheData = localStorage.getItem(key);
-    if (!cacheData) return null;
-
-    const parsedCache = JSON.parse(cacheData);
-    const currentTime = new Date().getTime();
-
-    if (currentTime - parsedCache.timestamp > CACHE_EXPIRATION_TIME) {
-      localStorage.removeItem(key);
-      return null;
-    }
-
-    return parsedCache.data;
-  };
 
   const fetchData = useCallback(async (filters: Filters) => {
-    const cacheKey = JSON.stringify(filters);
-    const cachedMotorbikes = getFromCache(cacheKey);
-
-    if (cachedMotorbikes) {
-      setMotorbikes(cachedMotorbikes);
-      return;
-    }
-
     setLoading(true);
     try {
       const data = await fetchFilterMotorbikes(filters);
-      if (data && data.length > 0) {
-        setMotorbikes(data);
-        saveToCache(cacheKey, data);
-      } else {
-        setMotorbikes([]);
-      }
+      setMotorbikes(data && data.length > 0 ? data : []);
     } catch (error) {
       console.error("Erro ao buscar motos:", error);
       setMotorbikes([]);

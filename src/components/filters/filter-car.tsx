@@ -231,6 +231,14 @@ export const FilterCar: React.FC<FilterProps> = ({
               placeholder="Selecione o anunciante"
             />
 
+            <FilterSelect
+              label="Mecânico"
+              value={filters.mechanic || ""}
+              onValueChange={(value) => handleChange("mechanic", value)}
+              options={mechanicOptions}
+              placeholder="Selecione o mecanico"
+            />
+
             <AccessoriesFilter
               accessories={accessoriesType}
               selectedAccessories={filters.accessories || []}
