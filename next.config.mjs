@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  webpack(config, { dev }) {
+  webpack: (config, { dev }) => {
     if (dev) {
-      config.devtool = "source-map"; // Garantir que mapas de origem estejam habilitados
+      config.devtool = "eval-source-map";
     }
     return config;
   },

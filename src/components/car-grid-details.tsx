@@ -10,7 +10,7 @@ type Car = {
   doors: number;
   fuel: string;
   exchange: string;
-  motors: string;
+  motors: number;
 };
 
 interface CarProps {
@@ -100,7 +100,9 @@ const CarDetailsGrid = ({ car }: CarProps) => {
       <Card className="shadow-sm hover:shadow-md transition-shadow duration-300">
         <CardContent className="p-4">
           <p className="text-sm font-medium text-gray-500">Motor</p>
-          <p className="text-lg font-semibold text-black mt-1">{car.motors}</p>
+          <p className="text-lg font-semibold text-black mt-1">
+            {car.motors.toFixed(1)}
+          </p>
         </CardContent>
       </Card>
     </div>
