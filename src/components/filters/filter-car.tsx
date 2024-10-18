@@ -78,8 +78,7 @@ export const FilterCar: React.FC<FilterProps> = ({
     });
 
     clearSearch();
-    onSearch();
-  }, [setFilters, clearSearch, onSearch]);
+  }, [setFilters, clearSearch]);
 
   const brandOptions = useMemo(() => brandCars, []);
   const locationOptions = useMemo(() => locations, []);
