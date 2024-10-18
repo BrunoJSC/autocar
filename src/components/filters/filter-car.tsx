@@ -50,7 +50,6 @@ export const FilterCar: React.FC<FilterProps> = ({
   onSearch,
   clearSearch,
 }) => {
-  // Unified handleChange with type check
   const handleChange = useCallback(
     (field: keyof FiltersCar, value: any) => {
       setFilters((prev) => ({ ...prev, [field]: value }));
@@ -58,7 +57,6 @@ export const FilterCar: React.FC<FilterProps> = ({
     [setFilters]
   );
 
-  // Clear filters and trigger search
   const handleClearFilters = useCallback(() => {
     setFilters({
       brandCar: "",
@@ -83,7 +81,6 @@ export const FilterCar: React.FC<FilterProps> = ({
     onSearch();
   }, [setFilters, clearSearch, onSearch]);
 
-  // Options using useMemo for performance optimization
   const brandOptions = useMemo(() => brandCars, []);
   const locationOptions = useMemo(() => locations, []);
   const fuelOptions = useMemo(() => fuel, []);

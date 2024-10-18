@@ -1,24 +1,27 @@
-import React, { useState, useEffect } from "react";
+"use client";
 
+import React, { useState, useEffect, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams } from "next/navigation";
+import { FixedSizeList as List } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
+import debounce from "lodash/debounce";
 
-// Interface unificada para Motorbike
 interface Motorbike {
   _id: string;
   motorbikeBrand: string;
   motorbikeModel: string;
   images: { url: string }[];
   location: string;
-  yearFabrication?: number; // Opcional, se for possível que não esteja disponível
+  yearFabrication?: number;
   yearModification: number;
   fuel: string;
   km?: number;
-  exchange?: string; // Para compatibilidade com `cylinders` se necessário
+  exchange?: string;
   color?: string;
   description?: string;
   accessories?: string[];
@@ -36,46 +39,53 @@ interface MotorbikeListProps {
   motorbikes: Motorbike[];
 }
 
-export const ListMotorbike: React.FC<MotorbikeListProps> = ({ motorbikes }) => {
+const useMotorbikeList = (
+  initialMotorbikes: Motorbike[],
+  searchQuery: string | null
+) => {
   const [displayedMotorbikes, setDisplayedMotorbikes] = useState<Motorbike[]>(
     []
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const motorbikesPerPage = 9;
-  const searchParams = useSearchParams();
-  const searchQuery = searchParams.get("model");
 
-  // Atualiza a lista de motos com base na busca e paginação
-  useEffect(() => {
-    const loadMotorbikes = () => {
+  const loadMoreMotorbikes = useCallback(() => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const indexOfLastMotorbike = currentPage * motorbikesPerPage;
       const filteredMotorbikes = searchQuery
-        ? motorbikes.filter((motorbike) =>
+        ? initialMotorbikes.filter((motorbike) =>
             motorbike.motorbikeModel
               ?.toLowerCase()
               .includes(searchQuery.toLowerCase())
           )
-        : motorbikes;
+        : initialMotorbikes;
 
-      // Calcula a nova página e as motos a serem exibidas
-      const indexOfLastMotorbike = currentPage * motorbikesPerPage;
       const newMotorbikes = filteredMotorbikes.slice(0, indexOfLastMotorbike);
       setDisplayedMotorbikes(newMotorbikes);
-    };
-
-    loadMotorbikes();
-  }, [motorbikes, currentPage, searchQuery]);
-
-  // Carrega mais motos ao clicar no botão
-  const loadMoreMotorbikes = () => {
-    if (!isLoading) {
-      setIsLoading(true);
-      setCurrentPage((prevPage) => prevPage + 1); // Incrementa a página
+      setCurrentPage(currentPage + 1);
+    } catch (err) {
+      setError("Erro ao carregar as motos. Por favor, tente novamente.");
+    } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentPage, initialMotorbikes, searchQuery]);
 
-  const MotorbikeCard: React.FC<{ motorbike: Motorbike }> = ({ motorbike }) => (
+  useEffect(() => {
+    setCurrentPage(1);
+    setDisplayedMotorbikes([]);
+    loadMoreMotorbikes();
+  }, [searchQuery]);
+
+  return { displayedMotorbikes, isLoading, error, loadMoreMotorbikes };
+};
+
+const MotorbikeCard: React.FC<{ motorbike: Motorbike }> = React.memo(
+  ({ motorbike }) => (
     <Link href={`/motos/${motorbike._id}`}>
       <Card className="w-full h-full shadow-md transition-transform transform hover:scale-105 hover:shadow-lg">
         <div className="overflow-hidden rounded-t-lg">
@@ -91,11 +101,12 @@ export const ListMotorbike: React.FC<MotorbikeListProps> = ({ motorbikes }) => {
               quality={70}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               loading="lazy"
-              unoptimized
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
             />
           ) : (
             <div className="w-full h-60 bg-gray-200 flex items-center justify-center">
-              <span>moto indisponível</span>
+              <span>Imagem indisponível</span>
             </div>
           )}
         </div>
@@ -126,40 +137,77 @@ export const ListMotorbike: React.FC<MotorbikeListProps> = ({ motorbikes }) => {
         </div>
       </Card>
     </Link>
+  )
+);
+
+MotorbikeCard.displayName = "MotorbikeCard";
+
+const SkeletonCard = () => (
+  <Card className="w-full h-full shadow-md">
+    <Skeleton className="w-full h-60" />
+    <div className="p-4">
+      <Skeleton className="h-4 w-2/3 mb-2" />
+      <Skeleton className="h-4 w-1/2 mb-4" />
+      <Skeleton className="h-4 w-full mb-2" />
+      <Skeleton className="h-4 w-full mb-2" />
+      <Skeleton className="h-4 w-full mb-4" />
+      <Skeleton className="h-6 w-1/3" />
+    </div>
+  </Card>
+);
+
+export const ListMotorbike: React.FC<MotorbikeListProps> = ({ motorbikes }) => {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("model");
+
+  const { displayedMotorbikes, isLoading, error, loadMoreMotorbikes } =
+    useMotorbikeList(motorbikes, searchQuery);
+
+  const debouncedLoadMore = debounce(loadMoreMotorbikes, 300);
+
+  const Row = ({
+    index,
+    style,
+  }: {
+    index: number;
+    style: React.CSSProperties;
+  }) => (
+    <div style={style}>
+      <MotorbikeCard motorbike={displayedMotorbikes[index]} />
+    </div>
   );
 
-  const SkeletonCard = () => (
-    <Card className="w-full h-full shadow-md">
-      <Skeleton className="w-full h-60" />
-      <div className="p-4">
-        <Skeleton className="h-4 w-2/3 mb-2" />
-        <Skeleton className="h-4 w-1/2 mb-4" />
-        <Skeleton className="h-4 w-full mb-2" />
-        <Skeleton className="h-4 w-full mb-4" />
-        <Skeleton className="h-6 w-1/3" />
-      </div>
-    </Card>
-  );
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
 
   return (
     <div className="space-y-6">
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {displayedMotorbikes.map((motorbike) => (
-          <MotorbikeCard key={motorbike._id} motorbike={motorbike} />
-        ))}
-        {isLoading &&
-          Array(3)
-            .fill(0)
-            .map((_, index) => <SkeletonCard key={`skeleton-${index}`} />)}
-      </div>
-      {displayedMotorbikes.length < motorbikes.length && (
-        <div className="flex justify-center mt-6">
-          <Button
-            onClick={loadMoreMotorbikes}
-            disabled={isLoading}
-            className="px-6 py-2"
+      <AutoSizer>
+        {({ height, width }) => (
+          <List
+            height={height}
+            itemCount={displayedMotorbikes.length}
+            itemSize={350}
+            width={width}
+            onItemsRendered={({ visibleStopIndex }) => {
+              if (visibleStopIndex === displayedMotorbikes.length - 1) {
+                debouncedLoadMore();
+              }
+            }}
           >
-            {isLoading ? "Carregando..." : "Carregar Mais"}
+            {Row}
+          </List>
+        )}
+      </AutoSizer>
+      {isLoading &&
+        Array(3)
+          .fill(0)
+          .map((_, index) => <SkeletonCard key={`skeleton-${index}`} />)}
+      {displayedMotorbikes.length < motorbikes.length && !isLoading && (
+        <div className="flex justify-center mt-6">
+          <Button onClick={loadMoreMotorbikes} className="px-6 py-2">
+            Carregar Mais
           </Button>
         </div>
       )}
