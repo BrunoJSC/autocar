@@ -128,7 +128,7 @@ const CarDetailsClient: React.FC<CarDetailsClientProps> = ({
           <CarouselItem key={index} className="mx-auto relative">
             <Card className="w-full h-[300px] md:h-[500px] flex justify-center items-center">
               <Image
-                src={urlForImage(image)?.url() || placeholderImage}
+                src={urlForImage(image)?.url() ?? placeholderImage}
                 alt={car.modelCar || "Imagem indisponível"}
                 width={600}
                 height={400}

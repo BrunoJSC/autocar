@@ -7,7 +7,7 @@ export const client = createClient({
   dataset: "production",
   apiVersion: "2023-10-10",
   token: process.env.NEXT_PUBLIC_SANITY_API_TOKEN,
-  useCdn: false,
+  useCdn: true,
   ignoreBrowserTokenWarning: true,
 });
 

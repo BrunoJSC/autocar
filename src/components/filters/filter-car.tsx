@@ -34,6 +34,7 @@ import {
   accessoriesType,
 } from "@/constants";
 import FilterRangeSelect from "./km-select";
+import FilterMotorsSelect from "./filter-motors-select";
 
 // Filter Props definition
 interface FilterProps {
@@ -128,9 +129,9 @@ export const FilterCar: React.FC<FilterProps> = ({
               />
             </div>
 
-            <FilterSelect
+            <FilterMotorsSelect
               label="Motor"
-              value={filters.motors?.toString() || ""}
+              value={filters.motors ?? ""}
               onValueChange={(value) => handleChange("motors", value)}
               options={motorsOptions}
               placeholder="Selecione o tipo de motor"
