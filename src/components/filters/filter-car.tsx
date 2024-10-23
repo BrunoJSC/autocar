@@ -4,13 +4,7 @@ import React, { Dispatch, SetStateAction, useCallback, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+
 import FilterSelect from "./FilterSelect";
 import FilterPriceSelect from "./filter-price-select";
 import FilterButtons from "./filter-buttons";
@@ -44,7 +38,6 @@ interface FilterProps {
   clearSearch: () => void;
 }
 
-// Main component with improved structure
 export const FilterCar: React.FC<FilterProps> = ({
   filters,
   setFilters,

@@ -27,6 +27,8 @@ import { Filter } from "lucide-react";
 import AccessoriesFilter from "./filters/accessories-filter";
 import FilterPriceSelect from "./filters/filter-price-select";
 import YearFilter from "@/constants/year-filter";
+import FilterRangeSelect from "./filters/km-select";
+import FilterMotorsSelect from "./filters/filter-motors-select";
 
 interface MobileFilterProps {
   filters: FiltersCar;
@@ -87,9 +89,9 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
               />
             </div>
 
-            <FilterSelect
+            <FilterMotorsSelect
               label="Motor"
-              value={filters.motors?.toString() || ""}
+              value={filters.motors ?? ""}
               onValueChange={(value) => handleChange("motors", value)}
               options={motorsOptions}
               placeholder="Selecione o tipo de motor"
@@ -135,12 +137,15 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
               placeholder="Selecione o tipo de troca"
             />
 
-            <FilterSelect
-              label="Quilometragem"
-              value={filters.km?.toString() || ""}
-              onValueChange={(value) => handleChange("km", value)}
+            <FilterRangeSelect
+              label="Km inicial"
+              kmStart={filters.kmStart}
+              kmEnd={filters.kmEnd}
+              onStartValueChange={(value) => handleChange("kmStart", value)}
+              onEndValueChange={(value) => handleChange("kmEnd", value)}
               options={kmOptions}
-              placeholder="Selecione a quilometragem"
+              startPlaceholder="Selecione o km inicial"
+              endPlaceholder="Selecione o km final"
             />
 
             <FilterSelect
@@ -183,18 +188,23 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
               placeholder="Selecione o anunciante"
             />
 
+            <FilterSelect
+              label="Mecânico"
+              value={filters.mechanic || ""}
+              onValueChange={(value) => handleChange("mechanic", value)}
+              options={mechanicOptions}
+              placeholder="Selecione o mecanico"
+            />
+
             <AccessoriesFilter
               accessories={accessoriesType}
               selectedAccessories={filters.accessories || []}
               onChange={(selected) => handleChange("accessories", selected)}
             />
 
-            <FilterSelect
-              label="Mecânico"
-              value={filters.mechanic || ""}
-              onValueChange={(value) => handleChange("mechanic", value)}
-              options={mechanicOptions}
-              placeholder="Selecione o mecânico"
+            <FilterButtons
+              onSearch={onSearch}
+              clearSearch={handleClearFilters}
             />
 
             <FilterButtons onSearch={onSearch} clearSearch={clearSearch} />
