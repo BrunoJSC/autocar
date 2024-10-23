@@ -1,73 +1,49 @@
-"use client";
-
-import React, { Dispatch, SetStateAction, useCallback, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import FilterSelect from "./FilterSelect";
-import FilterPriceSelect from "./filter-price-select";
-import FilterButtons from "./filter-buttons";
-import AccessoriesFilter from "./accessories-filter";
-import YearFilter from "@/constants/year-filter";
-import MobileFilter from "../mobile-filter";
+import React, { useMemo } from "react";
 import {
-  locations,
-  fuel,
-  maxPrice,
-  minPrice,
-  colors,
-  announceType,
   accessoriesType,
+  announceType,
+  brandCars,
+  colors,
+  fuel,
   kms,
+  locations,
+  maxPrice,
+  mechanics,
+  minPrice,
 } from "@/constants";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Button } from "./ui/button";
+import { CardContent, CardHeader, CardTitle } from "./ui/card";
+import { ScrollArea } from "./ui/scroll-area";
+import FilterSelect from "./filters/FilterSelect";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
+import FilterButtons from "./filters/filter-buttons";
+import { Filter } from "lucide-react";
+import AccessoriesFilter from "./filters/accessories-filter";
+import FilterPriceSelect from "./filters/filter-price-select";
+import YearFilter from "@/constants/year-filter";
+import FilterRangeSelect from "./filters/km-select";
+import FilterMotorsSelect from "./filters/filter-motors-select";
 import { cylindersType } from "@/constants/cylinders";
-import { brandBikes } from "@/constants/brand-bikes";
-import CylinderSelect from "./cylinder-select";
-import FilterRangeSelect from "./km-select";
-import MobileFilterMotorbike from "../mobile-filter-motorbike";
+import CylinderSelect from "./filters/cylinder-select";
 
-interface FilterProps {
+interface MobileFilterProps {
   filters: FiltersMotorbike;
-  setFilters: Dispatch<SetStateAction<FiltersMotorbike>>;
+  setFilters: (filters: FiltersMotorbike) => void;
   onSearch: () => void;
   clearSearch: () => void;
+  handleChange: (field: keyof FiltersMotorbike, value: any) => void;
 }
 
-export const FilterMotorbike: React.FC<FilterProps> = ({
+const MobileFilterMotorbike: React.FC<MobileFilterProps> = ({
   filters,
   setFilters,
   onSearch,
   clearSearch,
+  handleChange,
 }) => {
-  const handleChange = useCallback(
-    (field: keyof FiltersMotorbike, value: any) => {
-      setFilters((prev) => ({ ...prev, [field]: value }));
-    },
-    [setFilters]
-  );
-
-  const handleClearFilters = useCallback(() => {
-    setFilters({
-      motorbikeBrand: "",
-      motorbikeModel: "",
-      cylinders: 0,
-      location: "",
-      minPrice: 0,
-      maxPrice: 0,
-      fuel: "",
-      color: "",
-      announce: "",
-      kmStart: 0,
-      kmEnd: 0,
-      accessories: [],
-      startYear: 0,
-      endYear: 0,
-    });
-
-    clearSearch();
-  }, [setFilters, clearSearch]);
-
-  const brandOptions = useMemo(() => brandBikes, []);
+  const brandOptions = useMemo(() => brandCars, []);
   const locationOptions = useMemo(() => locations, []);
   const fuelOptions = useMemo(() => fuel, []);
   const colorOptions = useMemo(() => colors, []);
@@ -75,24 +51,20 @@ export const FilterMotorbike: React.FC<FilterProps> = ({
   const kmOptions = useMemo(() => kms, []);
 
   return (
-    <div className="space-y-4 md:space-y-0 sticky">
-      {/* Mobile Filter */}
-      <div className="md:hidden h-auto">
-        <MobileFilterMotorbike
-          filters={filters}
-          setFilters={setFilters}
-          onSearch={onSearch}
-          clearSearch={clearSearch}
-          handleChange={handleChange}
-        />
-      </div>
-
-      {/* Desktop Filter */}
-      <div className="hidden md:block space-y-4 md:space-y-0">
-        <Card className="max-w-sm sticky top-0 overflow-scroll">
-          <CardHeader>
-            <CardTitle>Motos</CardTitle>
-          </CardHeader>
+    <Sheet>
+      <SheetTrigger asChild>
+        <div className="w-full flex items-center justify-between">
+          <h2 className="text-lg font-bold">Filtro</h2>
+          <Button variant="outline">
+            <Filter className="mr-2 h-4 w-4" />
+          </Button>
+        </div>
+      </SheetTrigger>
+      <SheetContent>
+        <CardHeader>
+          <CardTitle>Carros</CardTitle>
+        </CardHeader>
+        <ScrollArea className="h-full w-full mb-[100px]">
           <CardContent className="space-y-4">
             <FilterSelect
               label="Marca"
@@ -190,15 +162,14 @@ export const FilterMotorbike: React.FC<FilterProps> = ({
               onChange={(selected) => handleChange("accessories", selected)}
             />
 
-            <FilterButtons
-              onSearch={onSearch}
-              clearSearch={handleClearFilters}
-            />
+            <FilterButtons onSearch={onSearch} clearSearch={clearSearch} />
           </CardContent>
-        </Card>
-      </div>
-    </div>
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   );
 };
 
-export default React.memo(FilterMotorbike);
+MobileFilterMotorbike.displayName = "MobileFilterMotorbike";
+
+export default React.memo(MobileFilterMotorbike);
