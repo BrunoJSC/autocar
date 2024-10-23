@@ -25,6 +25,7 @@ import { brandBikes } from "@/constants/brand-bikes";
 import CylinderSelect from "./cylinder-select";
 import FilterRangeSelect from "./km-select";
 import MobileFilterMotorbike from "../mobile-filter-motorbike";
+import { accessoriesMotorbikesType } from "@/constants/accessories";
 
 interface FilterProps {
   filters: FiltersMotorbike;
@@ -185,7 +186,7 @@ export const FilterMotorbike: React.FC<FilterProps> = ({
             />
 
             <AccessoriesFilter
-              accessories={accessoriesType}
+              accessories={accessoriesMotorbikesType}
               selectedAccessories={filters.accessories || []}
               onChange={(selected) => handleChange("accessories", selected)}
             />

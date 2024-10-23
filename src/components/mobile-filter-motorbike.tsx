@@ -62,7 +62,7 @@ const MobileFilterMotorbike: React.FC<MobileFilterProps> = ({
       </SheetTrigger>
       <SheetContent>
         <CardHeader>
-          <CardTitle>Carros</CardTitle>
+          <CardTitle>Motos</CardTitle>
         </CardHeader>
         <ScrollArea className="h-full w-full mb-[100px]">
           <CardContent className="space-y-4">

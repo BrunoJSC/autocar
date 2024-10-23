@@ -6,6 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Label } from "../ui/label";
 
 type CylinderOption = {
   id: number;
@@ -25,24 +26,27 @@ const CylinderSelect: React.FC<CylinderSelectProps> = ({
   cylindersType,
 }) => {
   return (
-    <Select
-      value={value !== null ? value.toString() : ""}
-      onValueChange={(selectedValue) => {
-        const numValue = selectedValue ? Number(selectedValue) : null;
-        onValueChange(numValue);
-      }}
-    >
-      <SelectTrigger>
-        <SelectValue placeholder="Selecione a cilindrada" />
-      </SelectTrigger>
-      <SelectContent>
-        {cylindersType.map((cylinder) => (
-          <SelectItem key={cylinder.id} value={cylinder.value.toString()}>
-            {cylinder.title}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <div>
+      <Label>Cilindradas</Label>
+      <Select
+        value={value !== null ? value.toString() : ""}
+        onValueChange={(selectedValue) => {
+          const numValue = selectedValue ? Number(selectedValue) : null;
+          onValueChange(numValue);
+        }}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="Selecione a cilindrada" />
+        </SelectTrigger>
+        <SelectContent>
+          {cylindersType.map((cylinder) => (
+            <SelectItem key={cylinder.id} value={cylinder.value.toString()}>
+              {cylinder.title}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 };
 
