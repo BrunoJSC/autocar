@@ -202,11 +202,6 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
               onChange={(selected) => handleChange("accessories", selected)}
             />
 
-            <FilterButtons
-              onSearch={onSearch}
-              clearSearch={handleClearFilters}
-            />
-
             <FilterButtons onSearch={onSearch} clearSearch={clearSearch} />
           </CardContent>
         </ScrollArea>
