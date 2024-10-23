@@ -90,7 +90,7 @@ export default function Page() {
   return (
     <MaxWrapper>
       <section className="flex flex-col md:flex-row gap-4 mt-5 p-4 min-h-screen">
-        <div className="sticky top-0 z-10 overflow-x-auto h-[calc(100vh-6rem)]">
+        <div className="sticky top-0 z-10 overflow-x-auto md:h-[calc(100vh-6rem)]">
           <FilterMotorbike
             filters={filters}
             setFilters={setFilters as any}
