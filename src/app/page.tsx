@@ -25,7 +25,6 @@ import { client, urlForImage } from "@/lib/sanity";
 import { CircleMessage } from "@/components/circleMessage";
 import Image from "next/image";
 import { CalendarIcon, CircleGauge, FuelIcon, MapPinIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Search } from "@/components/search";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -49,7 +48,7 @@ export interface Announcement {
   model: string;
   price: number;
   fuel: string;
-  yearModification: number;
+  year: number;
   km: number;
 }
 
@@ -64,10 +63,12 @@ export default function Home() {
       try {
         const [announcementData, blogData] = await Promise.all([
           client.fetch<Announcement[]>(
-            `*[_type == "announcement"]{title, "imageUrl": image.asset->url, link, brand, model, price, fuel, yearModification, km, location}`
+            `*[_type == "announcement"]{title, "imageUrl": image.asset->url, link, brand, model, price, fuel, year, km, location}`
           ),
           fetchBlogData(),
         ]);
+
+        console.log("Announcement Data:", announcementData);
         setAnnouncements(announcementData);
         setBlog(blogData);
       } catch (error) {
@@ -102,15 +103,7 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <CardTitle className="text-lg text-primary flex items-center gap-2">
-                {announcement.brand}{" "}
-                <span className="text-black">
-                  {announcement.model.slice(
-                    0,
-                    announcement.model.length > 8
-                      ? 6
-                      : announcement.model.length
-                  ) + "..."}
-                </span>
+                <TruncateText text={announcement.model} maxLength={40} />
               </CardTitle>
               <p className="text-lg font-normal">
                 {Intl.NumberFormat("pt-BR", {
@@ -132,7 +125,7 @@ export default function Home() {
               </div>
               <div className="flex items-center gap-2">
                 <CalendarIcon className="h-4 w-4 text-gray-500" />
-                <p className="text-gray-500">{announcement.yearModification}</p>
+                <p className="text-gray-500">{announcement.year}</p>
               </div>
               <div className="flex items-center gap-2">
                 <FuelIcon className="h-4 w-4 text-gray-500" />
@@ -363,3 +356,20 @@ const FaqSection = memo(function FaqSection() {
     </section>
   );
 });
+
+const TruncateText = ({
+  text,
+  maxLength,
+}: {
+  text: string;
+  maxLength: number;
+}) => {
+  const shouldTruncate = text?.length > maxLength;
+  const truncated = shouldTruncate ? `${text.slice(0, maxLength)}...` : text;
+
+  return (
+    <span className="text-black" title={shouldTruncate ? text : undefined}>
+      {truncated}
+    </span>
+  );
+};

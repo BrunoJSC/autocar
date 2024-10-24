@@ -84,7 +84,10 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
               {car.brandCar || "Marca desconhecida"}
             </h3>
             <p className="text-sm text-black font-semibold">
-              {car.modelCar || "Modelo desconhecido"}
+              <TruncateText
+                text={car.modelCar || "Modelo desconhecido"}
+                maxLength={16}
+              />
             </p>
           </div>
           <div className="text-gray-600 text-sm mb-4">
@@ -142,5 +145,22 @@ export const ListCar: React.FC<CarListProps> = ({ cars }) => {
         </div>
       )}
     </div>
+  );
+};
+
+const TruncateText = ({
+  text,
+  maxLength,
+}: {
+  text: string;
+  maxLength: number;
+}) => {
+  const shouldTruncate = text?.length > maxLength;
+  const truncated = shouldTruncate ? `${text.slice(0, maxLength)}...` : text;
+
+  return (
+    <span className="text-black" title={shouldTruncate ? text : undefined}>
+      {truncated}
+    </span>
   );
 };
