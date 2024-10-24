@@ -29,6 +29,7 @@ import FilterPriceSelect from "./filters/filter-price-select";
 import YearFilter from "@/constants/year-filter";
 import FilterRangeSelect from "./filters/km-select";
 import FilterMotorsSelect from "./filters/filter-motors-select";
+import { accessoriesMotorbikesType } from "@/constants/accessories";
 
 interface MobileFilterProps {
   filters: FiltersCar;
@@ -197,7 +198,7 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
             />
 
             <AccessoriesFilter
-              accessories={accessoriesType}
+              accessories={accessoriesMotorbikesType}
               selectedAccessories={filters.accessories || []}
               onChange={(selected) => handleChange("accessories", selected)}
             />
