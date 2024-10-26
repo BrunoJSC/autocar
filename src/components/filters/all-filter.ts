@@ -18,7 +18,7 @@ type FiltersCar = {
   mechanic?: string;
   kmStart?: number;
   kmEnd?: number;
-  isLate?: boolean;
+  isLate?: string;
 };
 
 type FiltersMotorbike = {
