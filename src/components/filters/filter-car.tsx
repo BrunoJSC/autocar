@@ -238,7 +238,7 @@ export const FilterCar: React.FC<FilterProps> = ({
             />
 
             <DocumentsLateFilter
-              isLate={filters.isLate || undefined}
+              isLate={filters.isLate || ""}
               onChange={(selected) => handleChange("isLate", selected)}
             />
 
