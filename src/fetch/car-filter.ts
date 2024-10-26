@@ -19,6 +19,7 @@ interface FilterParams {
   exchange?: string;
   kmStart?: number;
   kmEnd?: number;
+  isLate?: string;
 }
 
 export const fetchFilterCars = async ({
@@ -40,6 +41,7 @@ export const fetchFilterCars = async ({
   exchange,
   kmStart,
   kmEnd,
+  isLate,
 }: FilterParams) => {
   let query = `*[_type == "car" && defined(yearModification) && defined(price)`;
   const params: Record<string, any> = {};
@@ -86,7 +88,7 @@ export const fetchFilterCars = async ({
       addCondition(
         `yearModification >= $startYear && yearModification <= $endYear`,
         "startYear",
-        startYear
+        startYear,
       );
       params.endYear = endYear;
     }
@@ -103,9 +105,11 @@ export const fetchFilterCars = async ({
       addCondition(
         `accessories[] match $accessories`,
         "accessories",
-        accessories.join(" ")
+        accessories.join(" "),
       );
     }
+
+    if (isLate) addCondition(`isLate == $isLate`, "isLate", isLate);
 
     query += `]`;
 
@@ -137,12 +141,13 @@ export const fetchFilterCars = async ({
     km,
     bodyType,
     accessories,
-    yearModification, 
+    yearModification,
     description,
     fuel,
     exchange,
     motors,
     doors,
+    isLate,
   }`;
 
   try {

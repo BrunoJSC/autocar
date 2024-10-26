@@ -339,5 +339,16 @@ export const carType = defineType({
         ],
       },
     }),
+    defineField({
+      title: "Há pendencias?",
+      name: "isLate",
+      type: "string",
+      options: {
+        list: [
+          {title: "Sim", value: "sim"},
+          {title: "Não", value: "não"},
+        ]
+      }
+    })
   ],
 })
