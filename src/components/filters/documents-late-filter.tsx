@@ -10,7 +10,7 @@ import {
 import { Label } from "../ui/label";
 
 interface DocumentsLateFilterProps {
-  isLate: boolean;
+  isLate: string;
   onChange: (isLate: boolean) => void;
 }
 
