@@ -237,10 +237,10 @@ export const FilterCar: React.FC<FilterProps> = ({
               onChange={(selected) => handleChange("accessories", selected)}
             />
 
-            <DocumentsLateFilter
+            {/* <DocumentsLateFilter
               isLate={filters.isLate || ""}
               onChange={(selected) => handleChange("isLate", selected)}
-            />
+            /> */}
 
             <FilterButtons
               onSearch={onSearch}

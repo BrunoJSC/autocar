@@ -198,7 +198,7 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
             />
 
             <AccessoriesFilter
-              accessories={accessoriesMotorbikesType}
+              accessories={accessoriesType}
               selectedAccessories={filters.accessories || []}
               onChange={(selected) => handleChange("accessories", selected)}
             />

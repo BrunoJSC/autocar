@@ -66,7 +66,8 @@ export const fetchFilterCars = async ({
     startYear !== undefined ||
     endYear !== undefined ||
     motors ||
-    exchange;
+    exchange ||
+    isLate;
 
   if (isAnyFilterApplied) {
     if (brandCar) addCondition(`brandCar == $brandCar`, "brandCar", brandCar);
@@ -109,7 +110,7 @@ export const fetchFilterCars = async ({
       );
     }
 
-    if (isLate) addCondition(`isLate == $isLate`, "isLate", isLate);
+    if (isLate) addCondition(`isLate match $isLate`, "isLate", isLate);
 
     query += `]`;
 

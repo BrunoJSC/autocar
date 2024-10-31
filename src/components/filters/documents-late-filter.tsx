@@ -10,22 +10,26 @@ import {
 import { Label } from "../ui/label";
 
 interface DocumentsLateFilterProps {
-  isLate: string;
+  isLate: string; // Mantém como string para uso com o Select
   onChange: (isLate: boolean) => void;
+  onSearch: (isLateBoolean: boolean) => void; // Adiciona uma função para realizar a busca
 }
 
 const DocumentsLateFilter: React.FC<DocumentsLateFilterProps> = ({
   isLate,
   onChange,
+  onSearch,
 }) => {
   const handleSelectChange = (value: string) => {
-    onChange(value === "sim");
+    const isLateBoolean = value === "sim";
+    onChange(isLateBoolean);
+    onSearch(isLateBoolean); // Realiza a busca com o valor booleano convertido
   };
 
   return (
     <div>
       <Label htmlFor="documentsLate">Documentos Atrasados</Label>
-      <Select onValueChange={handleSelectChange} value={isLate ? "sim" : "não"}>
+      <Select onValueChange={handleSelectChange} value={isLate}>
         <SelectTrigger id="documentsLate" className="mt-2">
           <SelectValue placeholder="Selecione uma opção" />
         </SelectTrigger>
