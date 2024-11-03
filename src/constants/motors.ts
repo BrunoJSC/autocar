@@ -10,5 +10,6 @@ export const motorsType = [
   { id: 9, title: "2.0", value: 2.0 },
   { id: 10, title: "2.2", value: 2.2 },
   { id: 11, title: "2.4", value: 2.4 },
-  { id: 12, title: "3.0", value: 3.0 },
+  { id: 12, title: "2.7", value: 2.7 },
+  { id: 13, title: "3.0", value: 3.0 },
 ];

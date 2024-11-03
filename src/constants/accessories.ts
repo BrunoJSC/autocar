@@ -30,3 +30,8 @@ export const accessoriesMotorbikesType = [
   { id: 3, title: "Freio a Disco Traseiro", value: "freio a disco traseiro" },
   { id: 4, title: "Rodas de Liga Leve", value: "ligas leves" },
 ];
+
+export const isLateType = [
+  { id: 1, title: "Leilão", value: "leilao" },
+  { id: 2, title: "Débitos de documentos", value: "debitos-de-documentos" },
+];

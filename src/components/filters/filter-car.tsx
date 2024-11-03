@@ -31,6 +31,7 @@ import FilterRangeSelect from "./km-select";
 import FilterMotorsSelect from "./filter-motors-select";
 import { documents } from "@/constants/documents";
 import DocumentsLateFilter from "./documents-late-filter";
+import { isLateType } from "@/constants/accessories";
 
 // Filter Props definition
 interface FilterProps {
@@ -232,9 +233,17 @@ export const FilterCar: React.FC<FilterProps> = ({
             />
 
             <AccessoriesFilter
+              text="Acessórios"
               accessories={accessoriesType}
               selectedAccessories={filters.accessories || []}
               onChange={(selected) => handleChange("accessories", selected)}
+            />
+
+            <AccessoriesFilter
+              text="Pendências"
+              accessories={isLateType}
+              selectedAccessories={filters.isLate || []}
+              onChange={(selected) => handleChange("isLate", selected)}
             />
 
             {/* <DocumentsLateFilter

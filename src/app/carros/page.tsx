@@ -29,7 +29,7 @@ const initialFilters: FiltersCar = {
   mechanic: "",
   kmStart: undefined,
   kmEnd: undefined,
-  isLate: "",
+  isLate: [],
 };
 
 export default function Page() {

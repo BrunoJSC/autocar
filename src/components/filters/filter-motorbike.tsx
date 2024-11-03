@@ -186,6 +186,7 @@ export const FilterMotorbike: React.FC<FilterProps> = ({
             />
 
             <AccessoriesFilter
+              text="Acessórios"
               accessories={accessoriesMotorbikesType}
               selectedAccessories={filters.accessories || []}
               onChange={(selected) => handleChange("accessories", selected)}

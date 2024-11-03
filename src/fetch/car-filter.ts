@@ -19,7 +19,7 @@ interface FilterParams {
   exchange?: string;
   kmStart?: number;
   kmEnd?: number;
-  isLate?: string;
+  isLate?: string[];
 }
 
 export const fetchFilterCars = async ({
@@ -89,7 +89,7 @@ export const fetchFilterCars = async ({
       addCondition(
         `yearModification >= $startYear && yearModification <= $endYear`,
         "startYear",
-        startYear,
+        startYear
       );
       params.endYear = endYear;
     }
@@ -106,7 +106,7 @@ export const fetchFilterCars = async ({
       addCondition(
         `accessories[] match $accessories`,
         "accessories",
-        accessories.join(" "),
+        accessories.join(" ")
       );
     }
 

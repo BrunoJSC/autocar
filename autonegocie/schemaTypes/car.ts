@@ -277,6 +277,7 @@ export const carType = defineType({
           {title: '2.0', value: 2.0},
           {title: '2.2', value: 2.2},
           {title: '2.4', value: 2.4},
+          {title: '2.7', value: 2.7},
           {title: '3.0', value: 3.0},
         ],
       },
@@ -340,15 +341,17 @@ export const carType = defineType({
       },
     }),
     defineField({
-      title: "Há pendencias?",
-      name: "isLate",
-      type: "string",
+      title: 'Há pendencias?',
+      name: 'isLate',
+      type: 'array',
+      of: [{type: 'string'}],
+
       options: {
         list: [
-          {title: "Sim", value: "sim"},
-          {title: "Não", value: "não"},
-        ]
-      }
-    })
+          {title: 'Leilão', value: 'leilao'},
+          {title: 'Débitos de documentos', value: 'debitos-de-documentos'},
+        ],
+      },
+    }),
   ],
 })

@@ -11,12 +11,14 @@ interface Accessory {
 }
 
 interface AccessoriesFilterProps {
+  text: string;
   accessories: Accessory[];
   selectedAccessories: string[];
   onChange: (selected: string[]) => void;
 }
 
 const AccessoriesFilter: React.FC<AccessoriesFilterProps> = ({
+  text,
   accessories,
   selectedAccessories,
   onChange,
@@ -31,7 +33,7 @@ const AccessoriesFilter: React.FC<AccessoriesFilterProps> = ({
 
   return (
     <div>
-      <Label htmlFor="accessories">Acessórios</Label>
+      <Label htmlFor="accessories">{text}</Label>
       <div>
         {accessories.map((accessory) => (
           <div key={accessory.id} className="flex items-center space-x-2">
